@@ -1,20 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bebas_Neue, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import "./evenbetter.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bebasNeue = Bebas_Neue({
+  weight: "400",
+  variable: "--font-bebas-neue",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  weight: ["400", "500", "600"],
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "EB Website Kit",
-  description: "A landing page that previews the local components, theme, and templates available in the repo.",
+  title: "EvenBetter — Guias práticos de IA para devs",
+  description:
+    "EvenBetter fornece skills estruturadas que orientam a leitura de código, boas práticas de UX e a geração de recomendações.",
 };
 
 export default function RootLayout({
@@ -24,8 +34,8 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="pt-BR"
+      className={`${bebasNeue.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
