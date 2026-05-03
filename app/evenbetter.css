@@ -213,6 +213,12 @@
 .eb-switch-name { font-family: var(--eb-font-display); font-size: 17px; letter-spacing: 0.05em; line-height: 1; text-transform: uppercase; }
 .eb-switch-sub { font-size: 10.5px; color: #b6d0cb; margin-top: 4px; letter-spacing: 0.02em; }
 .eb-switch-arr { margin-left: auto; color: #b6d0cb; }
+.eb-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; background: rgba(31,78,74,0.07); border-radius: 12px; margin-bottom: 14px; }
+.eb-segmented-opt { appearance: none; border: none; background: transparent; padding: 7px 8px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #6b8884; transition: all 140ms ease; font-family: inherit; }
+.eb-segmented-opt:hover { color: #1f4e4a; }
+.eb-segmented-opt.active { background: #b6efd9; color: #1f4e4a; }
+.eb-segmented-label { font-family: var(--eb-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1; }
+
 .eb-side-title { font-family: var(--eb-font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6b8884; padding: 0 12px; margin: 12px 0 8px; }
 .eb-side-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; font-size: 13.5px; color: #3a5552; border-radius: 16px; cursor: pointer; transition: all 160ms ease; font-weight: 500; }
 .eb-side-item:hover { color: #1f4e4a; background: rgba(255,255,255,0.4); }

@@ -2,15 +2,22 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { TutorialNav, CodeBlock, Callout, Icon } from '../../_components/tutorial-primitives'
+import { TutorialNav, CodeBlock, Callout, Icon, SegmentedControl } from '../../_components/tutorial-primitives'
 
-type StepId = 'customize' | 'marketplace' | 'instalar' | 'chamar'
+type Mode = 'cli' | 'desktop'
+type CliStepId = 'marketplace' | 'instalar' | 'chamar'
+type DesktopStepId = 'customize' | 'diretorio' | 'chamar'
 
-const STEPS = [
-  { id: 'customize'   as StepId, title: 'Abrir o Customize' },
-  { id: 'marketplace' as StepId, title: 'Adicionar marketplace' },
-  { id: 'instalar'    as StepId, title: 'Instalar o plugin' },
-  { id: 'chamar'      as StepId, title: 'Recarregar e usar' },
+const STEPS_CLI: { id: CliStepId; title: string }[] = [
+  { id: 'marketplace', title: 'Adicionar marketplace' },
+  { id: 'instalar',    title: 'Instalar o plugin' },
+  { id: 'chamar',      title: 'Recarregar e usar' },
+]
+
+const STEPS_DESKTOP: { id: DesktopStepId; title: string }[] = [
+  { id: 'customize', title: 'Adicionar pelo Customize' },
+  { id: 'diretorio', title: 'Instalar pelo Diretório' },
+  { id: 'chamar',    title: 'Recarregar e usar' },
 ]
 
 function Crumbs({ last }: { last: string }) {
@@ -25,79 +32,15 @@ function Crumbs({ last }: { last: string }) {
   )
 }
 
-function StepCustomize() {
-  const steps: { img: string; alt: string; caption: React.ReactNode; hl: { x: string; y: string; w: string; h: string } }[] = [
-    {
-      img: '/tutorial/claude-code/cc-customize-1-sidebar.png',
-      alt: 'Barra lateral do Claude Code com opção Customize',
-      caption: <>Clique em <strong>Customize</strong> na barra lateral do Claude Code</>,
-      hl: { x: '7%', y: '72%', w: '80%', h: '11%' },
-    },
-    {
-      img: '/tutorial/claude-code/cc-customize-2-home.png',
-      alt: 'Tela Personalizar o Claude',
-      caption: <>A tela <em>Personalizar o Claude</em> aparece — clique no <strong>+</strong> ao lado de Plugins pessoais</>,
-      hl: { x: '15%', y: '26%', w: '6%', h: '6%' },
-    },
-    {
-      img: '/tutorial/claude-code/cc-customize-3-menu.png',
-      alt: 'Menu com Navegar por plugins e Criar plugin',
-      caption: <>Clique em <strong>+ Criar plugin</strong></>,
-      hl: { x: '8%', y: '54%', w: '87%', h: '26%' },
-    },
-    {
-      img: '/tutorial/claude-code/cc-customize-4-submenu.png',
-      alt: 'Submenu com opção Adicionar marketplace',
-      caption: <>No submenu, selecione <strong>Adicionar marketplace</strong></>,
-      hl: { x: '51%', y: '31%', w: '46%', h: '24%' },
-    },
-    {
-      img: '/tutorial/claude-code/cc-customize-5-dialog.png',
-      alt: 'Dialog Adicionar marketplace com campo URL',
-      caption: <>Digite <code>MelloBirkan/EvenBetterFramework</code> no campo URL e clique <strong>Sincronizar</strong></>,
-      hl: { x: '4%', y: '56%', w: '92%', h: '27%' },
-    },
-  ]
+/* ─── CLI mode ─── */
 
-  return (
-    <>
-      <Crumbs last="CUSTOMIZE" />
-      <h1>Abra o <span className="eb-accent">Customize</span></h1>
-      <p className="eb-lede">
-        No app do Claude, abra o menu <strong>Customize</strong> para adicionar o marketplace do EvenBetter pela interface gráfica.
-      </p>
-      <div className="eb-step-img-grid">
-        {steps.map((s, i) => (
-          <div key={i} className="eb-step-img-item">
-            <div className="eb-step-img-wrap">
-              <img src={s.img} alt={s.alt} />
-              <div className="eb-step-img-hl" style={{ left: s.hl.x, top: s.hl.y, width: s.hl.w, height: s.hl.h }} />
-            </div>
-            <div className="eb-step-img-caption">
-              <span className="eb-step-img-num">{String(i + 1).padStart(2, '0')}</span>
-              <span>{s.caption}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="eb-step-img-item">
-        <div className="eb-step-img-caption">
-          <span className="eb-step-img-num">06</span>
-          <span>Cole essa URL no campo e clique <strong>Sincronizar</strong></span>
-        </div>
-        <CodeBlock lang="url" code="https://github.com/MelloBirkan/EvenBetterFramework" />
-      </div>
-    </>
-  )
-}
-
-function StepMarketplace() {
+function StepCliMarketplace() {
   return (
     <>
       <Crumbs last="MARKETPLACE" />
       <h1>Adicione o <span className="eb-accent">marketplace</span></h1>
       <p className="eb-lede">
-        Dentro de uma conversa com o Claude Code, adicione o repositório do EvenBetter como fonte de plugins.
+        Em uma conversa com o Claude Code, registre o repositório do EvenBetter como fonte de plugins.
       </p>
       <CodeBlock lang="bash" code="/plugin marketplace add MelloBirkan/EvenBetterFramework" />
       <div className="eb-chat-mock">
@@ -129,13 +72,13 @@ function StepMarketplace() {
   )
 }
 
-function StepInstalar() {
+function StepCliInstalar() {
   return (
     <>
       <Crumbs last="INSTALAR" />
       <h1>Instale o <span className="eb-accent">plugin</span></h1>
       <p className="eb-lede">
-        Com o marketplace adicionado, instale o plugin do EvenBetter para iOS.
+        Com o marketplace registrado, instale o plugin EvenBetter iOS pelo nome.
       </p>
       <CodeBlock lang="bash" code="/plugin install evenbetter-ios@evenbetter" />
       <div className="eb-chat-mock">
@@ -159,13 +102,112 @@ function StepInstalar() {
           </div>
         </div>
       </div>
-      <Callout kind="note" title="Skills instaladas">
-        O plugin adiciona duas skills com namespace: <code>evenbetter-ios:evenbetter-ios-feature</code> para análise de features
-        e <code>evenbetter-ios:swiftui-ui-patterns</code> para padrões de UI em SwiftUI.
+      <Callout kind="note" title="Sintaxe nome@marketplace">
+        O sufixo <code>@evenbetter</code> identifica o marketplace de origem. Sem ele, o Claude Code não sabe
+        de onde puxar o plugin.
       </Callout>
     </>
   )
 }
+
+/* ─── Desktop mode ─── */
+
+function StepDesktopCustomize() {
+  const steps: { img: string; alt: string; caption: React.ReactNode; hl: { x: string; y: string; w: string; h: string } }[] = [
+    {
+      img: '/tutorial/claude-code/cc-customize-1-sidebar.png',
+      alt: 'Barra lateral do Claude Code com opção Customize',
+      caption: <>Clique em <strong>Customize</strong> na barra lateral do Claude Code</>,
+      hl: { x: '7%', y: '72%', w: '80%', h: '11%' },
+    },
+    {
+      img: '/tutorial/claude-code/cc-customize-2-home.png',
+      alt: 'Tela Personalizar o Claude',
+      caption: <>A tela <em>Personalizar o Claude</em> aparece — clique no <strong>+</strong> ao lado de Plugins pessoais</>,
+      hl: { x: '15%', y: '26%', w: '6%', h: '6%' },
+    },
+    {
+      img: '/tutorial/claude-code/cc-customize-3-menu.png',
+      alt: 'Menu com Navegar por plugins e Criar plugin',
+      caption: <>Clique em <strong>+ Criar plugin</strong></>,
+      hl: { x: '8%', y: '54%', w: '87%', h: '26%' },
+    },
+    {
+      img: '/tutorial/claude-code/cc-customize-4-submenu.png',
+      alt: 'Submenu com opção Adicionar marketplace',
+      caption: <>No submenu, selecione <strong>Adicionar marketplace</strong></>,
+      hl: { x: '51%', y: '31%', w: '46%', h: '24%' },
+    },
+    {
+      img: '/tutorial/claude-code/cc-customize-5-dialog.png',
+      alt: 'Dialog Adicionar marketplace com campo URL',
+      caption: <>Cole a URL no campo e clique <strong>Sincronizar</strong></>,
+      hl: { x: '4%', y: '56%', w: '92%', h: '27%' },
+    },
+  ]
+
+  return (
+    <>
+      <Crumbs last="CUSTOMIZE" />
+      <h1>Adicione pelo <span className="eb-accent">Customize</span></h1>
+      <p className="eb-lede">
+        No app do Claude, abra o menu <strong>Customize</strong> para registrar o marketplace pela interface gráfica.
+      </p>
+      <div className="eb-step-img-grid">
+        {steps.map((s, i) => (
+          <div key={i} className="eb-step-img-item">
+            <div className="eb-step-img-wrap">
+              <img src={s.img} alt={s.alt} />
+              <div className="eb-step-img-hl" style={{ left: s.hl.x, top: s.hl.y, width: s.hl.w, height: s.hl.h }} />
+            </div>
+            <div className="eb-step-img-caption">
+              <span className="eb-step-img-num">{String(i + 1).padStart(2, '0')}</span>
+              <span>{s.caption}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="eb-step-img-item">
+        <div className="eb-step-img-caption">
+          <span className="eb-step-img-num">URL</span>
+          <span>Use essa URL no campo Sincronizar</span>
+        </div>
+        <CodeBlock lang="url" code="https://github.com/MelloBirkan/EvenBetterFramework" />
+      </div>
+    </>
+  )
+}
+
+function StepDesktopDiretorio() {
+  return (
+    <>
+      <Crumbs last="DIRETÓRIO" />
+      <h1>Instale pelo <span className="eb-accent">Diretório</span></h1>
+      <p className="eb-lede">
+        Após sincronizar, o Diretório de plugins do Claude Code abre automaticamente. Encontre o EvenBetter iOS e instale.
+      </p>
+
+      <ul>
+        <li>Na barra superior do Diretório, clique na aba <strong>Código</strong> para ver os marketplaces customizados.</li>
+        <li>Localize o card <code>evenbetter-ios</code> e clique no <strong>+</strong> dele.</li>
+        <li>Escolha o escopo da instalação (projeto atual ou usuário).</li>
+        <li>Confirme a instalação. As skills <code>evenbetter-ios-feature</code> e <code>swiftui-ui-patterns</code> ficam disponíveis.</li>
+        <li>Feche o Diretório clicando no <strong>×</strong> no canto superior direito.</li>
+      </ul>
+
+      <Callout kind="tip" title="Não achou na aba Código?">
+        Use o campo <em>Pesquisar plugins</em> no topo do Diretório e digite <code>evenbetter</code>. O card aparece direto.
+      </Callout>
+
+      <Callout kind="note" title="Alternativa: instalar pelo chat">
+        Se preferir não usar o Diretório, abra uma conversa e rode{' '}
+        <code>/plugin install evenbetter-ios@evenbetter</code>. Funciona igual.
+      </Callout>
+    </>
+  )
+}
+
+/* ─── Shared step (used by both modes) ─── */
 
 function StepChamar() {
   return (
@@ -221,13 +263,35 @@ function StepChamar() {
 }
 
 export default function TutorialAnthropicPage() {
-  const [step, setStep] = useState<StepId>('customize')
-  const stepIdx = STEPS.findIndex(s => s.id === step)
-  const prev = stepIdx > 0 ? STEPS[stepIdx - 1] : null
-  const next = stepIdx < STEPS.length - 1 ? STEPS[stepIdx + 1] : null
+  const [mode, setMode] = useState<Mode>('cli')
+  const [cliStep, setCliStep] = useState<CliStepId>('marketplace')
+  const [desktopStep, setDesktopStep] = useState<DesktopStepId>('customize')
+
+  const steps = mode === 'cli' ? STEPS_CLI : STEPS_DESKTOP
+  const step = mode === 'cli' ? cliStep : desktopStep
+  const setStep = (id: string) => {
+    if (mode === 'cli') setCliStep(id as CliStepId)
+    else setDesktopStep(id as DesktopStepId)
+  }
+  const stepIdx = steps.findIndex(s => s.id === step)
+  const prev = stepIdx > 0 ? steps[stepIdx - 1] : null
+  const next = stepIdx < steps.length - 1 ? steps[stepIdx + 1] : null
   const isDone = !next
 
-  useEffect(() => { window.scrollTo(0, 0) }, [step])
+  useEffect(() => { window.scrollTo(0, 0) }, [step, mode])
+
+  const renderStep = () => {
+    if (mode === 'cli') {
+      if (cliStep === 'marketplace') return <StepCliMarketplace />
+      if (cliStep === 'instalar')    return <StepCliInstalar />
+      if (cliStep === 'chamar')      return <StepChamar />
+    } else {
+      if (desktopStep === 'customize') return <StepDesktopCustomize />
+      if (desktopStep === 'diretorio') return <StepDesktopDiretorio />
+      if (desktopStep === 'chamar')    return <StepChamar />
+    }
+    return null
+  }
 
   return (
     <div className="eb-root">
@@ -244,8 +308,16 @@ export default function TutorialAnthropicPage() {
               <div className="eb-sidebar-agent-sub">Anthropic Claude Code</div>
             </div>
           </div>
+          <SegmentedControl<Mode>
+            value={mode}
+            onChange={setMode}
+            options={[
+              { value: 'cli', label: 'CLI' },
+              { value: 'desktop', label: 'Desktop' },
+            ]}
+          />
           <div className="eb-side-title">Etapas</div>
-          {STEPS.map((s, idx) => {
+          {steps.map((s, idx) => {
             const isActive = s.id === step
             const isSectionDone = idx < stepIdx
             return (
@@ -260,11 +332,8 @@ export default function TutorialAnthropicPage() {
             )
           })}
         </aside>
-        <main className="eb-content eb-fade-page" key={step}>
-          {step === 'customize'   && <StepCustomize />}
-          {step === 'marketplace' && <StepMarketplace />}
-          {step === 'instalar'    && <StepInstalar />}
-          {step === 'chamar'      && <StepChamar />}
+        <main className="eb-content eb-fade-page" key={`${mode}-${step}`}>
+          {renderStep()}
           {isDone && (
             <div className="eb-pager-done">
               <div className="eb-pager-done-icon"><Icon name="check" size={14} /></div>

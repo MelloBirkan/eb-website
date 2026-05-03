@@ -105,6 +105,35 @@ export function Callout({ kind = 'tip', title, children }: { kind?: string; titl
   )
 }
 
+/* ── SegmentedControl ── */
+export function SegmentedControl<T extends string>({
+  value,
+  onChange,
+  options,
+}: {
+  value: T
+  onChange: (v: T) => void
+  options: { value: T; label: string; hint?: string }[]
+}) {
+  return (
+    <div className="eb-segmented" role="tablist" aria-label="Modo do tutorial">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          role="tab"
+          aria-selected={value === opt.value}
+          className={`eb-segmented-opt${value === opt.value ? ' active' : ''}`}
+          onClick={() => onChange(opt.value)}
+        >
+          <span className="eb-segmented-label">{opt.label}</span>
+          {opt.hint && <span className="eb-segmented-hint">{opt.hint}</span>}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 /* ── TutorialNav ── */
 export function TutorialNav() {
   return (
