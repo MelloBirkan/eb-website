@@ -145,8 +145,8 @@ export function TutorialNav() {
         </Link>
         <div className="eb-nav-links">
           <Link href="/" className="eb-nav-link">Início</Link>
-          <span className="eb-nav-link active">Guias</span>
-          <span className="eb-nav-link eb-nav-link-disabled" title="Em breve">Sobre</span>
+          <Link href="/#escolha-seu-agente" className="eb-nav-link active">Guias</Link>
+          <Link href="/about-03" className="eb-nav-link">Sobre</Link>
         </div>
         <div className="eb-nav-spacer" />
       </nav>
