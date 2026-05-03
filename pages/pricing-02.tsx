@@ -4,6 +4,7 @@ import { ChevronIcon } from '@/components/icons/chevron-icon'
 import { CallToActionSimpleCentered } from '@/components/sections/call-to-action-simple-centered'
 import { FAQsAccordion, Faq } from '@/components/sections/faqs-accordion'
 import { FooterCategory, FooterLink, FooterWithLinkCategories } from '@/components/sections/footer-with-link-categories'
+import { HeroSimpleCentered } from '@/components/sections/hero-simple-centered'
 import {
   NavbarLink,
   NavbarLogo,
@@ -11,7 +12,6 @@ import {
 } from '@/components/sections/navbar-with-logo-actions-and-centered-links'
 import { PricingSingleTierTwoColumn } from '@/components/sections/pricing-single-tier-two-column'
 import { TestimonialLargeQuote } from '@/components/sections/testimonial-with-large-quote'
-import { Example as Hero } from '@/examples/hero-simple-centered-pricing'
 
 export default function Page() {
   return (
@@ -58,7 +58,16 @@ export default function Page() {
 
       <Main>
         {/* Hero */}
-        <Hero />
+        <HeroSimpleCentered
+          id="hero"
+          headline="Pricing."
+          subheadline={
+            <p>
+              Simplify your shared inbox, collaborate effortlessly, and give every customer a reply that feels personal,
+              even if it was written by a bot.
+            </p>
+          }
+        />
 
         {/* Pricing */}
         <PricingSingleTierTwoColumn
