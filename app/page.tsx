@@ -57,6 +57,17 @@ const AgentIllo = ({ kind, dark }: { kind: string; dark?: boolean }) => {
       <circle cx="140" cy="60" r="72" stroke={stroke} strokeWidth="1" strokeDasharray="2 6" opacity="0.4" />
     </svg>
   )
+  if (kind === 'ios') return (
+    <svg viewBox="0 0 200 200" fill="none">
+      <circle cx="140" cy="60" r="76" fill={fill} opacity="0.1" />
+      <circle cx="140" cy="60" r="56" fill={dark ? 'rgba(255,255,255,0.06)' : 'white'} stroke={stroke} strokeOpacity="0.3" />
+      <rect x="116" y="36" width="44" height="44" rx="10" fill={fill} opacity="0.3" />
+      <rect x="122" y="44" width="44" height="44" rx="10" fill={fill} opacity="0.6" />
+      <rect x="128" y="52" width="44" height="44" rx="10" fill={fill} />
+      <path d="M142 72 L149 79 L162 64" stroke={centerFill} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="140" cy="60" r="72" stroke={stroke} strokeWidth="1" strokeDasharray="2 6" opacity="0.4" />
+    </svg>
+  )
   return (
     <svg viewBox="0 0 200 200" fill="none">
       <circle cx="140" cy="60" r="76" fill={fill} opacity="0.1" />
@@ -144,10 +155,10 @@ export default function Home() {
         {/* Choose Agent */}
         <div id="escolha-seu-agente" style={{ scrollMarginTop: 90 }}>
           <div className="eb-section-head">
-            <h2>ESCOLHA SEU AGENTE</h2>
+            <h2>POR ONDE COMEÇAR</h2>
           </div>
-          <p className="eb-section-sub">Selecione o agente de terminal que já faz parte do seu fluxo de trabalho.</p>
-          <div className="eb-providers">
+          <p className="eb-section-sub">Instale o EvenBetter no seu agente de terminal — ou pule direto para o guia dos plugins.</p>
+          <div className="eb-providers" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
             <Link href="/tutorial/codex" className="eb-provider">
               <div className="eb-provider-illo"><AgentIllo kind="codex" /></div>
               <div className="eb-provider-tag">OpenAI</div>
@@ -162,6 +173,13 @@ export default function Home() {
               <p>Agente de terminal da Anthropic. Ideal para quem já usa Claude no fluxo de desenvolvimento.</p>
               <span className="eb-provider-cta">Ver instalação <Icon name="arrow" size={12} /></span>
             </Link>
+            <Link href="/tutorial/plugins/ios" className="eb-provider">
+              <div className="eb-provider-illo"><AgentIllo kind="ios" /></div>
+              <div className="eb-provider-tag">Plugin</div>
+              <h3>EvenBetter iOS</h3>
+              <p>12 skills para iOS e SwiftUI: planejamento, padrões, auditoria HIG/WCAG, performance e integração com sistema.</p>
+              <span className="eb-provider-cta">Ver guia <Icon name="arrow" size={12} /></span>
+            </Link>
           </div>
         </div>
 
@@ -170,19 +188,26 @@ export default function Home() {
           <div className="eb-section-head">
             <h2>CONHEÇA AS SKILLS</h2>
           </div>
+          <p className="eb-section-sub">12 skills do plugin EvenBetter iOS. Clique em qualquer card para abrir o guia de uso.</p>
           <div className="eb-skills-grid">
             {[
-              { title: 'Accessibility Labels', desc: 'Verifica se todos os elementos interativos possuem accessibilityLabel descritivo para leitura correta pelo VoiceOver.' },
-              { title: 'Dynamic Type', desc: 'Avalia se os textos do app respeitam as preferências de tamanho do usuário via UIFontMetrics e .scaledFont.' },
-              { title: 'Tap Target Size', desc: 'Identifica elementos tocáveis menores que 44×44 pt — o limite mínimo recomendado pelas Human Interface Guidelines.' },
-              { title: 'Contraste de Cores', desc: 'Verifica se as combinações de cor do projeto atingem os níveis WCAG AA e AAA para texto e controles interativos.' },
-              { title: 'VoiceOver Navigation', desc: 'Avalia o fluxo de foco do VoiceOver e detecta elementos que bloqueiam ou perdem o estado de foco na interface.' },
-              { title: 'Accessibility Traits', desc: 'Checa se botões, cabeçalhos e links possuem os accessibilityTraits corretos declarados para tecnologias assistivas.' },
-            ].map((skill, i) => (
-              <div key={i} className="eb-skill-card">
+              { title: 'evenbetter-ios-feature',   desc: 'Workflow em estágios para uma única tela: brief, plano, validação, tickets, execução e revisão.', href: '/tutorial/plugins/ios#planejamento-ux' },
+              { title: 'evenbetter-ios-epic',      desc: 'Workflow para apps ou épicos multi-tela com brief, fluxos, plano técnico HIG e validação de arquitetura.', href: '/tutorial/plugins/ios#planejamento-ux' },
+              { title: 'swiftui-ui-patterns',      desc: 'Boas práticas para views, navegação, sheets, formulários, controles, Dynamic Type e composição.', href: '/tutorial/plugins/ios#swiftui' },
+              { title: 'swiftui-view-refactor',    desc: 'Refatora views grandes em subviews dedicadas, MV-first, com árvore estável e Observation correto.', href: '/tutorial/plugins/ios#swiftui' },
+              { title: 'swiftui-liquid-glass',     desc: 'Implementa e revisa o Liquid Glass do iOS 26+ com containers, shapes consistentes e fallbacks.', href: '/tutorial/plugins/ios#swiftui' },
+              { title: 'evenbetter-ios-analyze',   desc: 'Analisa um projeto SwiftUI contra HIG e WCAG 2.2 e grava um relatório JSON em .evenbetter/.', href: '/tutorial/plugins/ios#auditoria' },
+              { title: 'evenbetter-validate',      desc: 'Faz uma segunda passada nas violações de severidade alta para filtrar falsos positivos.', href: '/tutorial/plugins/ios#auditoria' },
+              { title: 'evenbetter-fix',           desc: 'Orquestra a remediação a partir dos relatórios, prioriza correções e atualiza o estado do manifesto.', href: '/tutorial/plugins/ios#auditoria' },
+              { title: 'swiftui-performance-audit', desc: 'Diagnostica scrolling travado, hangs, picos de CPU e re-renderizações excessivas em SwiftUI.', href: '/tutorial/plugins/ios#performance' },
+              { title: 'swiftui-accessibility',    desc: 'Skill de referência: carrega cláusulas canônicas de acessibilidade do corpus Apple HIG e WCAG.', href: '/tutorial/plugins/ios#performance' },
+              { title: 'ios-app-intents',          desc: 'Desenha e implementa App Intents, AppEntity e App Shortcuts para Siri, Spotlight, widgets e controles.', href: '/tutorial/plugins/ios#sistema' },
+              { title: 'ios-debugger-agent',       desc: 'Usa o XcodeBuildMCP para compilar, rodar e inspecionar o app em um simulador iOS conectado.', href: '/tutorial/plugins/ios#sistema' },
+            ].map((skill) => (
+              <Link key={skill.title} href={skill.href} className="eb-skill-card">
                 <h4>{skill.title}</h4>
                 <p>{skill.desc}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
