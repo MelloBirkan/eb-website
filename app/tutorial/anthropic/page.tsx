@@ -65,7 +65,7 @@ function StepCliMarketplace() {
         </div>
       </div>
       <Callout kind="tip" title="O que é um marketplace?">
-        É um repositório GitHub com um catálogo de plugins. Adicionar o marketplace não instala nada ainda —
+        É um repositório GitHub com um catálogo de plugins. Adicionar o marketplace não instala nada ainda,
         ele apenas registra o catálogo para que você possa descobrir e instalar plugins.
       </Callout>
     </>
@@ -123,7 +123,7 @@ function StepDesktopCustomize() {
     {
       img: '/tutorial/claude-code/cc-customize-2-home.png',
       alt: 'Tela Personalizar o Claude',
-      caption: <>A tela <em>Personalizar o Claude</em> aparece — clique no <strong>+</strong> ao lado de Plugins pessoais</>,
+      caption: <>A tela <em>Personalizar o Claude</em> aparece, clique no <strong>+</strong> ao lado de Plugins pessoais</>,
       hl: { x: '15%', y: '26%', w: '6%', h: '6%' },
     },
     {
@@ -193,7 +193,7 @@ function StepDesktopDiretorio() {
         </div>
       </div>
       <Callout kind="note" title="Feche e reabra o Claude Code">
-        Após instalar, feche o Claude Code completamente e abra novamente — as skills só aparecem depois de reiniciar o app.
+        Após instalar, feche o Claude Code completamente e abra novamente, as skills só aparecem depois de reiniciar o app.
       </Callout>
       <Callout kind="tip" title="Não achou na aba Código?">
         Use o campo <em>Pesquisar plugins</em> no topo do Diretório e digite <code>evenbetter</code>.
@@ -213,7 +213,7 @@ function StepDesktopChamar() {
       <div className="eb-step-img-item">
         <div className="eb-step-img-caption">
           <span className="eb-step-img-num">01</span>
-          <span>Digite <strong>/</strong> no chat — as skills EvenBetter aparecem no autocomplete</span>
+          <span>Digite <strong>/</strong> no chat, as skills EvenBetter aparecem no autocomplete</span>
         </div>
         <div className="eb-step-img-wrap">
           <img src="/tutorial/claude-code/cc-diretorio-skills.png" alt="Skills evenbetter disponíveis no autocomplete do Claude Code" />
@@ -222,7 +222,7 @@ function StepDesktopChamar() {
       <div className="eb-step-img-item">
         <div className="eb-step-img-caption">
           <span className="eb-step-img-num">02</span>
-          <span>Selecione a skill desejada — o EvenBetter lê os arquivos do projeto automaticamente</span>
+          <span>Selecione a skill desejada, o EvenBetter lê os arquivos do projeto automaticamente</span>
         </div>
       </div>
       <Callout kind="tip" title="Qual skill escolher?">

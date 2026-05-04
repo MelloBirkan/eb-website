@@ -174,7 +174,7 @@ export default function Home() {
             {[
               { title: 'Accessibility Labels', desc: 'Verifica se todos os elementos interativos possuem accessibilityLabel descritivo para leitura correta pelo VoiceOver.' },
               { title: 'Dynamic Type', desc: 'Avalia se os textos do app respeitam as preferências de tamanho do usuário via UIFontMetrics e .scaledFont.' },
-              { title: 'Tap Target Size', desc: 'Identifica elementos tocáveis menores que 44×44 pt — o limite mínimo recomendado pelas Human Interface Guidelines.' },
+              { title: 'Tap Target Size', desc: 'Identifica elementos tocáveis menores que 44×44 pt, o limite mínimo recomendado pelas Human Interface Guidelines.' },
               { title: 'Contraste de Cores', desc: 'Verifica se as combinações de cor do projeto atingem os níveis WCAG AA e AAA para texto e controles interativos.' },
               { title: 'VoiceOver Navigation', desc: 'Avalia o fluxo de foco do VoiceOver e detecta elementos que bloqueiam ou perdem o estado de foco na interface.' },
               { title: 'Accessibility Traits', desc: 'Checa se botões, cabeçalhos e links possuem os accessibilityTraits corretos declarados para tecnologias assistivas.' },
