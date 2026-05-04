@@ -65,7 +65,7 @@ function StepCliMarketplace() {
         </div>
       </div>
       <Callout kind="tip" title="O que é um marketplace?">
-        É um repositório GitHub com um catálogo de plugins. Adicionar o marketplace não instala nada ainda —
+        É um repositório GitHub com um catálogo de plugins. Adicionar o marketplace não instala nada ainda,
         ele apenas registra o catálogo para que você possa descobrir e instalar plugins.
       </Callout>
     </>
@@ -123,7 +123,7 @@ function StepDesktopCustomize() {
     {
       img: '/tutorial/claude-code/cc-customize-2-home.png',
       alt: 'Tela Personalizar o Claude',
-      caption: <>A tela <em>Personalizar o Claude</em> aparece — clique no <strong>+</strong> ao lado de Plugins pessoais</>,
+      caption: <>A tela <em>Personalizar o Claude</em> aparece, clique no <strong>+</strong> ao lado de Plugins pessoais</>,
       hl: { x: '15%', y: '26%', w: '6%', h: '6%' },
     },
     {
@@ -153,7 +153,7 @@ function StepDesktopCustomize() {
       <p className="eb-lede">
         No app do Claude, abra o menu <strong>Customize</strong> para registrar o marketplace pela interface gráfica.
       </p>
-      <div className="eb-step-img-grid">
+      <div className="eb-step-img-grid eb-step-img-grid--sm">
         {steps.map((s, i) => (
           <div key={i} className="eb-step-img-item">
             <div className="eb-step-img-wrap">
@@ -184,30 +184,61 @@ function StepDesktopDiretorio() {
       <Crumbs last="DIRETÓRIO" />
       <h1>Instale pelo <span className="eb-accent">Diretório</span></h1>
       <p className="eb-lede">
-        Após sincronizar, o Diretório de plugins do Claude Code abre automaticamente. Encontre o EvenBetter iOS e instale.
+        Após sincronizar, o Diretório abre. Vá até a aba <strong>Código</strong>,
+        localize o card <code>evenbetter-ios</code> e clique no <strong>+</strong> para instalar.
       </p>
-
-      <ul>
-        <li>Na barra superior do Diretório, clique na aba <strong>Código</strong> para ver os marketplaces customizados.</li>
-        <li>Localize o card <code>evenbetter-ios</code> e clique no <strong>+</strong> dele.</li>
-        <li>Escolha o escopo da instalação (projeto atual ou usuário).</li>
-        <li>Confirme a instalação. As skills <code>evenbetter-ios-feature</code> e <code>swiftui-ui-patterns</code> ficam disponíveis.</li>
-        <li>Feche o Diretório clicando no <strong>×</strong> no canto superior direito.</li>
-      </ul>
-
-      <Callout kind="tip" title="Não achou na aba Código?">
-        Use o campo <em>Pesquisar plugins</em> no topo do Diretório e digite <code>evenbetter</code>. O card aparece direto.
+      <div className="eb-step-img-item">
+        <div className="eb-step-img-wrap">
+          <img src="/tutorial/claude-code/cc-diretorio-install.gif" alt="Instalando evenbetter-ios pelo Diretório do Claude Code" style={{ borderRadius: '12px' }} />
+        </div>
+      </div>
+      <Callout kind="note" title="Feche e reabra o Claude Code">
+        Após instalar, feche o Claude Code completamente e abra novamente, as skills só aparecem depois de reiniciar o app.
       </Callout>
-
-      <Callout kind="note" title="Alternativa: instalar pelo chat">
-        Se preferir não usar o Diretório, abra uma conversa e rode{' '}
-        <code>/plugin install evenbetter-ios@evenbetter</code>. Funciona igual.
+      <Callout kind="tip" title="Não achou na aba Código?">
+        Use o campo <em>Pesquisar plugins</em> no topo do Diretório e digite <code>evenbetter</code>.
       </Callout>
     </>
   )
 }
 
-/* ─── Shared step (used by both modes) ─── */
+function StepDesktopChamar() {
+  return (
+    <>
+      <Crumbs last="USAR" />
+      <h1>Abra o projeto e <span className="eb-accent">use</span></h1>
+      <p className="eb-lede">
+        Com o Claude Code reaberto, abra o projeto iOS desejado. Digite <code>/</code> no chat e escolha a skill do EvenBetter.
+      </p>
+      <div className="eb-step-img-item">
+        <div className="eb-step-img-caption">
+          <span className="eb-step-img-num">01</span>
+          <span>Digite <strong>/</strong> no chat, as skills EvenBetter aparecem no autocomplete</span>
+        </div>
+        <div className="eb-step-img-wrap">
+          <img src="/tutorial/claude-code/cc-diretorio-skills.png" alt="Skills evenbetter disponíveis no autocomplete do Claude Code" />
+        </div>
+      </div>
+      <div className="eb-step-img-item">
+        <div className="eb-step-img-caption">
+          <span className="eb-step-img-num">02</span>
+          <span>Selecione a skill desejada, o EvenBetter lê os arquivos do projeto automaticamente</span>
+        </div>
+      </div>
+      <Callout kind="tip" title="Qual skill escolher?">
+        Explore o que cada uma oferece.{' '}
+        <Link href="/#skills" style={{ color: 'var(--eb-teal)', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+          Ver todas →
+        </Link>
+      </Callout>
+      <Callout kind="note" title="Sem necessidade de copiar código">
+        A skill lê os arquivos do projeto automaticamente. Basta selecionar e aguardar o relatório.
+      </Callout>
+    </>
+  )
+}
+
+/* ─── Shared step (CLI) ─── */
 
 function StepChamar() {
   return (
@@ -288,7 +319,7 @@ export default function TutorialAnthropicPage() {
     } else {
       if (desktopStep === 'customize') return <StepDesktopCustomize />
       if (desktopStep === 'diretorio') return <StepDesktopDiretorio />
-      if (desktopStep === 'chamar')    return <StepChamar />
+      if (desktopStep === 'chamar')    return <StepDesktopChamar />
     }
     return null
   }

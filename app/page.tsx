@@ -157,7 +157,7 @@ export default function Home() {
           <div className="eb-section-head">
             <h2>POR ONDE COMEÇAR</h2>
           </div>
-          <p className="eb-section-sub">Instale o EvenBetter no seu agente de terminal — ou pule direto para o guia dos plugins.</p>
+          <p className="eb-section-sub">Instale o EvenBetter no seu agente de terminal, ou pule direto para o guia dos plugins.</p>
           <div className="eb-providers" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
             <Link href="/tutorial/codex" className="eb-provider">
               <div className="eb-provider-illo"><AgentIllo kind="codex" /></div>
@@ -184,7 +184,7 @@ export default function Home() {
         </div>
 
         {/* Skills */}
-        <div className="eb-skills-section">
+        <div id="skills" className="eb-skills-section">
           <div className="eb-section-head">
             <h2>CONHEÇA AS SKILLS</h2>
           </div>

@@ -55,7 +55,7 @@ function StepMarketplace() {
         </div>
       </div>
       <Callout kind="tip" title="O que é um marketplace?">
-        É um repositório GitHub com um catálogo de plugins. Adicionar o marketplace não instala nada ainda —
+        É um repositório GitHub com um catálogo de plugins. Adicionar o marketplace não instala nada ainda,
         ele apenas registra o catálogo para que você possa descobrir e instalar plugins.
       </Callout>
     </>
@@ -101,7 +101,7 @@ function StepInstalar() {
               <div className="eb-chat-title">Plugin browser</div>
               <div className="eb-chat-lines">
                 <div><span className="eb-chat-ok">→</span> Marketplace: evenbetter</div>
-                <div><span className="eb-chat-ok">→</span> evenbetter-ios — <em>Install plugin</em></div>
+                <div><span className="eb-chat-ok">→</span> evenbetter-ios, <em>Install plugin</em></div>
               </div>
             </div>
           </div>

@@ -135,7 +135,7 @@ function StepVisaoGeral() {
       <Crumbs last="VISÃO GERAL" />
       <h1 id="visao-geral">O plugin <span className="eb-accent">EvenBetter iOS</span></h1>
       <p className="eb-lede">
-        Doze skills coordenadas para planejar, implementar, auditar e remediar produtos iOS em SwiftUI —
+        Doze skills coordenadas para planejar, implementar, auditar e remediar produtos iOS em SwiftUI,
         com Apple HIG, WCAG 2.2 e o ecossistema da Apple sempre como fonte de verdade. Cada skill é uma fase
         do trabalho. Você invoca uma de cada vez, na ordem que faz sentido para o que está fazendo.
       </p>
@@ -154,7 +154,7 @@ function StepVisaoGeral() {
       <h2 style={{ marginTop: '2rem' }}>Como invocar uma skill</h2>
       <p>
         A única coisa que muda entre agentes é a sintaxe da invocação. Onde isso importa, mostramos os dois
-        exemplos no mesmo bloco. No restante do guia, exemplos seguem a forma do Claude Code — basta trocar{' '}
+        exemplos no mesmo bloco. No restante do guia, exemplos seguem a forma do Claude Code, basta trocar{' '}
         <code>/evenbetter-ios:&lt;skill&gt;</code> por <code>@&lt;skill&gt;</code> se você estiver no Codex.
       </p>
       <CodeBlock
@@ -188,7 +188,7 @@ function StepPlanejamentoUX() {
       <h1 id="planejamento-ux">Planejamento de <span className="eb-accent">UX</span></h1>
       <p className="eb-lede">
         Antes de escrever uma linha de SwiftUI, defina o problema. Estas duas skills conduzem entrevistas
-        de múltipla escolha em estágios — do brief inicial até os tickets executáveis — e gravam tudo
+        de múltipla escolha em estágios, do brief inicial até os tickets executáveis, e gravam tudo
         dentro de <code>.evenbetter/&lt;nome&gt;/</code> no seu projeto.
       </p>
 
@@ -225,7 +225,7 @@ function StepPlanejamentoUX() {
       </Callout>
 
       <Callout kind="note" title="Artefatos versionáveis">
-        Tudo que as skills geram fica em <code>.evenbetter/&lt;feature&gt;/</code> — incluindo o plano,
+        Tudo que as skills geram fica em <code>.evenbetter/&lt;feature&gt;/</code>, incluindo o plano,
         os tickets em <code>tickets/UX-TICKET-NNN.md</code> e a revisão final. Comite essa pasta
         para manter o histórico de decisões junto do código.
       </Callout>
@@ -270,7 +270,7 @@ function StepSwiftUI() {
         responseLines={[
           'Extraídas 4 subviews dedicadas: HeaderSection, FilterSection, ResultsSection, FooterSection',
           'Movidas 3 ações inline para métodos privados',
-          'Removido swap de root condicional — condição movida para .toolbar',
+          'Removido swap de root condicional, condição movida para .toolbar',
           'Body reduzido de 312 para 47 linhas',
         ]}
       />
@@ -370,7 +370,7 @@ function StepAuditoria() {
       <Callout kind="warn" title="O analyzer nunca modifica seu código">
         As três skills só escrevem dentro de <code>.evenbetter/</code>. O <code>analyze</code> e o{' '}
         <code>validate</code> são totalmente read-only no seu source. Apenas o <code>fix</code> edita arquivos
-        do projeto — e mesmo assim só depois da rodada de escopo confirmada.
+        do projeto, e mesmo assim só depois da rodada de escopo confirmada.
       </Callout>
 
       <Callout kind="tip" title="Re-rodar a análise é grátis">
@@ -456,7 +456,7 @@ function StepSistema() {
       <Crumbs last="SISTEMA" />
       <h1 id="sistema">Integração com <span className="eb-accent">o sistema</span></h1>
       <p className="eb-lede">
-        Por último, duas skills que conectam seu app com o resto do iOS — Siri, Spotlight, widgets, controles
+        Por último, duas skills que conectam seu app com o resto do iOS: Siri, Spotlight, widgets, controles
         e o simulador.
       </p>
 
@@ -464,7 +464,7 @@ function StepSistema() {
       <p>
         Desenha e implementa App Intents, <code>AppEntity</code>, <code>EntityQuery</code> e App Shortcuts.
         A skill começa pelos verbos de maior valor (compor, abrir, encontrar, filtrar, continuar...) e mantém
-        a superfície enxuta — não espelha a árvore inteira de telas como intents. Decide caso a caso se
+        a superfície enxuta, não espelha a árvore inteira de telas como intents. Decide caso a caso se
         a ação completa <em>inline</em> ou abre o app via <code>openAppWhenRun</code>, e gera o{' '}
         <code>AppShortcutsProvider</code> para descoberta no Shortcuts e no Spotlight.
       </p>
@@ -477,7 +477,7 @@ function StepSistema() {
         responseLines={[
           'Intent inline: CreateTaskIntent (parâmetro: title, dueDate?)',
           'Entity: TaskEntity (id, title, dueDate, isCompleted)',
-          'Query: TaskQuery — sugere últimas 10 tarefas',
+          'Query: TaskQuery, sugere últimas 10 tarefas',
           'AppShortcutsProvider: frase "Criar tarefa <title>"',
         ]}
       />
@@ -494,7 +494,7 @@ function StepSistema() {
       <Callout kind="note" title="Requer XcodeBuildMCP">
         Esta é a única skill com dependência externa: o servidor MCP{' '}
         <code>XcodeBuildMCP</code> precisa estar configurado no seu agente. Sem ele, a skill avisa
-        e para — não tenta usar fallbacks.
+        e para, não tenta usar fallbacks.
       </Callout>
 
       <Callout kind="tip" title="Combine com outras skills">
