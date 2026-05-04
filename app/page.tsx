@@ -166,7 +166,7 @@ export default function Home() {
         </div>
 
         {/* Skills */}
-        <div className="eb-skills-section">
+        <div id="skills" className="eb-skills-section">
           <div className="eb-section-head">
             <h2>CONHEÇA AS SKILLS</h2>
           </div>
