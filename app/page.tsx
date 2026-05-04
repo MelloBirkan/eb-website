@@ -92,7 +92,7 @@ function Nav() {
         <div className="eb-nav-links">
           <Link href="/" className="eb-nav-link active">Início</Link>
           <Link href="/#escolha-seu-agente" className="eb-nav-link">Guias</Link>
-          <Link href="/about-03" className="eb-nav-link">Sobre</Link>
+          <Link href="/about" className="eb-nav-link">Sobre</Link>
         </div>
         <div className="eb-nav-spacer" />
       </nav>
