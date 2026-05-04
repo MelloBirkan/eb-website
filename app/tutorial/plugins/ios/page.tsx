@@ -100,9 +100,9 @@ const SKILL_GROUPS: { title: string; skills: { name: string; desc: string }[] }[
   {
     title: 'Padrões SwiftUI',
     skills: [
-      { name: 'swiftui-ui-patterns',   desc: 'Boas práticas para views, navegação, sheets, formulários, controles, Dynamic Type e composição.' },
-      { name: 'swiftui-view-refactor', desc: 'Refatora views grandes em subviews dedicadas, MV-first, com árvore estável e Observation correto.' },
-      { name: 'swiftui-liquid-glass',  desc: 'Implementa e revisa o Liquid Glass do iOS 26+ com containers, shapes consistentes e fallbacks.' },
+      { name: 'evenbetter-swiftui-ui-patterns',   desc: 'Boas práticas para views, navegação, sheets, formulários, controles, Dynamic Type e composição.' },
+      { name: 'evenbetter-swiftui-view-refactor', desc: 'Refatora views grandes em subviews dedicadas, MV-first, com árvore estável e Observation correto.' },
+      { name: 'evenbetter-swiftui-liquid-glass',  desc: 'Implementa e revisa o Liquid Glass do iOS 26+ com containers, shapes consistentes e fallbacks.' },
     ],
   },
   {
@@ -116,15 +116,15 @@ const SKILL_GROUPS: { title: string; skills: { name: string; desc: string }[] }[
   {
     title: 'Performance e acessibilidade',
     skills: [
-      { name: 'swiftui-performance-audit', desc: 'Diagnostica scrolling travado, hangs, picos de CPU e re-renderizações excessivas em SwiftUI.' },
-      { name: 'swiftui-accessibility',     desc: 'Skill de referência: carrega cláusulas canônicas de acessibilidade do corpus Apple HIG e WCAG.' },
+      { name: 'evenbetter-swiftui-performance-audit', desc: 'Diagnostica scrolling travado, hangs, picos de CPU e re-renderizações excessivas em SwiftUI.' },
+      { name: 'evenbetter-swiftui-accessibility',     desc: 'Skill de referência: carrega cláusulas canônicas de acessibilidade do corpus Apple HIG e WCAG.' },
     ],
   },
   {
     title: 'Integração com sistema',
     skills: [
-      { name: 'ios-app-intents',    desc: 'Desenha e implementa App Intents, AppEntity e App Shortcuts para Siri, Spotlight, widgets e controles.' },
-      { name: 'ios-debugger-agent', desc: 'Usa o XcodeBuildMCP para compilar, rodar e inspecionar o app em um simulador iOS conectado.' },
+      { name: 'evenbetter-ios-app-intents',    desc: 'Desenha e implementa App Intents, AppEntity e App Shortcuts para Siri, Spotlight, widgets e controles.' },
+      { name: 'evenbetter-ios-debugger-agent', desc: 'Usa o XcodeBuildMCP para compilar, rodar e inspecionar o app em um simulador iOS conectado.' },
     ],
   },
 ]
@@ -245,26 +245,26 @@ function StepSwiftUI() {
         uma view que ficou grande, ou para adotar APIs novas do iOS 26+.
       </p>
 
-      <h2>swiftui-ui-patterns</h2>
+      <h2>evenbetter-swiftui-ui-patterns</h2>
       <p>
         Catálogo de padrões com mais de 35 referências de componentes. Cobre <code>NavigationStack</code>,
         sheets enum-driven, async/await com <code>.task</code>, <code>TabView</code>, formulários, deep links,
         Dynamic Type, theming e o resumo de quando usar cada wrapper de estado
         (<code>@State</code>, <code>@Binding</code>, <code>@Environment</code>, <code>@Observable</code>).
       </p>
-      <Invocation skill="swiftui-ui-patterns" />
+      <Invocation skill="evenbetter-swiftui-ui-patterns" />
 
-      <h2 style={{ marginTop: '2.25rem' }}>swiftui-view-refactor</h2>
+      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-swiftui-view-refactor</h2>
       <p>
         Refatora views grandes para subviews dedicadas (em vez de muitos <code>private var ...: some View</code>),
         com a árvore estável (sem swap de root via <code>if/else</code>), ações tiradas do <code>body</code>,
         <strong> MV-first</strong> em vez de MVVM e ordenação consistente do arquivo. Quando uma view passa de
         ~300 linhas, é o momento de chamar essa skill.
       </p>
-      <Invocation skill="swiftui-view-refactor" />
+      <Invocation skill="evenbetter-swiftui-view-refactor" />
 
       <ChatMock
-        skill="swiftui-view-refactor"
+        skill="evenbetter-swiftui-view-refactor"
         args="refatore SettingsView.swift"
         responseTitle="Plano de refatoração"
         responseLines={[
@@ -275,14 +275,14 @@ function StepSwiftUI() {
         ]}
       />
 
-      <h2 style={{ marginTop: '2.25rem' }}>swiftui-liquid-glass</h2>
+      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-swiftui-liquid-glass</h2>
       <p>
         Implementa e revisa o Liquid Glass do iOS 26+ usando as APIs nativas: <code>.glassEffect()</code>,
         <code> GlassEffectContainer</code>, <code>.buttonStyle(.glass)</code> e <code>.buttonStyle(.glassProminent)</code>.
         A skill cuida da ordem dos modificadores, agrupa elementos no container, define <code>glassEffectID</code>
         para morphing e adiciona o <code>#available(iOS 26, *)</code> com fallback para versões anteriores.
       </p>
-      <Invocation skill="swiftui-liquid-glass" />
+      <Invocation skill="evenbetter-swiftui-liquid-glass" />
 
       <Callout kind="warn" title="Requer iOS 26 ou superior">
         Liquid Glass é exclusivo do iOS 26+. A skill sempre adiciona o gate{' '}
@@ -403,7 +403,7 @@ function StepPerformance() {
         a outra é uma referência de regras canônicas que você consulta sob demanda.
       </p>
 
-      <h2>swiftui-performance-audit</h2>
+      <h2>evenbetter-swiftui-performance-audit</h2>
       <p>
         Começa pelo sintoma e classifica em uma destas seis categorias antes de pedir código ou trace
         de Instruments:
@@ -417,10 +417,10 @@ function StepPerformance() {
         <code>body</code>, layout thrash com <code>GeometryReader</code> e decode de imagem na main thread.
         Quando o código sozinho não basta, ela orienta a captura no Instruments.
       </p>
-      <Invocation skill="swiftui-performance-audit" />
+      <Invocation skill="evenbetter-swiftui-performance-audit" />
 
       <ChatMock
-        skill="swiftui-performance-audit"
+        skill="evenbetter-swiftui-performance-audit"
         args="ProductListView trava ao rolar com 200 itens"
         responseTitle="Diagnóstico inicial"
         responseLines={[
@@ -431,18 +431,18 @@ function StepPerformance() {
         ]}
       />
 
-      <h2 style={{ marginTop: '2.25rem' }}>swiftui-accessibility</h2>
+      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-swiftui-accessibility</h2>
       <p>
         Skill de <em>referência</em>: não roda análise nem refatora, ela carrega as cláusulas canônicas
         de acessibilidade do corpus EvenBetter (HIG da Apple + WCAG 2.2). Use quando precisar saber se um
         comportamento específico é exigido, ou para conferir o conteúdo exato de regras como{' '}
         <code>A11Y-UI-001</code> ou <code>A11Y-UX-001</code>.
       </p>
-      <Invocation skill="swiftui-accessibility" args="qual o tamanho mínimo de toque pelo HIG?" />
+      <Invocation skill="evenbetter-swiftui-accessibility" args="qual o tamanho mínimo de toque pelo HIG?" />
 
       <Callout kind="note" title="A skill empresta regras pro analyzer">
         O <code>evenbetter-ios-analyze</code> usa o mesmo corpus. Se você quer entender por que uma violação
-        existe, perguntar pra <code>swiftui-accessibility</code> é o caminho mais curto pra cláusula original.
+        existe, perguntar pra <code>evenbetter-swiftui-accessibility</code> é o caminho mais curto pra cláusula original.
       </Callout>
     </>
   )
@@ -460,7 +460,7 @@ function StepSistema() {
         e o simulador.
       </p>
 
-      <h2>ios-app-intents</h2>
+      <h2>evenbetter-ios-app-intents</h2>
       <p>
         Desenha e implementa App Intents, <code>AppEntity</code>, <code>EntityQuery</code> e App Shortcuts.
         A skill começa pelos verbos de maior valor (compor, abrir, encontrar, filtrar, continuar...) e mantém
@@ -468,10 +468,10 @@ function StepSistema() {
         a ação completa <em>inline</em> ou abre o app via <code>openAppWhenRun</code>, e gera o{' '}
         <code>AppShortcutsProvider</code> para descoberta no Shortcuts e no Spotlight.
       </p>
-      <Invocation skill="ios-app-intents" />
+      <Invocation skill="evenbetter-ios-app-intents" />
 
       <ChatMock
-        skill="ios-app-intents"
+        skill="evenbetter-ios-app-intents"
         args="quero expor 'criar tarefa' pra Siri e Shortcuts"
         responseTitle="Plano de intents"
         responseLines={[
@@ -482,14 +482,14 @@ function StepSistema() {
         ]}
       />
 
-      <h2 style={{ marginTop: '2.25rem' }}>ios-debugger-agent</h2>
+      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-ios-debugger-agent</h2>
       <p>
         Controla o simulador via <strong>XcodeBuildMCP</strong>: descobre o simulador <em>booted</em>, configura
         defaults da sessão (projeto, scheme, simulatorId), buildea, lança o app, captura screenshots, descreve
         a hierarquia de UI, simula taps e gestos e captura logs com <code>start_sim_log_cap</code>. É a skill
         que fecha o ciclo entre código e comportamento real.
       </p>
-      <Invocation skill="ios-debugger-agent" args="rode o app no simulador booted e tire screenshot" />
+      <Invocation skill="evenbetter-ios-debugger-agent" args="rode o app no simulador booted e tire screenshot" />
 
       <Callout kind="note" title="Requer XcodeBuildMCP">
         Esta é a única skill com dependência externa: o servidor MCP{' '}
@@ -498,7 +498,7 @@ function StepSistema() {
       </Callout>
 
       <Callout kind="tip" title="Combine com outras skills">
-        Depois de uma feature pronta, encadear <code>ios-debugger-agent</code> →{' '}
+        Depois de uma feature pronta, encadear <code>evenbetter-ios-debugger-agent</code> →{' '}
         <code>evenbetter-ios-feature</code> no estágio <code>5-ux-implementation-review</code> dá uma revisão
         com screenshots reais do simulador comparados ao plano original.
       </Callout>

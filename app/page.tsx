@@ -193,16 +193,16 @@ export default function Home() {
             {[
               { title: 'evenbetter-ios-feature',   desc: 'Workflow em estágios para uma única tela: brief, plano, validação, tickets, execução e revisão.', href: '/tutorial/plugins/ios#planejamento-ux' },
               { title: 'evenbetter-ios-epic',      desc: 'Workflow para apps ou épicos multi-tela com brief, fluxos, plano técnico HIG e validação de arquitetura.', href: '/tutorial/plugins/ios#planejamento-ux' },
-              { title: 'swiftui-ui-patterns',      desc: 'Boas práticas para views, navegação, sheets, formulários, controles, Dynamic Type e composição.', href: '/tutorial/plugins/ios#swiftui' },
-              { title: 'swiftui-view-refactor',    desc: 'Refatora views grandes em subviews dedicadas, MV-first, com árvore estável e Observation correto.', href: '/tutorial/plugins/ios#swiftui' },
-              { title: 'swiftui-liquid-glass',     desc: 'Implementa e revisa o Liquid Glass do iOS 26+ com containers, shapes consistentes e fallbacks.', href: '/tutorial/plugins/ios#swiftui' },
+              { title: 'evenbetter-swiftui-ui-patterns',      desc: 'Boas práticas para views, navegação, sheets, formulários, controles, Dynamic Type e composição.', href: '/tutorial/plugins/ios#swiftui' },
+              { title: 'evenbetter-swiftui-view-refactor',    desc: 'Refatora views grandes em subviews dedicadas, MV-first, com árvore estável e Observation correto.', href: '/tutorial/plugins/ios#swiftui' },
+              { title: 'evenbetter-swiftui-liquid-glass',     desc: 'Implementa e revisa o Liquid Glass do iOS 26+ com containers, shapes consistentes e fallbacks.', href: '/tutorial/plugins/ios#swiftui' },
               { title: 'evenbetter-ios-analyze',   desc: 'Analisa um projeto SwiftUI contra HIG e WCAG 2.2 e grava um relatório JSON em .evenbetter/.', href: '/tutorial/plugins/ios#auditoria' },
               { title: 'evenbetter-validate',      desc: 'Faz uma segunda passada nas violações de severidade alta para filtrar falsos positivos.', href: '/tutorial/plugins/ios#auditoria' },
               { title: 'evenbetter-fix',           desc: 'Orquestra a remediação a partir dos relatórios, prioriza correções e atualiza o estado do manifesto.', href: '/tutorial/plugins/ios#auditoria' },
-              { title: 'swiftui-performance-audit', desc: 'Diagnostica scrolling travado, hangs, picos de CPU e re-renderizações excessivas em SwiftUI.', href: '/tutorial/plugins/ios#performance' },
-              { title: 'swiftui-accessibility',    desc: 'Skill de referência: carrega cláusulas canônicas de acessibilidade do corpus Apple HIG e WCAG.', href: '/tutorial/plugins/ios#performance' },
-              { title: 'ios-app-intents',          desc: 'Desenha e implementa App Intents, AppEntity e App Shortcuts para Siri, Spotlight, widgets e controles.', href: '/tutorial/plugins/ios#sistema' },
-              { title: 'ios-debugger-agent',       desc: 'Usa o XcodeBuildMCP para compilar, rodar e inspecionar o app em um simulador iOS conectado.', href: '/tutorial/plugins/ios#sistema' },
+              { title: 'evenbetter-swiftui-performance-audit', desc: 'Diagnostica scrolling travado, hangs, picos de CPU e re-renderizações excessivas em SwiftUI.', href: '/tutorial/plugins/ios#performance' },
+              { title: 'evenbetter-swiftui-accessibility',    desc: 'Skill de referência: carrega cláusulas canônicas de acessibilidade do corpus Apple HIG e WCAG.', href: '/tutorial/plugins/ios#performance' },
+              { title: 'evenbetter-ios-app-intents',          desc: 'Desenha e implementa App Intents, AppEntity e App Shortcuts para Siri, Spotlight, widgets e controles.', href: '/tutorial/plugins/ios#sistema' },
+              { title: 'evenbetter-ios-debugger-agent',       desc: 'Usa o XcodeBuildMCP para compilar, rodar e inspecionar o app em um simulador iOS conectado.', href: '/tutorial/plugins/ios#sistema' },
             ].map((skill) => (
               <Link key={skill.title} href={skill.href} className="eb-skill-card">
                 <h4>{skill.title}</h4>

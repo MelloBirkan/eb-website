@@ -96,7 +96,7 @@ function StepCliInstalar() {
               <div className="eb-chat-title">Plugin instalado: evenbetter-ios</div>
               <div className="eb-chat-lines">
                 <div><span className="eb-chat-ok">✓</span> evenbetter-ios:evenbetter-ios-feature</div>
-                <div><span className="eb-chat-ok">✓</span> evenbetter-ios:swiftui-ui-patterns</div>
+                <div><span className="eb-chat-ok">✓</span> evenbetter-ios:evenbetter-swiftui-ui-patterns</div>
               </div>
             </div>
           </div>
