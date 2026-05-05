@@ -5,19 +5,23 @@ import Link from 'next/link'
 import { TutorialNav, CodeBlock, Callout, Icon, SegmentedControl } from '../../_components/tutorial-primitives'
 
 type Mode = 'cli' | 'desktop'
-type CliStepId = 'marketplace' | 'instalar' | 'chamar'
-type DesktopStepId = 'customize' | 'diretorio' | 'chamar'
+type CliStepId = 'marketplace' | 'instalar' | 'chamar' | 'atualizar' | 'desinstalar'
+type DesktopStepId = 'customize' | 'diretorio' | 'chamar' | 'atualizar' | 'desinstalar'
 
 const STEPS_CLI: { id: CliStepId; title: string }[] = [
   { id: 'marketplace', title: 'Adicionar marketplace' },
   { id: 'instalar',    title: 'Instalar o plugin' },
   { id: 'chamar',      title: 'Recarregar e usar' },
+  { id: 'atualizar',   title: 'Atualizar e auto-update' },
+  { id: 'desinstalar', title: 'Desinstalar o plugin' },
 ]
 
 const STEPS_DESKTOP: { id: DesktopStepId; title: string }[] = [
-  { id: 'customize', title: 'Adicionar pelo Customize' },
-  { id: 'diretorio', title: 'Instalar pelo Diretório' },
-  { id: 'chamar',    title: 'Recarregar e usar' },
+  { id: 'customize',   title: 'Adicionar pelo Customize' },
+  { id: 'diretorio',   title: 'Instalar pelo Diretório' },
+  { id: 'chamar',      title: 'Recarregar e usar' },
+  { id: 'atualizar',   title: 'Atualizar e auto-update' },
+  { id: 'desinstalar', title: 'Desinstalar o plugin' },
 ]
 
 function Crumbs({ last }: { last: string }) {
@@ -105,6 +109,18 @@ function StepCliInstalar() {
       <Callout kind="note" title="Sintaxe nome@marketplace">
         O sufixo <code>@evenbetter</code> identifica o marketplace de origem. Sem ele, o Claude Code não sabe
         de onde puxar o plugin.
+      </Callout>
+
+      <h2 style={{ marginTop: '2rem' }}>Bônus: plugin <code>evenbetter-general</code></h2>
+      <p>
+        O mesmo marketplace também publica o <code>evenbetter-general</code>, com 2 skills agnósticas de
+        plataforma para planejamento de feature e épico (<code>evenbetter-general-feature</code> e{' '}
+        <code>evenbetter-general-epic</code>). Útil para projetos não-iOS, ou para combinar com o plugin iOS.
+      </p>
+      <CodeBlock lang="bash" code="/plugin install evenbetter-general@evenbetter" />
+      <Callout kind="tip" title="Pode instalar os dois">
+        Os dois plugins convivem sem conflito. As skills aparecem com namespaces diferentes:{' '}
+        <code>/evenbetter-ios:…</code> e <code>/evenbetter-general:…</code>.
       </Callout>
     </>
   )
@@ -293,6 +309,416 @@ function StepChamar() {
   )
 }
 
+/* ─── Update steps (CLI & Desktop) ─── */
+
+function StepCliAtualizar() {
+  return (
+    <>
+      <Crumbs last="ATUALIZAR" />
+      <h1>Atualize e ligue <span className="eb-accent">auto-update</span></h1>
+      <p className="eb-lede">
+        Quando o EvenBetter ganha skills novas ou correções, você pode buscar a versão mais recente sem
+        reinstalar. Faça manualmente quando quiser, ou deixe o Claude Code atualizar sozinho ao iniciar.
+      </p>
+
+      <h2>Atualizar manualmente</h2>
+      <p>
+        Três passos: <code>/plugin marketplace update</code> baixa o catálogo mais novo,{' '}
+        <code>/plugin update</code> aplica a nova versão de cada plugin instalado e{' '}
+        <code>/reload-plugins</code> recarrega na sessão atual.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={
+          '# 1. Atualizar o catálogo do marketplace\n/plugin marketplace update evenbetter\n\n' +
+          '# 2. Atualizar os plugins instalados\n/plugin update evenbetter-ios@evenbetter\n/plugin update evenbetter-general@evenbetter\n\n' +
+          '# 3. Recarregar na sessão atual\n/reload-plugins'
+        }
+      />
+      <div className="eb-chat-mock">
+        <div className="eb-chat-bar">
+          <span className="eb-chat-tag">CLAUDE CODE</span>
+        </div>
+        <div className="eb-chat-body">
+          <div className="eb-chat-user">
+            <span className="eb-chat-prompt">›</span>
+            <span className="eb-chat-cmd">/plugin marketplace update evenbetter</span>
+          </div>
+          <div className="eb-chat-response">
+            <div className="eb-chat-hex">⬡</div>
+            <div>
+              <div className="eb-chat-title">Marketplace atualizado</div>
+              <div className="eb-chat-lines">
+                <div><span className="eb-chat-ok">✓</span> Catálogo sincronizado: evenbetter</div>
+                <div><span className="eb-chat-ok">✓</span> Novas versões disponíveis para 2 plugins</div>
+              </div>
+            </div>
+          </div>
+          <div className="eb-chat-user">
+            <span className="eb-chat-prompt">›</span>
+            <span className="eb-chat-cmd">/plugin update evenbetter-ios@evenbetter</span>
+          </div>
+          <div className="eb-chat-response">
+            <div className="eb-chat-hex">⬡</div>
+            <div>
+              <div className="eb-chat-title">Plugin atualizado</div>
+              <div className="eb-chat-lines">
+                <div><span className="eb-chat-ok">✓</span> evenbetter-ios atualizado para a versão mais recente</div>
+              </div>
+            </div>
+          </div>
+          <div className="eb-chat-user">
+            <span className="eb-chat-prompt">›</span>
+            <span className="eb-chat-cmd">/reload-plugins</span>
+          </div>
+          <div className="eb-chat-response">
+            <div className="eb-chat-hex">⬡</div>
+            <div>
+              <div className="eb-chat-title">Plugins recarregados</div>
+              <div className="eb-chat-lines">
+                <div><span className="eb-chat-ok">✓</span> evenbetter-ios carregado com as skills atualizadas</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Callout kind="tip" title="Atalho">
+        <code>/plugin market update evenbetter</code> também funciona. Se omitir o nome,{' '}
+        <code>/plugin marketplace update</code> atualiza todos os marketplaces de uma vez.
+        E o <code>/plugin update</code> só é necessário para plugins que você realmente instalou,
+        rode apenas para os que aparecem no <code>/plugin list</code>.
+      </Callout>
+
+      <h2>Ligar auto-update</h2>
+      <p>
+        Marketplaces de terceiros (como o do EvenBetter) vêm com auto-update <strong>desligado</strong> por padrão.
+        Ligue manualmente para que o Claude Code busque novas versões ao iniciar.
+      </p>
+      <div className="eb-steps-frame" style={{ marginTop: '1rem' }}>
+        <div className="eb-step">
+          <div className="eb-step-num">01</div>
+          <div className="eb-step-body">
+            <h4>Abra o gerenciador</h4>
+            <p>Digite <code>/plugin</code> em qualquer sessão do Claude Code.</p>
+          </div>
+        </div>
+        <div className="eb-step">
+          <div className="eb-step-num">02</div>
+          <div className="eb-step-body">
+            <h4>Vá para a aba Marketplaces</h4>
+            <p>Use <kbd>Tab</kbd> para alternar entre as abas e selecione <strong>evenbetter</strong> na lista.</p>
+          </div>
+        </div>
+        <div className="eb-step">
+          <div className="eb-step-num">03</div>
+          <div className="eb-step-body">
+            <h4>Selecione Enable auto-update</h4>
+            <p>A partir daí, o Claude Code atualiza o marketplace e reaplica as novas versões a cada início de sessão.</p>
+          </div>
+        </div>
+      </div>
+
+      <Callout kind="note" title="Notificação ao atualizar">
+        Quando algum plugin é atualizado em segundo plano, o Claude Code mostra um aviso pedindo para você
+        rodar <code>/reload-plugins</code> e aplicar as mudanças sem reiniciar.
+      </Callout>
+
+      <h2>Variáveis de ambiente</h2>
+      <p>
+        Se você prefere controlar tudo pelo shell, duas variáveis cobrem a maioria dos casos:
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={'# Desliga auto-update do CLI E dos plugins\nexport DISABLE_AUTOUPDATER=1\n\n# Mantém só os plugins se atualizando, mesmo com o CLI travado\nexport DISABLE_AUTOUPDATER=1\nexport FORCE_AUTOUPDATE_PLUGINS=1'}
+      />
+
+      <Callout kind="warn" title="Não funciona no Codex">
+        O auto-update por marketplace é específico do Claude Code. No Codex, atualize manualmente com{' '}
+        <code>codex plugin marketplace upgrade evenbetter</code> sempre que quiser puxar novidades.
+      </Callout>
+    </>
+  )
+}
+
+function StepDesktopAtualizar() {
+  return (
+    <>
+      <Crumbs last="ATUALIZAR" />
+      <h1>Atualize e ligue <span className="eb-accent">auto-update</span></h1>
+      <p className="eb-lede">
+        Skills novas e correções chegam ao EvenBetter de tempos em tempos. Atualize quando quiser, ou
+        deixe o Claude Code atualizar sozinho ao abrir.
+      </p>
+
+      <h2>Atualizar pelo Diretório</h2>
+      <p>
+        O Diretório (mesma tela usada para instalar) também mostra quando há uma versão nova do plugin.
+      </p>
+      <div className="eb-steps-frame" style={{ marginTop: '1rem' }}>
+        <div className="eb-step">
+          <div className="eb-step-num">01</div>
+          <div className="eb-step-body">
+            <h4>Abra o Diretório</h4>
+            <p>Em <strong>Customize → Plugins pessoais</strong>, abra o card do <code>evenbetter-ios</code>.</p>
+          </div>
+        </div>
+        <div className="eb-step">
+          <div className="eb-step-num">02</div>
+          <div className="eb-step-body">
+            <h4>Procure o badge de update</h4>
+            <p>Quando há versão nova, aparece um botão <strong>Atualizar</strong>. Clique e aguarde sincronizar.</p>
+          </div>
+        </div>
+        <div className="eb-step">
+          <div className="eb-step-num">03</div>
+          <div className="eb-step-body">
+            <h4>Reabra o Claude Code</h4>
+            <p>Feche e abra o app para que as skills atualizadas apareçam no chat.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Ou pelo terminal</h2>
+      <p>
+        Se você já estiver no terminal, três comandos resolvem sem abrir a interface gráfica.
+        Eles funcionam exatamente igual à versão CLI.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={
+          '# 1. Atualizar o catálogo do marketplace\n/plugin marketplace update evenbetter\n\n' +
+          '# 2. Atualizar os plugins instalados\n/plugin update evenbetter-ios@evenbetter\n/plugin update evenbetter-general@evenbetter\n\n' +
+          '# 3. Recarregar na sessão atual\n/reload-plugins'
+        }
+      />
+
+      <h2>Ligar auto-update</h2>
+      <p>
+        Marketplaces de terceiros (como o do EvenBetter) vêm com auto-update <strong>desligado</strong> por padrão.
+        Ligue uma vez e o Claude Code passa a atualizar sozinho ao iniciar.
+      </p>
+      <div className="eb-steps-frame" style={{ marginTop: '1rem' }}>
+        <div className="eb-step">
+          <div className="eb-step-num">01</div>
+          <div className="eb-step-body">
+            <h4>Abra o gerenciador de plugins</h4>
+            <p>Digite <code>/plugin</code> em qualquer sessão e use <kbd>Tab</kbd> para chegar na aba <strong>Marketplaces</strong>.</p>
+          </div>
+        </div>
+        <div className="eb-step">
+          <div className="eb-step-num">02</div>
+          <div className="eb-step-body">
+            <h4>Selecione evenbetter</h4>
+            <p>Confirme com <kbd>Enter</kbd> e veja as opções do marketplace.</p>
+          </div>
+        </div>
+        <div className="eb-step">
+          <div className="eb-step-num">03</div>
+          <div className="eb-step-body">
+            <h4>Enable auto-update</h4>
+            <p>A partir daí, o Claude Code refaz a sincronização e atualiza as skills a cada início de sessão.</p>
+          </div>
+        </div>
+      </div>
+
+      <Callout kind="note" title="Notificação ao atualizar">
+        Quando algum plugin é atualizado em segundo plano, o Claude Code mostra um aviso pedindo para você
+        rodar <code>/reload-plugins</code> e aplicar as novidades sem reiniciar.
+      </Callout>
+
+      <Callout kind="tip" title="Auto-update do CLI inteiro">
+        Para desligar o auto-update geral (CLI e plugins), exporte <code>DISABLE_AUTOUPDATER=1</code>.
+        Para travar só o CLI mas continuar atualizando plugins, combine com <code>FORCE_AUTOUPDATE_PLUGINS=1</code>.
+      </Callout>
+    </>
+  )
+}
+
+/* ─── Uninstall steps (CLI & Desktop) ─── */
+
+function StepCliDesinstalar() {
+  return (
+    <>
+      <Crumbs last="DESINSTALAR" />
+      <h1>Desinstale o <span className="eb-accent">plugin</span></h1>
+      <p className="eb-lede">
+        Quer pausar as skills sem perder a configuração, ou remover de vez? O Claude Code separa as duas
+        coisas: <strong>desabilitar</strong> esconde as skills mas mantém o plugin no disco;{' '}
+        <strong>desinstalar</strong> apaga tudo.
+      </p>
+
+      <h2>Pausar sem desinstalar</h2>
+      <p>
+        Útil quando você quer testar como o agente se comporta sem as skills, ou liberar espaço de contexto
+        em uma sessão específica. Reativar é instantâneo.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={'# Desabilitar (mantém instalado)\n/plugin disable evenbetter-ios@evenbetter\n\n# Reabilitar quando quiser\n/plugin enable evenbetter-ios@evenbetter\n\n# Aplicar a mudança na sessão atual\n/reload-plugins'}
+      />
+      <div className="eb-chat-mock">
+        <div className="eb-chat-bar">
+          <span className="eb-chat-tag">CLAUDE CODE</span>
+        </div>
+        <div className="eb-chat-body">
+          <div className="eb-chat-user">
+            <span className="eb-chat-prompt">›</span>
+            <span className="eb-chat-cmd">/plugin disable evenbetter-ios@evenbetter</span>
+          </div>
+          <div className="eb-chat-response">
+            <div className="eb-chat-hex">⬡</div>
+            <div>
+              <div className="eb-chat-title">Plugin desabilitado</div>
+              <div className="eb-chat-lines">
+                <div><span className="eb-chat-ok">✓</span> evenbetter-ios marcado como inativo</div>
+                <div><span className="eb-chat-ok">✓</span> Rode <code>/reload-plugins</code> para aplicar agora</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Desinstalar de vez</h2>
+      <p>
+        Remove o plugin da configuração e do cache. Você ainda mantém o marketplace registrado,
+        então dá pra reinstalar com um único comando se mudar de ideia.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={'# Desinstalar o plugin\n/plugin uninstall evenbetter-ios@evenbetter\n\n# Aplicar na sessão atual\n/reload-plugins'}
+      />
+      <div className="eb-chat-mock">
+        <div className="eb-chat-bar">
+          <span className="eb-chat-tag">CLAUDE CODE</span>
+        </div>
+        <div className="eb-chat-body">
+          <div className="eb-chat-user">
+            <span className="eb-chat-prompt">›</span>
+            <span className="eb-chat-cmd">/plugin uninstall evenbetter-ios@evenbetter</span>
+          </div>
+          <div className="eb-chat-response">
+            <div className="eb-chat-hex">⬡</div>
+            <div>
+              <div className="eb-chat-title">Plugin removido</div>
+              <div className="eb-chat-lines">
+                <div><span className="eb-chat-ok">✓</span> evenbetter-ios desinstalado</div>
+                <div><span className="eb-chat-ok">✓</span> Marketplace evenbetter continua registrado</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Callout kind="tip" title="Escopo certo">
+        Se você instalou em múltiplos escopos (user, project, local), use <code>--scope</code> para
+        mirar o certo: <code>claude plugin uninstall evenbetter-ios@evenbetter --scope project</code>.
+      </Callout>
+
+      <h2>Remover o marketplace inteiro</h2>
+      <p>
+        Quando você não pretende voltar, dá para apagar também o registro do marketplace. Isso{' '}
+        <strong>desinstala automaticamente todos os plugins</strong> instalados a partir dele.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={'# Remove o marketplace E todos os plugins instalados a partir dele\n/plugin marketplace remove evenbetter'}
+      />
+
+      <Callout kind="warn" title="Skills ainda aparecem no autocomplete?">
+        Em casos raros o cache local fica desatualizado. Limpe com{' '}
+        <code>rm -rf ~/.claude/plugins/cache</code>, reinicie o Claude Code e o autocomplete volta ao normal.
+      </Callout>
+
+      <Callout kind="note" title="Equivalente no Codex">
+        No Codex, abra <code>codex</code>, rode <code>/plugins</code>, escolha o evenbetter-ios e selecione{' '}
+        <strong>Uninstall plugin</strong>. Para uma pausa rápida, edite{' '}
+        <code>~/.codex/config.toml</code> e marque <code>enabled = false</code>.
+      </Callout>
+    </>
+  )
+}
+
+function StepDesktopDesinstalar() {
+  return (
+    <>
+      <Crumbs last="DESINSTALAR" />
+      <h1>Desinstale o <span className="eb-accent">plugin</span></h1>
+      <p className="eb-lede">
+        O Claude Code separa <strong>desabilitar</strong> (esconde as skills mas mantém o plugin instalado)
+        de <strong>desinstalar</strong> (remove tudo). Faça pelo Diretório quando quiser interface gráfica,
+        ou pelo terminal quando quiser ser direto.
+      </p>
+
+      <h2>Pelo Diretório</h2>
+      <div className="eb-steps-frame" style={{ marginTop: '1rem' }}>
+        <div className="eb-step">
+          <div className="eb-step-num">01</div>
+          <div className="eb-step-body">
+            <h4>Abra Customize → Plugins pessoais</h4>
+            <p>Mesma tela usada para instalar. O <code>evenbetter-ios</code> aparece com o status <em>Instalado</em>.</p>
+          </div>
+        </div>
+        <div className="eb-step">
+          <div className="eb-step-num">02</div>
+          <div className="eb-step-body">
+            <h4>Abra o card do evenbetter-ios</h4>
+            <p>Você vê os botões <strong>Desabilitar</strong> e <strong>Desinstalar</strong>.</p>
+          </div>
+        </div>
+        <div className="eb-step">
+          <div className="eb-step-num">03</div>
+          <div className="eb-step-body">
+            <h4>Escolha a ação certa</h4>
+            <p>
+              <strong>Desabilitar</strong> esconde as skills sem apagar o plugin (volta com um clique).{' '}
+              <strong>Desinstalar</strong> remove o plugin do disco.
+            </p>
+          </div>
+        </div>
+        <div className="eb-step">
+          <div className="eb-step-num">04</div>
+          <div className="eb-step-body">
+            <h4>Reabra o Claude Code</h4>
+            <p>Feche e abra o app para que o autocomplete pare de mostrar as skills.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Ou pelo terminal</h2>
+      <p>
+        Os mesmos comandos da versão CLI funcionam aqui. Prefira essa via quando quiser scriptar
+        ou quando o app estiver fechado.
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={
+          '# Pausar sem desinstalar\n/plugin disable evenbetter-ios@evenbetter\n\n' +
+          '# Desinstalar de vez\n/plugin uninstall evenbetter-ios@evenbetter\n\n' +
+          '# Aplicar na sessão atual\n/reload-plugins'
+        }
+      />
+
+      <h2>Remover o marketplace</h2>
+      <p>
+        Se você nem pretende ver mais o EvenBetter na lista, remova o marketplace. Isso{' '}
+        <strong>desinstala automaticamente todos os plugins</strong> instalados a partir dele.
+      </p>
+      <CodeBlock lang="bash" code="/plugin marketplace remove evenbetter" />
+
+      <Callout kind="warn" title="Skills ainda aparecem no autocomplete?">
+        Limpe o cache local com <code>rm -rf ~/.claude/plugins/cache</code> e reinicie o Claude Code.
+        O autocomplete volta ao normal.
+      </Callout>
+
+      <Callout kind="note" title="Reinstalar é fácil">
+        Mesmo depois de desinstalar, o catálogo do evenbetter continua disponível enquanto o marketplace
+        estiver registrado. Para voltar atrás, basta rodar <code>/plugin install evenbetter-ios@evenbetter</code>.
+      </Callout>
+    </>
+  )
+}
+
 export default function TutorialAnthropicPage() {
   const [mode, setMode] = useState<Mode>('cli')
   const [cliStep, setCliStep] = useState<CliStepId>('marketplace')
@@ -316,10 +742,14 @@ export default function TutorialAnthropicPage() {
       if (cliStep === 'marketplace') return <StepCliMarketplace />
       if (cliStep === 'instalar')    return <StepCliInstalar />
       if (cliStep === 'chamar')      return <StepChamar />
+      if (cliStep === 'atualizar')   return <StepCliAtualizar />
+      if (cliStep === 'desinstalar') return <StepCliDesinstalar />
     } else {
-      if (desktopStep === 'customize') return <StepDesktopCustomize />
-      if (desktopStep === 'diretorio') return <StepDesktopDiretorio />
-      if (desktopStep === 'chamar')    return <StepDesktopChamar />
+      if (desktopStep === 'customize')   return <StepDesktopCustomize />
+      if (desktopStep === 'diretorio')   return <StepDesktopDiretorio />
+      if (desktopStep === 'chamar')      return <StepDesktopChamar />
+      if (desktopStep === 'atualizar')   return <StepDesktopAtualizar />
+      if (desktopStep === 'desinstalar') return <StepDesktopDesinstalar />
     }
     return null
   }

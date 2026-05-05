@@ -172,6 +172,14 @@ function StepVisaoGeral() {
         <Link href="/tutorial/codex" style={{ color: 'inherit' }}><strong>como instalar no Codex</strong></Link>.
       </Callout>
 
+      <Callout kind="tip" title="Existe também o plugin evenbetter-general">
+        O mesmo marketplace publica um segundo plugin, o <code>evenbetter-general</code>, com 2 skills
+        agnósticas de plataforma: <code>evenbetter-general-feature</code> e{' '}
+        <code>evenbetter-general-epic</code>. Útil quando o trabalho não é exclusivamente iOS, ou para
+        complementar os fluxos de planejamento daqui. Os dois plugins convivem sem conflito, basta instalar
+        com <code>/plugin install evenbetter-general@evenbetter</code> (ou pelo browser do Codex).
+      </Callout>
+
       <Callout kind="tip" title="Atalho mental">
         Pense no fluxo como um funil: <strong>planeja</strong> (feature/epic), <strong>constrói</strong> (padrões SwiftUI),
         <strong> audita</strong> (analyze → validate → fix), <strong>otimiza</strong> (performance/a11y),

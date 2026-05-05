@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { TutorialNav, CodeBlock, Callout, Icon } from '../../_components/tutorial-primitives'
 
-type StepId = 'marketplace' | 'instalar' | 'chamar'
+type StepId = 'marketplace' | 'instalar' | 'chamar' | 'desinstalar'
 
 const STEPS = [
   { id: 'marketplace' as StepId, title: 'Adicionar marketplace' },
   { id: 'instalar'    as StepId, title: 'Instalar o plugin' },
   { id: 'chamar'      as StepId, title: 'Chamar com @' },
+  { id: 'desinstalar' as StepId, title: 'Desinstalar o plugin' },
 ]
 
 function Crumbs({ last }: { last: string }) {
@@ -120,6 +121,22 @@ function StepInstalar() {
         No browser de plugins, escolha o marketplace <code>evenbetter</code>, abra <code>evenbetter-ios</code>
         e selecione <strong>Install plugin</strong>.
       </Callout>
+
+      <h2 style={{ marginTop: '2rem' }}>Bônus: plugin <code>evenbetter-general</code></h2>
+      <p>
+        O mesmo marketplace também publica o <code>evenbetter-general</code>, com 2 skills agnósticas de
+        plataforma para planejamento de feature e épico (<code>evenbetter-general-feature</code> e{' '}
+        <code>evenbetter-general-epic</code>). Repita o fluxo, mas escolhendo <code>evenbetter-general</code>{' '}
+        no browser:
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={'codex\n/plugins\n# escolher marketplace evenbetter -> evenbetter-general -> Install plugin'}
+      />
+      <Callout kind="tip" title="Pode instalar os dois">
+        Os dois plugins convivem sem conflito. Invoque com <code>@evenbetter-ios</code> ou{' '}
+        <code>@evenbetter-general</code>.
+      </Callout>
     </>
   )
 }
@@ -160,6 +177,90 @@ function StepChamar() {
       </Callout>
       <Callout kind="note" title="Sem necessidade de copiar código">
         O plugin lê os arquivos do projeto automaticamente. Basta invocar com <code>@</code> e aguardar o relatório.
+      </Callout>
+    </>
+  )
+}
+
+function StepDesinstalar() {
+  return (
+    <>
+      <Crumbs last="DESINSTALAR" />
+      <h1>Desinstale o <span className="eb-accent">plugin</span></h1>
+      <p className="eb-lede">
+        O Codex separa <strong>desabilitar</strong> (mantém o plugin no disco mas inativo) de{' '}
+        <strong>desinstalar</strong> (remove de vez). Faça pelo browser interativo, pelo arquivo de
+        configuração, ou pelo comando da CLI.
+      </p>
+
+      <h2>Pelo browser de plugins</h2>
+      <p>
+        A forma mais simples: abra o plugin no mesmo browser usado para instalar e selecione{' '}
+        <strong>Uninstall plugin</strong>.
+      </p>
+      <CodeBlock lang="bash" code={'# Abra o Codex e o browser\ncodex\n/plugins'} />
+      <div className="eb-chat-mock">
+        <div className="eb-chat-bar">
+          <span className="eb-chat-tag">CODEX CLI</span>
+        </div>
+        <div className="eb-chat-body">
+          <div className="eb-chat-user">
+            <span className="eb-chat-prompt">›</span>
+            <span className="eb-chat-cmd">/plugins</span>
+          </div>
+          <div className="eb-chat-response">
+            <div className="eb-chat-hex">⬡</div>
+            <div>
+              <div className="eb-chat-title">Plugin browser</div>
+              <div className="eb-chat-lines">
+                <div><span className="eb-chat-ok">→</span> Marketplace: evenbetter</div>
+                <div><span className="eb-chat-ok">→</span> evenbetter-ios, <em>Uninstall plugin</em></div>
+              </div>
+            </div>
+          </div>
+          <div className="eb-chat-response">
+            <div className="eb-chat-hex">⬡</div>
+            <div>
+              <div className="eb-chat-title">Plugin removido: evenbetter-ios</div>
+              <div className="eb-chat-lines">
+                <div><span className="eb-chat-ok">✓</span> Marketplace evenbetter continua registrado</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Callout kind="tip" title="Atalho: pausar sem desinstalar">
+        Dentro do browser, aperte <kbd>Space</kbd> em um plugin instalado para alternar entre habilitado
+        e desabilitado, sem remover do disco.
+      </Callout>
+
+      <h2>Pelo config.toml</h2>
+      <p>
+        Para desabilitar de forma persistente sem abrir o browser, edite <code>~/.codex/config.toml</code> e
+        marque o plugin como inativo. Depois, reinicie o Codex.
+      </p>
+      <CodeBlock
+        lang="toml"
+        code={'[plugins."evenbetter-ios@evenbetter"]\nenabled = false'}
+      />
+
+      <h2>Remover o marketplace inteiro</h2>
+      <p>
+        Quando você não pretende voltar, dá para apagar o registro do marketplace. Isso remove também os
+        plugins instalados a partir dele.
+      </p>
+      <CodeBlock lang="bash" code="codex plugin marketplace remove evenbetter" />
+
+      <Callout kind="note" title="Reinstalar é fácil">
+        Mesmo depois de desinstalar, enquanto o marketplace estiver registrado o evenbetter-ios continua
+        aparecendo no <code>/plugins</code>. Para voltar atrás, abra o browser e selecione{' '}
+        <strong>Install plugin</strong> de novo.
+      </Callout>
+
+      <Callout kind="warn" title="Apps conectados continuam">
+        Se o plugin trouxer integrações com apps externos (Gmail, Drive, etc.), desinstalar remove só o
+        plugin do Codex. Os apps em si continuam conectados na sua conta ChatGPT até você gerenciá-los lá.
       </Callout>
     </>
   )
@@ -209,6 +310,7 @@ export default function TutorialCodexPage() {
           {step === 'marketplace' && <StepMarketplace />}
           {step === 'instalar'    && <StepInstalar />}
           {step === 'chamar'      && <StepChamar />}
+          {step === 'desinstalar' && <StepDesinstalar />}
           {isDone && (
             <div className="eb-pager-done">
               <div className="eb-pager-done-icon"><Icon name="check" size={14} /></div>
