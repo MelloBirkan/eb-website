@@ -161,6 +161,7 @@
 .eb-section-head h2 { font-family: var(--eb-font-display); font-size: 56px; font-weight: 400; letter-spacing: 0.02em; margin: 0; line-height: 0.95; color: #1f4e4a; }
 .eb-section-head .eb-lede { font-size: 14px; color: #3a5552; max-width: 360px; text-align: right; }
 .eb-section-sub { font-size: 14px; color: #3a5552; padding: 0 8px; margin: 0 0 20px; }
+.eb-group-label { font-family: var(--eb-font-display); font-size: 28px; font-weight: 400; color: #1f4e4a; padding: 0 8px; margin: 0 0 16px; letter-spacing: 0.01em; }
 
 /* providers */
 .eb-providers { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }

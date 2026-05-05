@@ -157,8 +157,11 @@ export default function Home() {
           <div className="eb-section-head">
             <h2>POR ONDE COMEÇAR</h2>
           </div>
-          <p className="eb-section-sub">Instale o EvenBetter no seu agente de terminal, ou pule direto para o guia dos plugins.</p>
-          <div className="eb-providers" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+
+          {/* Instalação */}
+          <p className="eb-section-sub">Escolha o agente de IA onde você já trabalha e siga o guia de instalação.</p>
+          <div className="eb-group-label">Instalação</div>
+          <div className="eb-providers" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
             <Link href="/tutorial/codex" className="eb-provider">
               <div className="eb-provider-illo"><AgentIllo kind="codex" /></div>
               <div className="eb-provider-tag">OpenAI</div>
@@ -173,6 +176,12 @@ export default function Home() {
               <p>Agente de terminal da Anthropic. Ideal para quem já usa Claude no fluxo de desenvolvimento.</p>
               <span className="eb-provider-cta">Ver instalação <Icon name="arrow" size={12} /></span>
             </Link>
+          </div>
+
+          {/* Plugin */}
+          <p className="eb-section-sub" style={{ marginTop: 56 }}>Com o agente instalado, use o plugin para rodar as análises no seu projeto iOS.</p>
+          <div className="eb-group-label">Como usar o plugin</div>
+          <div className="eb-providers" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
             <Link href="/tutorial/plugins/ios" className="eb-provider">
               <div className="eb-provider-illo"><AgentIllo kind="ios" /></div>
               <div className="eb-provider-tag">Plugin</div>
