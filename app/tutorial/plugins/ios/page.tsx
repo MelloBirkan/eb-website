@@ -10,6 +10,7 @@ type StepId =
   | 'swiftui'
   | 'auditoria'
   | 'performance'
+  | 'xcode-mcp'
   | 'sistema'
 
 const STEPS: { id: StepId; title: string }[] = [
@@ -18,6 +19,7 @@ const STEPS: { id: StepId; title: string }[] = [
   { id: 'swiftui',         title: 'Padrões SwiftUI' },
   { id: 'auditoria',       title: 'Auditoria HIG/WCAG' },
   { id: 'performance',     title: 'Performance e A11y' },
+  { id: 'xcode-mcp',       title: 'Xcode MCP' },
   { id: 'sistema',         title: 'Integração com sistema' },
 ]
 
@@ -448,7 +450,247 @@ function StepPerformance() {
   )
 }
 
-/* ─── Step 06 — Integração com sistema ─── */
+/* ─── Step 06 — Xcode MCP ─── */
+
+const XCODE_MCP_TOOLS: { title: string; tools: string; desc: string }[] = [
+  {
+    title: 'Arquivos no projeto Xcode',
+    tools: 'XcodeRead · XcodeWrite · XcodeUpdate · XcodeGlob · XcodeGrep',
+    desc: 'Lê, escreve e busca dentro do projeto aberto no Xcode, respeitando a estrutura real de targets e grupos, não só o sistema de arquivos.',
+  },
+  {
+    title: 'Build e testes',
+    tools: 'BuildProject · GetBuildLog · RunAllTests · RunSomeTests',
+    desc: 'Compila no scheme e destination atuais e roda a suíte de testes, devolvendo o log estruturado para o agente debugar erros reais.',
+  },
+  {
+    title: 'Diagnóstico ao vivo',
+    tools: 'XcodeListNavigatorIssues · XcodeRefreshCodeIssuesInFile',
+    desc: 'Acessa os erros e warnings do Issue Navigator do Xcode, com informação semântica que o compilador sozinho via terminal não dá.',
+  },
+  {
+    title: 'Código, docs e previews',
+    tools: 'ExecuteSnippet · DocumentationSearch · RenderPreview',
+    desc: 'Roda código Swift no REPL, busca a documentação oficial da Apple (incluindo sessões da WWDC) e renderiza previews SwiftUI sem abrir o canvas.',
+  },
+  {
+    title: 'Estrutura do projeto',
+    tools: 'GetProjectStructure · GetSchemes',
+    desc: 'Descreve targets, grupos e schemes disponíveis, para o agente decidir o que tocar antes de começar a editar.',
+  },
+]
+
+function StepXcodeMCP() {
+  return (
+    <>
+      <Crumbs last="XCODE MCP" />
+      <h1 id="xcode-mcp">Ponte para o <span className="eb-accent">Xcode MCP</span></h1>
+      <p className="eb-lede">
+        O EvenBetter iOS já configura o MCP oficial do Xcode no seu agente. Ao instalar e ativar o plugin,
+        o Claude Code e o Codex passam a ter um servidor MCP chamado <code>xcode</code> rodando{' '}
+        <code>xcrun mcpbridge</code>, a ponte oficial da Apple que permite que agentes externos conversem
+        com o Xcode aberto.
+      </p>
+
+      <Callout kind="note" title="O plugin não instala o Xcode">
+        Ele apenas configura o agente para usar o MCP que já vem com o Xcode 26.3+. Você precisa ter
+        o Xcode instalado, autorizado e com o projeto aberto para o MCP funcionar de verdade.
+      </Callout>
+
+      <h2>O que o Xcode MCP pode fazer</h2>
+      <p>
+        O <code>xcrun mcpbridge</code> conecta o agente diretamente ao processo do Xcode aberto via XPC,
+        e expõe cerca de 20 ferramentas nativas. Elas se dividem em cinco grupos:
+      </p>
+      <div className="eb-skills-grid" style={{ marginTop: '1rem' }}>
+        {XCODE_MCP_TOOLS.map((g) => (
+          <div key={g.title} className="eb-skill-card">
+            <h4>{g.title}</h4>
+            <p style={{ fontFamily: 'var(--eb-font-mono)', fontSize: 12, color: '#1f4e4a', marginBottom: 8 }}>
+              {g.tools}
+            </p>
+            <p>{g.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 style={{ marginTop: '2rem' }}>Por que isso é bom</h2>
+      <ul>
+        <li>
+          <strong>Vê o que o Xcode vê.</strong> Como a ponte é XPC, o agente lê o estado real do projeto
+          aberto: scheme selecionado, destination, diagnósticos do Issue Navigator, símbolos resolvidos.
+          Coisa que rodar <code>xcodebuild</code> direto no terminal não consegue.
+        </li>
+        <li>
+          <strong>Build e teste com retorno estruturado.</strong> O agente compila e testa pelo MCP e recebe
+          erros e warnings num formato que ele entende, em vez de raspar logs gigantes.
+        </li>
+        <li>
+          <strong>Documentação Apple sem sair do agente.</strong> <code>DocumentationSearch</code> consulta
+          a doc oficial e até sessões da WWDC, sem precisar abrir o navegador.
+        </li>
+        <li>
+          <strong>Previews SwiftUI sem o canvas.</strong> <code>RenderPreview</code> renderiza headless e
+          devolve a imagem, ótimo para o agente ver o resultado visual da própria mudança.
+        </li>
+        <li>
+          <strong>Configuração zero.</strong> Como o plugin já registra o servidor, o usuário não precisa
+          rodar comando nenhum. Se o usuário não quisesse o EvenBetter, teria que adicionar manualmente.
+        </li>
+      </ul>
+
+      <h2>1. Pré-requisitos</h2>
+      <p>Antes de usar o Xcode MCP, confirme que você tem:</p>
+      <ul>
+        <li>macOS com <strong>Xcode 26.3 ou superior</strong> instalado.</li>
+        <li>Claude Code ou Codex instalado.</li>
+        <li>Plugin EvenBetter iOS instalado e ativado.</li>
+        <li>O projeto iOS aberto no Xcode, com o scheme correto selecionado.</li>
+        <li>A permissão de agentes externos ativada no Xcode.</li>
+      </ul>
+
+      <Callout kind="warn" title="Bridge não encontrado?">
+        Se <code>xcrun --find mcpbridge</code> retornar erro, o sistema está apontando para os Command Line
+        Tools em vez do Xcode completo. Rode <code>sudo xcode-select -s /Applications/Xcode.app/Contents/Developer</code>
+        {' '}e depois <code>sudo xcodebuild -runFirstLaunch</code>.
+      </Callout>
+
+      <h2>2. Ativar o MCP no Xcode</h2>
+      <p>Sem essa permissão, o agente até tenta iniciar o MCP, mas o Xcode bloqueia o acesso às ferramentas.</p>
+      <ul>
+        <li>Abra o Xcode.</li>
+        <li>Vá em <strong>Xcode &gt; Settings</strong>.</li>
+        <li>Abra a aba <strong>Intelligence</strong>.</li>
+        <li>Procure a seção <strong>Model Context Protocol</strong>.</li>
+        <li>Ative <strong>Allow external agents to use Xcode tools</strong>.</li>
+      </ul>
+
+      <h2>3. Abrir o projeto no Xcode</h2>
+      <p>Antes de pedir para o agente trabalhar:</p>
+      <ul>
+        <li>Abra o arquivo <code>.xcodeproj</code> ou <code>.xcworkspace</code> no Xcode.</li>
+        <li>Selecione o scheme correto.</li>
+        <li>Confirme que o projeto compila normalmente.</li>
+        <li>Deixe o Xcode aberto enquanto o agente estiver rodando.</li>
+      </ul>
+      <p>
+        O MCP funciona conectado ao Xcode aberto. Se o Xcode estiver fechado, ou se o projeto certo não
+        estiver carregado, o agente pode até listar ferramentas, mas elas não terão contexto.
+      </p>
+
+      <h2>4. Verificar a configuração</h2>
+      <p>
+        Depois que o plugin está ativo, confirme no terminal que o servidor <code>xcode</code> aparece
+        registrado no agente:
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={'# Claude Code\nclaude mcp list\n\n# Codex\ncodex mcp list'}
+      />
+
+      <div className="eb-chat-mock">
+        <div className="eb-chat-bar">
+          <span className="eb-chat-tag">TERMINAL</span>
+        </div>
+        <div className="eb-chat-body">
+          <div className="eb-chat-user">
+            <span className="eb-chat-prompt">$</span>
+            <span className="eb-chat-cmd">claude mcp list</span>
+          </div>
+          <div className="eb-chat-response">
+            <div className="eb-chat-hex">⬡</div>
+            <div>
+              <div className="eb-chat-title">Servidores MCP conectados</div>
+              <div className="eb-chat-lines">
+                <div><span className="eb-chat-ok">✓</span> xcode · xcrun mcpbridge · Connected</div>
+                <div><span className="eb-chat-ok">✓</span> 20 ferramentas disponíveis (BuildProject, RenderPreview, …)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p>
+        Se o usuário não estivesse usando o nosso plugin, a configuração equivalente teria que ser feita
+        à mão. Para referência, é só isso:
+      </p>
+      <CodeBlock
+        lang="bash"
+        code={
+          '# Claude Code\nclaude mcp add --transport stdio xcode -- xcrun mcpbridge\n\n' +
+          '# Codex\ncodex mcp add xcode -- xcrun mcpbridge'
+        }
+      />
+      <p>Com o EvenBetter iOS, isso já vem empacotado.</p>
+
+      <h2>5. Como usar bem o Xcode MCP</h2>
+      <p>
+        Quando estiver usando o EvenBetter iOS, peça explicitamente para o agente usar o contexto do Xcode
+        sempre que fizer sentido. Bons prompts:
+      </p>
+      <ul>
+        <li>
+          Use o Xcode MCP para inspecionar o projeto aberto, entender os schemes disponíveis e rodar o
+          build antes de sugerir mudanças.
+        </li>
+        <li>
+          Use as ferramentas do Xcode para compilar o app, identificar erros de build e corrigir a
+          implementação SwiftUI.
+        </li>
+        <li>
+          Antes de editar, verifique no Xcode quais targets, schemes e arquivos principais existem neste
+          projeto.
+        </li>
+        <li>
+          Depois de implementar, rode build e testes pelo Xcode MCP e me diga exatamente o que passou
+          ou falhou.
+        </li>
+        <li>
+          Use o <code>DocumentationSearch</code> para consultar a doc oficial da Apple antes de implementar
+          essa feature em SwiftUI.
+        </li>
+      </ul>
+
+      <h2>6. Boas práticas</h2>
+      <p>Para extrair o máximo do MCP do Xcode:</p>
+      <ul>
+        <li>Mantenha o Xcode aberto durante toda a sessão do agente.</li>
+        <li>Abra o projeto correto antes de iniciar o trabalho.</li>
+        <li>Use o <code>.xcworkspace</code> quando o projeto tem Swift Package Manager, CocoaPods ou múltiplos módulos.</li>
+        <li>Confirme que o scheme correto está selecionado.</li>
+        <li>Peça para o agente compilar com frequência, não apenas no final.</li>
+        <li>Para bugs de UI, peça validação com build, <code>RenderPreview</code>, simulator ou testes.</li>
+        <li>Se trocar de projeto no Xcode, recarregue a sessão do agente para evitar contexto antigo.</li>
+        <li>Se o MCP parar de responder, confira se o Xcode ainda está aberto e se a permissão segue ativa.</li>
+      </ul>
+
+      <h2>7. Limitações</h2>
+      <p>
+        O Xcode MCP é local. Ele depende do Xcode rodando na máquina do usuário. Por isso:
+      </p>
+      <ul>
+        <li>Funciona melhor em sessões locais no macOS.</li>
+        <li>Não funciona em ambientes cloud ou Linux sem Xcode.</li>
+        <li>Não substitui a instalação do Xcode.</li>
+        <li>Não dispensa as permissões do Xcode.</li>
+        <li>Não garante que o agente consiga agir se o projeto não estiver aberto.</li>
+      </ul>
+
+      <Callout kind="tip" title="Combine com a skill de debugger">
+        O Xcode MCP cuida do projeto aberto e do Xcode. Para subir o app no simulador, capturar screenshots
+        e simular taps, use também o <code>evenbetter-ios-debugger-agent</code> (próxima etapa), que fala com
+        o <code>XcodeBuildMCP</code>. Os dois MCPs se complementam: um para o IDE, outro para o simulador.
+      </Callout>
+
+      <Callout kind="note" title="Em resumo">
+        Com o EvenBetter iOS instalado, o agente já tem a ponte configurada. O usuário só precisa garantir
+        que o Xcode esteja instalado, autorizado, aberto e com o projeto certo carregado.
+      </Callout>
+    </>
+  )
+}
+
+/* ─── Step 07 — Integração com sistema ─── */
 
 function StepSistema() {
   return (
@@ -491,10 +733,14 @@ function StepSistema() {
       </p>
       <Invocation skill="evenbetter-ios-debugger-agent" args="rode o app no simulador booted e tire screenshot" />
 
-      <Callout kind="note" title="Requer XcodeBuildMCP">
-        Esta é a única skill com dependência externa: o servidor MCP{' '}
-        <code>XcodeBuildMCP</code> precisa estar configurado no seu agente. Sem ele, a skill avisa
-        e para, não tenta usar fallbacks.
+      <Callout kind="note" title="Requer XcodeBuildMCP (≠ Xcode MCP)">
+        Esta skill usa o servidor MCP <code>XcodeBuildMCP</code>, que é diferente do{' '}
+        <strong>Xcode MCP</strong> oficial da Apple coberto na{' '}
+        <a href="#xcode-mcp" style={{ color: 'var(--eb-teal)', textDecoration: 'underline', textUnderlineOffset: '3px' }}>etapa anterior</a>.
+        O <code>XcodeBuildMCP</code> controla o simulador via <code>xcodebuild</code> e <code>simctl</code>,
+        enquanto o Xcode MCP fala diretamente com o IDE aberto. Os dois se complementam: o IDE para
+        contexto e diagnósticos, o XcodeBuildMCP para automação do simulador. Sem ele instalado, a
+        skill avisa e para, não tenta usar fallbacks.
       </Callout>
 
       <Callout kind="tip" title="Combine com outras skills">
@@ -533,6 +779,7 @@ export default function TutorialPluginIosPage() {
       case 'swiftui':         return <StepSwiftUI />
       case 'auditoria':       return <StepAuditoria />
       case 'performance':     return <StepPerformance />
+      case 'xcode-mcp':       return <StepXcodeMCP />
       case 'sistema':         return <StepSistema />
     }
   }
