@@ -36,11 +36,20 @@ type TeamMember = {
 
 const TEAM: TeamMember[] = [
   {
+    name: 'Valéria F. Martins',
+    role: 'Orientadora',
+    bio: 'Professora orientadora da FCI/Mackenzie. Pesquisa em Interação Humano-Computador, acessibilidade e UX.',
+    email: 'valeria.farinazzo@mackenzie.br',
+    mono: 'V',
+    photo: '/team/valeria-farinazzo.png',
+  },
+  {
     name: 'Marcello Birkan',
     role: 'Coautor',
     bio: 'Estudante da FCI/Mackenzie, com foco em iOS e SwiftUI. Lidera a implementação das skills do plugin EvenBetter iOS.',
     email: 'marcello.birkan@mackenzista.com.br',
     mono: 'M',
+    photo: '/team/marcello-birkan.png',
   },
   {
     name: 'Daniela Flauto',
@@ -48,13 +57,7 @@ const TEAM: TeamMember[] = [
     bio: 'Estudante da FCI/Mackenzie. Foco em UX, acessibilidade e curadoria do corpus de cláusulas do framework.',
     email: 'daniela.flauto@mackenzista.com.br',
     mono: 'D',
-  },
-  {
-    name: 'Valéria F. Martins',
-    role: 'Orientadora',
-    bio: 'Professora orientadora da FCI/Mackenzie. Pesquisa em Interação Humano-Computador, acessibilidade e UX.',
-    email: 'valeria.farinazzo@mackenzie.br',
-    mono: 'V',
+    photo: '/team/daniela-flauto.png',
   },
 ]
 
@@ -252,7 +255,7 @@ export default function AboutPage() {
           </figcaption>
         </figure>
 
-        {/* Team — grid with photo placeholders (mirrors TeamFourColumnGrid) */}
+        {/* Team — grid with photos */}
         <section className="eb-team-block" aria-labelledby="quem-esta-por-tras">
           <div className="eb-section-head">
             <h2 id="quem-esta-por-tras">QUEM ESTÁ POR TRÁS</h2>
