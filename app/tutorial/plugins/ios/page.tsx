@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { TutorialNav, CodeBlock, Callout, Icon } from '../../../_components/tutorial-primitives'
+import { CodeBlock, Callout, Icon } from '../../../_components/tutorial-primitives'
+import { SiteNav } from '../../../_components/site-nav'
+import { SiteFooter } from '../../../_components/site-footer'
 
 type StepId =
   | 'visao-geral'
@@ -769,6 +771,7 @@ export default function TutorialPluginIosPage() {
   useEffect(() => {
     const hash = (typeof window !== 'undefined' ? window.location.hash.slice(1) : '') as StepId
     if (hash && STEPS.some(s => s.id === hash)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStep(hash)
     }
   }, [])
@@ -794,8 +797,8 @@ export default function TutorialPluginIosPage() {
 
   return (
     <div className="eb-root">
-      <TutorialNav />
-      <div className="eb-tut">
+      <SiteNav />
+      <div className="eb-tut" id="main">
         <aside className="eb-sidebar">
           <Link href="/" className="eb-sidebar-back">
             <Icon name="chevron" size={12} />
@@ -853,6 +856,7 @@ export default function TutorialPluginIosPage() {
           </div>
         </main>
       </div>
+      <SiteFooter />
     </div>
   )
 }

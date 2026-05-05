@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { TutorialNav, CodeBlock, Callout, Icon, SegmentedControl } from '../../_components/tutorial-primitives'
+import Image from 'next/image'
+import { CodeBlock, Callout, Icon, SegmentedControl } from '../../_components/tutorial-primitives'
+import { SiteNav } from '../../_components/site-nav'
+import { SiteFooter } from '../../_components/site-footer'
 
 type Mode = 'cli' | 'desktop'
 type CliStepId = 'marketplace' | 'instalar' | 'chamar' | 'atualizar' | 'desinstalar'
@@ -129,34 +132,46 @@ function StepCliInstalar() {
 /* ─── Desktop mode ─── */
 
 function StepDesktopCustomize() {
-  const steps: { img: string; alt: string; caption: React.ReactNode; hl: { x: string; y: string; w: string; h: string } }[] = [
+  const steps: {
+    img: string
+    alt: string
+    w: number
+    h: number
+    caption: React.ReactNode
+    hl: { x: string; y: string; w: string; h: string }
+  }[] = [
     {
       img: '/tutorial/claude-code/cc-customize-1-sidebar.png',
       alt: 'Barra lateral do Claude Code com opção Customize',
+      w: 510, h: 466,
       caption: <>Clique em <strong>Customize</strong> na barra lateral do Claude Code</>,
       hl: { x: '7%', y: '72%', w: '80%', h: '11%' },
     },
     {
       img: '/tutorial/claude-code/cc-customize-2-home.png',
       alt: 'Tela Personalizar o Claude',
+      w: 2916, h: 1674,
       caption: <>A tela <em>Personalizar o Claude</em> aparece, clique no <strong>+</strong> ao lado de Plugins pessoais</>,
       hl: { x: '15%', y: '26%', w: '6%', h: '6%' },
     },
     {
       img: '/tutorial/claude-code/cc-customize-3-menu.png',
       alt: 'Menu com Navegar por plugins e Criar plugin',
+      w: 518, h: 234,
       caption: <>Clique em <strong>+ Criar plugin</strong></>,
       hl: { x: '8%', y: '54%', w: '87%', h: '26%' },
     },
     {
       img: '/tutorial/claude-code/cc-customize-4-submenu.png',
       alt: 'Submenu com opção Adicionar marketplace',
+      w: 984, h: 366,
       caption: <>No submenu, selecione <strong>Adicionar marketplace</strong></>,
       hl: { x: '51%', y: '31%', w: '46%', h: '24%' },
     },
     {
       img: '/tutorial/claude-code/cc-customize-5-dialog.png',
       alt: 'Dialog Adicionar marketplace com campo URL',
+      w: 1450, h: 968,
       caption: <>Cole a URL no campo e clique <strong>Sincronizar</strong></>,
       hl: { x: '4%', y: '56%', w: '92%', h: '27%' },
     },
@@ -173,7 +188,14 @@ function StepDesktopCustomize() {
         {steps.map((s, i) => (
           <div key={i} className="eb-step-img-item">
             <div className="eb-step-img-wrap">
-              <img src={s.img} alt={s.alt} />
+              <Image
+                src={s.img}
+                alt={s.alt}
+                width={s.w}
+                height={s.h}
+                sizes="(max-width: 940px) 90vw, 300px"
+                style={{ width: '100%', height: 'auto' }}
+              />
               <div className="eb-step-img-hl" style={{ left: s.hl.x, top: s.hl.y, width: s.hl.w, height: s.hl.h }} />
             </div>
             <div className="eb-step-img-caption">
@@ -205,7 +227,15 @@ function StepDesktopDiretorio() {
       </p>
       <div className="eb-step-img-item">
         <div className="eb-step-img-wrap">
-          <img src="/tutorial/claude-code/cc-diretorio-install.gif" alt="Instalando evenbetter-ios pelo Diretório do Claude Code" style={{ borderRadius: '12px' }} />
+          <Image
+            src="/tutorial/claude-code/cc-diretorio-install.gif"
+            alt="Instalando evenbetter-ios pelo Diretório do Claude Code"
+            width={1200}
+            height={720}
+            unoptimized
+            sizes="(max-width: 940px) 90vw, 480px"
+            style={{ width: '100%', height: 'auto', borderRadius: '12px' }}
+          />
         </div>
       </div>
       <Callout kind="note" title="Feche e reabra o Claude Code">
@@ -232,7 +262,14 @@ function StepDesktopChamar() {
           <span>Digite <strong>/</strong> no chat, as skills EvenBetter aparecem no autocomplete</span>
         </div>
         <div className="eb-step-img-wrap">
-          <img src="/tutorial/claude-code/cc-diretorio-skills.png" alt="Skills evenbetter disponíveis no autocomplete do Claude Code" />
+          <Image
+            src="/tutorial/claude-code/cc-diretorio-skills.png"
+            alt="Skills evenbetter disponíveis no autocomplete do Claude Code"
+            width={1802}
+            height={502}
+            sizes="(max-width: 940px) 90vw, 480px"
+            style={{ width: '100%', height: 'auto' }}
+          />
         </div>
       </div>
       <div className="eb-step-img-item">
@@ -756,8 +793,8 @@ export default function TutorialAnthropicPage() {
 
   return (
     <div className="eb-root">
-      <TutorialNav />
-      <div className="eb-tut">
+      <SiteNav />
+      <div className="eb-tut" id="main">
         <aside className="eb-sidebar">
           <Link href="/" className="eb-sidebar-back">
             <Icon name="chevron" size={12} />
@@ -820,6 +857,7 @@ export default function TutorialAnthropicPage() {
           </div>
         </main>
       </div>
+      <SiteFooter />
     </div>
   )
 }

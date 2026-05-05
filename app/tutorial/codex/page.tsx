@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { TutorialNav, CodeBlock, Callout, Icon } from '../../_components/tutorial-primitives'
+import { CodeBlock, Callout, Icon } from '../../_components/tutorial-primitives'
+import { SiteNav } from '../../_components/site-nav'
+import { SiteFooter } from '../../_components/site-footer'
 
 type StepId = 'marketplace' | 'instalar' | 'chamar' | 'desinstalar'
 
@@ -277,8 +279,8 @@ export default function TutorialCodexPage() {
 
   return (
     <div className="eb-root">
-      <TutorialNav />
-      <div className="eb-tut">
+      <SiteNav />
+      <div className="eb-tut" id="main">
         <aside className="eb-sidebar">
           <Link href="/" className="eb-sidebar-back">
             <Icon name="chevron" size={12} />
@@ -336,6 +338,7 @@ export default function TutorialCodexPage() {
           </div>
         </main>
       </div>
+      <SiteFooter />
     </div>
   )
 }

@@ -1,30 +1,77 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Inter, JetBrains_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import "./evenbetter.css";
 
-const bebasNeue = Bebas_Neue({
+const geist = Geist({
+  weight: "variable",
+  variable: "--font-geist",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  weight: "variable",
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
   weight: "400",
-  variable: "--font-bebas-neue",
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const inter = Inter({
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  weight: ["400", "500", "600"],
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-});
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://evenbetter.dev";
 
 export const metadata: Metadata = {
-  title: "EvenBetter — Guias práticos de IA para devs",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "EvenBetter — Skills curadas para acessibilidade em iOS",
+    template: "%s · EvenBetter",
+  },
   description:
-    "EvenBetter fornece skills estruturadas que orientam a leitura de código, boas práticas de UX e a geração de recomendações.",
+    "Framework de skills curadas para Codex, Claude Code e o plugin EvenBetter iOS. Acessibilidade e UX desde o dia zero do desenvolvimento mobile.",
+  keywords: [
+    "EvenBetter",
+    "iOS",
+    "SwiftUI",
+    "acessibilidade",
+    "Claude Code",
+    "Codex",
+    "agent skills",
+    "Mackenzie",
+    "TCC",
+    "WCAG",
+    "HIG",
+  ],
+  authors: [
+    { name: "Marcello Birkan" },
+    { name: "Daniela Flauto" },
+    { name: "Valéria Farinazzo Martins" },
+  ],
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: "EvenBetter",
+    title: "EvenBetter — Skills curadas para acessibilidade em iOS",
+    description:
+      "Framework de skills curadas para Codex, Claude Code e o plugin EvenBetter iOS.",
+    url: SITE_URL,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "EvenBetter",
+    description:
+      "Framework de skills curadas para Codex, Claude Code e o plugin EvenBetter iOS.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -35,9 +82,12 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${bebasNeue.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <a href="#main" className="eb-skip-link">Pular para o conteúdo</a>
+        {children}
+      </body>
     </html>
   );
 }

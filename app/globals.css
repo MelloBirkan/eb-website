@@ -1,50 +1,158 @@
 @import "tailwindcss";
 
-:root {
-  --background: oklch(96.6% 0.005 106.5);
-  --foreground: oklch(15.3% 0.006 107.1);
-}
+/* ───────────────────────────────────────────────────────────
+   EvenBetter design tokens — single source of truth.
+   Tailwind v4 @theme exposes everything as utilities AND
+   CSS variables, consumed by evenbetter.css and components.
+   ─────────────────────────────────────────────────────────── */
 
 @theme {
-  --font-display: "Instrument Serif", Georgia, serif;
+  /* Typography — resolved from next/font (see app/layout.tsx) */
+  --font-display: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
 
-  --color-olive-50: oklch(98.8% 0.003 106.5);
-  --color-olive-100: oklch(96.6% 0.005 106.5);
-  --color-olive-200: oklch(93% 0.007 106.5);
-  --color-olive-300: oklch(88% 0.011 106.6);
-  --color-olive-400: oklch(73.7% 0.021 106.9);
-  --color-olive-500: oklch(58% 0.031 107.3);
-  --color-olive-600: oklch(46.6% 0.025 107.3);
-  --color-olive-700: oklch(39.4% 0.023 107.4);
-  --color-olive-800: oklch(28.6% 0.016 107.4);
-  --color-olive-900: oklch(22.8% 0.013 107.4);
-  --color-olive-950: oklch(15.3% 0.006 107.1);
+  /* Sage — warm green-gray, the page-level surface */
+  --color-sage-50: oklch(98.5% 0.005 165);
+  --color-sage-100: oklch(96% 0.01 165);
+  --color-sage-200: oklch(92% 0.013 165);
+  --color-sage-300: oklch(89% 0.013 165);  /* current bg #d8e2dc */
+  --color-sage-400: oklch(78% 0.018 168);
+  --color-sage-500: oklch(64% 0.022 170);
+  --color-sage-600: oklch(50% 0.025 172);
+  --color-sage-700: oklch(38% 0.025 175);
+  --color-sage-800: oklch(28% 0.022 178);
+  --color-sage-900: oklch(20% 0.018 180);
+  --color-sage-950: oklch(12% 0.015 185);
+
+  /* Teal — the brand anchor */
+  --color-teal-50: oklch(96% 0.018 168);
+  --color-teal-100: oklch(91% 0.045 158);   /* mint-bright #b6efd9 */
+  --color-teal-200: oklch(84% 0.05 168);    /* mint #a9d4c4 */
+  --color-teal-300: oklch(72% 0.06 174);
+  --color-teal-400: oklch(58% 0.065 176);
+  --color-teal-500: oklch(46% 0.05 178);    /* teal #266b65 */
+  --color-teal-600: oklch(40% 0.045 179);
+  --color-teal-700: oklch(37% 0.04 180);    /* teal-deep #1f4e4a */
+  --color-teal-800: oklch(30% 0.03 180);
+  --color-teal-900: oklch(24% 0.02 180);    /* ink #14302e */
+  --color-teal-950: oklch(15% 0.015 182);
+
+  /* Cream — warm chip background */
+  --color-cream-50: oklch(98% 0.008 95);
+  --color-cream-100: oklch(95% 0.018 95);   /* cream #f5f1e6 */
+  --color-cream-200: oklch(91% 0.025 92);
+  --color-cream-300: oklch(86% 0.032 90);
+
+  /* On-dark text */
+  --color-on-dark: oklch(94% 0.015 168);
+  --color-on-dark-muted: oklch(82% 0.025 170);
+
+  /* Radii — squircle-friendly continuous curves */
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-2xl: 36px;
+  --radius-pill: 999px;
+
+  /* Easings — Apple-grade */
+  --ease-out-quint: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-circ: cubic-bezier(0.075, 0.82, 0.165, 1);
+  --ease-spring: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+/* ───────────────────────────────────────────────────────────
+   Root + dark mode tokens. evenbetter.css's --eb-* tokens
+   resolve through these so flipping color-scheme cascades.
+   ─────────────────────────────────────────────────────────── */
+
+:root {
+  --background: oklch(89% 0.013 165);   /* sage-300 */
+  --foreground: oklch(20% 0.018 180);   /* teal-900 */
+
+  /* Cursor-tracked specular hotspot (set by JS) */
+  --mx: 50%;
+  --my: 50%;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: oklch(15.3% 0.006 107.1);
-    --foreground: #ffffff;
+    --background: oklch(15% 0.015 182);  /* teal-950 */
+    --foreground: oklch(94% 0.015 168);  /* on-dark */
   }
 }
 
 html {
   background: var(--background);
+  color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --scroll-padding-top: 0;
-  scroll-padding-top: var(--scroll-padding-top);
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "ss02", "cv01", "cv11";
+  scroll-padding-top: var(--scroll-padding-top, 90px);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* ───────────────────────────────────────────────────────────
+   Accessibility primitives
+   ─────────────────────────────────────────────────────────── */
+
+.eb-skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  padding: 10px 16px;
+  background: var(--color-teal-100);
+  color: var(--color-teal-900);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+  transform: translateY(-200%);
+  transition: transform 200ms var(--ease-out-quint);
+}
+.eb-skip-link:focus,
+.eb-skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--color-teal-100);
+  outline-offset: 4px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-teal-100);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--color-teal-200);
+  color: var(--color-teal-900);
+}
+
+/* ───────────────────────────────────────────────────────────
+   Reduced motion — site-wide kill switch
+   ─────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
