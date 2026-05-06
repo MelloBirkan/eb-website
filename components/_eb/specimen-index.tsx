@@ -170,7 +170,7 @@ export function SpecimenIndex() {
       </LayoutGroup>
 
       <div className="eb-skills-cta">
-        <Link href={cat.skills[0].href} className="eb-skills-cta-link">
+        <Link href="/tutorial/plugins/ios#visao-geral" className="eb-skills-cta-link">
           Saber mais sobre as skills
         </Link>
       </div>
