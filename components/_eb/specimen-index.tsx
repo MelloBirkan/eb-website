@@ -73,7 +73,7 @@ const CATEGORIES: Category[] = [
       {
         id: 'analyze',
         name: 'evenbetter-ios-analyze',
-        desc: 'Analisa um projeto SwiftUI contra HIG e WCAG 2.2 e grava um relatório JSON em .evenbetter/.',
+        desc: 'Audita acessibilidade de um projeto SwiftUI contra HIG e WCAG 2.2 e grava um relatório JSON em .evenbetter/.',
         code: '/evenbetter-ios:analyze --strict',
         href: '/tutorial/plugins/ios#auditoria',
       },
@@ -168,6 +168,12 @@ export function SpecimenIndex() {
           })}
         </div>
       </LayoutGroup>
+
+      <div className="eb-skills-cta">
+        <Link href={cat.skills[0].href} className="eb-skills-cta-link">
+          Saber mais sobre as skills
+        </Link>
+      </div>
 
       <div
         id={`specimen-${cat.id}`}
