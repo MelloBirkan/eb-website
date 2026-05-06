@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { CodeBlock, Callout, Icon } from '../../../_components/tutorial-primitives'
 import { SiteNav } from '../../../_components/site-nav'
 import { SiteFooter } from '../../../_components/site-footer'
+import { AgentChat } from '../../../_components/agent-chat'
 
 type StepId =
   | 'visao-geral'
@@ -143,6 +144,20 @@ function StepVisaoGeral() {
         com Apple HIG, WCAG 2.2 e o ecossistema da Apple sempre como fonte de verdade. Cada skill é uma fase
         do trabalho. Você invoca uma de cada vez, na ordem que faz sentido para o que está fazendo.
       </p>
+
+      <div className="eb-agent-chat-highlight">
+        <div className="eb-agent-chat-highlight-head">
+          <span className="eb-agent-chat-highlight-eyebrow">Agente · ao vivo</span>
+          <h2 className="eb-agent-chat-highlight-title">
+            Não sabe qual skill usar? <span className="eb-accent">Pergunte ao agente.</span>
+          </h2>
+          <p className="eb-agent-chat-highlight-sub">
+            Um Claude Managed Agent treinado nas 12 skills deste plugin. Descreva seu cenário
+            e ele recomenda o caminho — você responde no chat exatamente como faria no seu terminal.
+          </p>
+        </div>
+        <AgentChat />
+      </div>
 
       <div className="eb-skills-grid" style={{ marginTop: '1.5rem' }}>
         {SKILL_GROUPS.flatMap((group) =>
