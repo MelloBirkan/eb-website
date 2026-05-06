@@ -917,6 +917,22 @@
 .eb-skills-section {
   margin-top: 56px;
 }
+.eb-skills-cta {
+  display: flex;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+.eb-skills-cta-link {
+  font-size: 13.5px;
+  color: var(--eb-teal-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: opacity 200ms var(--eb-ease);
+}
+.eb-skills-cta-link:hover {
+  opacity: 0.6;
+}
 .eb-skills-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1049,8 +1065,8 @@
   position: absolute;
   inset: 4px auto 4px 4px;
   border-radius: 999px;
-  background: var(--eb-mint-bright);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  background: var(--eb-mint);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 0 0 1.5px rgba(38, 107, 101, 0.28);
   z-index: 0;
 }
 
