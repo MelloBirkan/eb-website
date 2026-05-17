@@ -190,6 +190,12 @@ export function SpecimenIndex() {
         </div>
       </LayoutGroup>
 
+      <div className="eb-skills-cta">
+        <Link href="/tutorial/plugins/ios#visao-geral" className="eb-skills-cta-link">
+          Saber mais sobre as skills
+        </Link>
+      </div>
+
       <div
         id={`specimen-${cat.id}`}
         role="tabpanel"
