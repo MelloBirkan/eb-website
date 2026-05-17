@@ -55,7 +55,7 @@ const PLUGIN_AGENTS = [
     kind: 'ios' as const,
     tag: 'Plugin',
     title: 'EvenBetter iOS',
-    desc: '12 skills para iOS e SwiftUI: planejamento, padrões, auditoria HIG/WCAG, performance e integração com sistema.',
+    desc: '15 skills para iOS e SwiftUI: planejamento, design, auditoria HIG/WCAG, performance, haptics e integração com sistema.',
     cta: 'Ver guia',
     dark: false,
   },
@@ -121,7 +121,7 @@ export default function Home() {
             <div className="eb-hero-right">
               <div className="eb-hero-illo-stage"><HeroIllo /></div>
               <div className="eb-hero-chips">
-                <span className="eb-hero-chip"><span className="eb-dot" /> 12 skills</span>
+                <span className="eb-hero-chip"><span className="eb-dot" /> 15 skills</span>
                 <span className="eb-hero-chip"><span className="eb-dot" /> 5 etapas</span>
                 <span className="eb-hero-chip"><span className="eb-dot" /> 31 → 69%</span>
               </div>
@@ -190,7 +190,7 @@ export default function Home() {
         <section id="skills" className="eb-skills-section" aria-labelledby="skills-h2">
           <div className="eb-section-head">
             <h2 id="skills-h2">
-              <span className="eb-accent">12</span> skills do plugin iOS.
+              <span className="eb-accent">15</span> skills do plugin iOS.
             </h2>
             <p className="eb-lede">
               Filtradas por categoria. Passe o cursor sobre um card para ver a invocação correspondente.

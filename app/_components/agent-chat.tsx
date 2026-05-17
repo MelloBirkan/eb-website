@@ -426,7 +426,7 @@ export function AgentChat() {
               Não sabe qual skill usar? Pergunte.
             </div>
             <div className="eb-agent-chat-empty-sub">
-              O agente conhece as 12 skills do plugin e ajuda a escolher o caminho certo.
+              O agente conhece as 15 skills do plugin e ajuda a escolher o caminho certo.
             </div>
             <div className="eb-agent-chat-suggestions">
               {SUGGESTED_QUESTIONS.map((q) => (

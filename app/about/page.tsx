@@ -63,11 +63,11 @@ const STATS: { num: ReactNode; text: ReactNode }[] = [
     ),
   },
   {
-    num: '12 skills',
+    num: '15 skills',
     text: (
       <>
-        Distribuídas no plugin <code>evenbetter-ios</code> entre planejamento, padrões de SwiftUI,
-        auditoria HIG/WCAG, performance e integração com sistema.
+        Distribuídas no plugin <code>evenbetter-ios</code> entre planejamento, design, padrões de
+        SwiftUI, auditoria HIG/WCAG, performance, haptics e integração com sistema.
       </>
     ),
   },

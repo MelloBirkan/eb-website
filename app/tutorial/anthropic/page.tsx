@@ -315,7 +315,7 @@ function StepChamar() {
             <div>
               <div className="eb-chat-title">Plugins recarregados</div>
               <div className="eb-chat-lines">
-                <div><span className="eb-chat-ok">✓</span> evenbetter-ios carregado com 2 skills</div>
+                <div><span className="eb-chat-ok">✓</span> evenbetter-ios carregado com 15 skills</div>
               </div>
             </div>
           </div>

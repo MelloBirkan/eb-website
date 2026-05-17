@@ -96,15 +96,18 @@ function Crumbs({ last }: { last: string }) {
 
 const SKILL_GROUPS: { title: string; skills: { name: string; desc: string }[] }[] = [
   {
-    title: 'Planejamento',
+    title: 'Planejamento e produto',
     skills: [
       { name: 'evenbetter-ios-feature', desc: 'Workflow em estágios para uma única tela: brief, plano, validação, tickets, execução e revisão.' },
       { name: 'evenbetter-ios-epic',    desc: 'Workflow para apps ou épicos multi-tela com brief, fluxos, plano técnico HIG e validação de arquitetura.' },
+      { name: 'evenbetter-app-opportunity-research', desc: 'Pesquisa oportunidades de app com análise de mercado, competidores e hipóteses priorizadas.' },
+      { name: 'evenbetter-app-launcher', desc: 'Orquestra o ciclo de vida completo: ideação, desenvolvimento, App Store, monetização e pós-lançamento.' },
     ],
   },
   {
-    title: 'Padrões SwiftUI',
+    title: 'Design e SwiftUI',
     skills: [
+      { name: 'evenbetter-design',                 desc: 'Direciona interfaces SwiftUI com qualidade visual de produto e decisões de design não genéricas.' },
       { name: 'evenbetter-swiftui-ui-patterns',   desc: 'Boas práticas para views, navegação, sheets, formulários, controles, Dynamic Type e composição.' },
       { name: 'evenbetter-swiftui-view-refactor', desc: 'Refatora views grandes em subviews dedicadas, MV-first, com árvore estável e Observation correto.' },
       { name: 'evenbetter-swiftui-liquid-glass',  desc: 'Implementa e revisa o Liquid Glass do iOS 26+ com containers, shapes consistentes e fallbacks.' },
@@ -113,9 +116,8 @@ const SKILL_GROUPS: { title: string; skills: { name: string; desc: string }[] }[
   {
     title: 'Auditoria HIG e WCAG',
     skills: [
-      { name: 'evenbetter-ios-analyze', desc: 'Analisa um projeto SwiftUI contra HIG e WCAG 2.2 e grava um relatório JSON em .evenbetter/.' },
+      { name: 'evenbetter-analyze', desc: 'Analisa um projeto SwiftUI contra HIG e WCAG 2.2 e grava relatório HTML em .evenbetter/.' },
       { name: 'evenbetter-validate',    desc: 'Faz uma segunda passada nas violações de severidade alta para filtrar falsos positivos.' },
-      { name: 'evenbetter-fix',         desc: 'Orquestra a remediação a partir dos relatórios, prioriza correções e atualiza o estado do manifesto.' },
     ],
   },
   {
@@ -123,6 +125,7 @@ const SKILL_GROUPS: { title: string; skills: { name: string; desc: string }[] }[
     skills: [
       { name: 'evenbetter-swiftui-performance-audit', desc: 'Diagnostica scrolling travado, hangs, picos de CPU e re-renderizações excessivas em SwiftUI.' },
       { name: 'evenbetter-swiftui-accessibility',     desc: 'Skill de referência: carrega cláusulas canônicas de acessibilidade do corpus Apple HIG e WCAG.' },
+      { name: 'evenbetter-ios-haptics',               desc: 'Projeta feedback tátil com .sensoryFeedback e Core Haptics com fallback e critérios de acessibilidade.' },
     ],
   },
   {
@@ -140,7 +143,7 @@ function StepVisaoGeral() {
       <Crumbs last="VISÃO GERAL" />
       <h1 id="visao-geral">O plugin <span className="eb-accent">EvenBetter iOS</span></h1>
       <p className="eb-lede">
-        Doze skills coordenadas para planejar, implementar, auditar e remediar produtos iOS em SwiftUI,
+        Quinze skills coordenadas para planejar, implementar, auditar e evoluir produtos iOS em SwiftUI,
         com Apple HIG, WCAG 2.2 e o ecossistema da Apple sempre como fonte de verdade. Cada skill é uma fase
         do trabalho. Você invoca uma de cada vez, na ordem que faz sentido para o que está fazendo.
       </p>
@@ -152,7 +155,7 @@ function StepVisaoGeral() {
             Não sabe qual skill usar? <span className="eb-accent">Pergunte ao agente.</span>
           </h2>
           <p className="eb-agent-chat-highlight-sub">
-            Um Claude Managed Agent treinado nas 12 skills deste plugin. Descreva seu cenário
+            Um Claude Managed Agent treinado nas 15 skills deste plugin. Descreva seu cenário
             e ele recomenda o caminho — você responde no chat exatamente como faria no seu terminal.
           </p>
         </div>
@@ -198,8 +201,8 @@ function StepVisaoGeral() {
       </Callout>
 
       <Callout kind="tip" title="Atalho mental">
-        Pense no fluxo como um funil: <strong>planeja</strong> (feature/epic), <strong>constrói</strong> (padrões SwiftUI),
-        <strong> audita</strong> (analyze → validate → fix), <strong>otimiza</strong> (performance/a11y),
+        Pense no fluxo como um funil: <strong>planeja</strong> (feature/epic/pesquisa/launcher), <strong>constrói</strong> (design + SwiftUI),
+        <strong> audita</strong> (analyze → validate), <strong>otimiza</strong> (performance/a11y/haptics),
         <strong> integra</strong> (App Intents/Debugger).
       </Callout>
     </>
@@ -214,8 +217,8 @@ function StepPlanejamentoUX() {
       <Crumbs last="PLANEJAMENTO" />
       <h1 id="planejamento-ux">Planejamento de <span className="eb-accent">UX</span></h1>
       <p className="eb-lede">
-        Antes de escrever uma linha de SwiftUI, defina o problema. Estas duas skills conduzem entrevistas
-        de múltipla escolha em estágios, do brief inicial até os tickets executáveis, e gravam tudo
+        Antes de escrever uma linha de SwiftUI, defina o problema. Estas quatro skills cobrem o ciclo de
+        descoberta ao planejamento executável e gravam tudo
         dentro de <code>.evenbetter/&lt;nome&gt;/</code> no seu projeto.
       </p>
 
@@ -246,6 +249,22 @@ function StepPlanejamentoUX() {
       </p>
       <Invocation skill="evenbetter-ios-epic" />
 
+      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-app-opportunity-research</h2>
+      <p>
+        Skill para descoberta de oportunidade de produto. Estrutura a pesquisa de nicho, mapeia competidores,
+        diferencia sinais reportados, estimados e inferidos, e entrega um recorte priorizado para decidir se
+        vale investir no app antes de entrar em execução.
+      </p>
+      <Invocation skill="evenbetter-app-opportunity-research" args="analisar oportunidade para app de hábitos" />
+
+      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-app-launcher</h2>
+      <p>
+        Skill de ciclo completo para lançamento de app iOS: ideação, planejamento, desenvolvimento, preparação
+        de App Store, monetização, marketing e pós-lançamento. Funciona como playbook quando você precisa sair
+        do escopo de feature e organizar a operação do produto inteiro.
+      </p>
+      <Invocation skill="evenbetter-app-launcher" args="lançar app de finanças pessoais" />
+
       <Callout kind="tip" title="Estágios são opcionais">
         A skill infere o estágio pelo seu pedido, mas você pode forçar passando{' '}
         <code>stage: 3-ticket-breakdown</code> (ou qualquer outro) junto com a invocação.
@@ -268,9 +287,17 @@ function StepSwiftUI() {
       <Crumbs last="SWIFTUI" />
       <h1 id="swiftui">Padrões e refatoração <span className="eb-accent">SwiftUI</span></h1>
       <p className="eb-lede">
-        Três skills para a fase de implementação. Use durante a escrita inicial, na hora de domar
+        Quatro skills para a fase de implementação. Use durante a escrita inicial, na hora de domar
         uma view que ficou grande, ou para adotar APIs novas do iOS 26+.
       </p>
+
+      <h2>evenbetter-design</h2>
+      <p>
+        Direciona decisões de design de interface para evitar telas genéricas e elevar acabamento visual.
+        É útil quando você quer transformar wireframes ou requisitos em uma UI SwiftUI com hierarquia,
+        contraste, ritmo e linguagem visual consistentes com um produto pronto para produção.
+      </p>
+      <Invocation skill="evenbetter-design" args="redesenhar tela de onboarding com foco em clareza" />
 
       <h2>evenbetter-swiftui-ui-patterns</h2>
       <p>
@@ -328,9 +355,8 @@ function StepAuditoria() {
       <Crumbs last="AUDITORIA" />
       <h1 id="auditoria">Auditoria <span className="eb-accent">HIG e WCAG</span></h1>
       <p className="eb-lede">
-        Três skills que rodam em sequência: <strong>analyze</strong> propõe, <strong>validate</strong> filtra,
-        <strong> fix</strong> remedia. É o padrão <em>orchestrator-workers-with-validators</em> aplicado a
-        guidelines da Apple e WCAG 2.2.
+        Duas skills que rodam em sequência: <strong>analyze</strong> propõe e <strong>validate</strong> filtra.
+        É o padrão <em>orchestrator-workers-with-validators</em> aplicado a guidelines da Apple e WCAG 2.2.
       </p>
 
       <div className="eb-steps-frame" style={{ marginTop: '1.5rem' }}>
@@ -351,23 +377,23 @@ function StepAuditoria() {
         <div className="eb-step">
           <div className="eb-step-num">03</div>
           <div className="eb-step-body">
-            <h4>fix · aplica correções</h4>
-            <p>Prioriza, agrupa por arquivo e remedia, atualizando o estado em <code>manifest.json</code>.</p>
+            <h4>remediação guiada</h4>
+            <p>Com as violações validadas, aplique correções usando as skills de SwiftUI, design e sistema.</p>
           </div>
         </div>
       </div>
 
-      <h2 style={{ marginTop: '2rem' }}>evenbetter-ios-analyze</h2>
+      <h2 style={{ marginTop: '2rem' }}>evenbetter-analyze</h2>
       <p>
         Recebe o caminho absoluto do projeto e roda seis analisadores de domínio em paralelo: tipografia,
         cor e theming, componentes, layout e interação, navegação, e acessibilidade. Cada domínio só consulta
         seu próprio corpus markdown. O relatório final tem severidade por violação, escore por arquivo
         e <code>overall_score</code> agregado.
       </p>
-      <Invocation skill="evenbetter-ios-analyze" args="projectPath: /caminho/absoluto/do/projeto" />
+      <Invocation skill="evenbetter-analyze" args="projectPath: /caminho/absoluto/do/projeto" />
 
       <ChatMock
-        skill="evenbetter-ios-analyze"
+        skill="evenbetter-analyze"
         args="projectPath: /Users/me/MyApp"
         responseTitle="Análise completa"
         responseLines={[
@@ -386,24 +412,15 @@ function StepAuditoria() {
       </p>
       <Invocation skill="evenbetter-validate" args="projectPath: /caminho/absoluto/do/projeto" />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-fix</h2>
-      <p>
-        Lê o <code>manifest.json</code>, mescla violações abertas de todas as runs, faz uma rodada curta de
-        perguntas de escopo (severidade, prioridade, modo de execução), agrupa edições por arquivo e aplica
-        as correções. Pode rodar localmente, em sub-agentes paralelos ou apenas gerar prompts estáticos.
-      </p>
-      <Invocation skill="evenbetter-fix" args="projectPath: /caminho/absoluto/do/projeto" />
-
       <Callout kind="warn" title="O analyzer nunca modifica seu código">
-        As três skills só escrevem dentro de <code>.evenbetter/</code>. O <code>analyze</code> e o{' '}
-        <code>validate</code> são totalmente read-only no seu source. Apenas o <code>fix</code> edita arquivos
-        do projeto, e mesmo assim só depois da rodada de escopo confirmada.
+        As skills de auditoria escrevem seus resultados em <code>.evenbetter/</code>. O{' '}
+        <code>analyze</code> e o <code>validate</code> são read-only no seu source.
       </Callout>
 
       <Callout kind="tip" title="Re-rodar a análise é grátis">
         Cada execução do <code>analyze</code> gera um número novo (<code>analyze-2.json</code>,{' '}
-        <code>analyze-3.json</code>...) e o <code>manifest.json</code> mantém o histórico.
-        O <code>fix</code> sabe quais violações já foram resolvidas, deferidas ou rejeitadas.
+        <code>analyze-3.json</code>...). Rode <code>validate</code> sobre a run mais recente para reduzir
+        falsos positivos antes de abrir correções.
       </Callout>
     </>
   )
@@ -426,8 +443,8 @@ function StepPerformance() {
       <Crumbs last="PERFORMANCE" />
       <h1 id="performance">Performance e <span className="eb-accent">acessibilidade</span></h1>
       <p className="eb-lede">
-        Duas skills focadas em qualidade. Uma é uma sessão guiada de diagnóstico,
-        a outra é uma referência de regras canônicas que você consulta sob demanda.
+        Três skills focadas em qualidade. Uma é uma sessão guiada de diagnóstico,
+        outra é uma referência de regras canônicas e a terceira cobre feedback tátil acessível.
       </p>
 
       <h2>evenbetter-swiftui-performance-audit</h2>
@@ -467,8 +484,16 @@ function StepPerformance() {
       </p>
       <Invocation skill="evenbetter-swiftui-accessibility" args="qual o tamanho mínimo de toque pelo HIG?" />
 
+      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-ios-haptics</h2>
+      <p>
+        Foca em feedback tátil com semântica correta para cada evento de UI. A skill orienta quando usar
+        <code> .sensoryFeedback</code>, quando descer para Core Haptics e como sempre manter fallback visual
+        e de áudio para não depender de vibração como único canal de retorno.
+      </p>
+      <Invocation skill="evenbetter-ios-haptics" args="mapear haptics para fluxo de pagamento" />
+
       <Callout kind="note" title="A skill empresta regras pro analyzer">
-        O <code>evenbetter-ios-analyze</code> usa o mesmo corpus. Se você quer entender por que uma violação
+        O <code>evenbetter-analyze</code> usa o mesmo corpus. Se você quer entender por que uma violação
         existe, perguntar pra <code>evenbetter-swiftui-accessibility</code> é o caminho mais curto pra cláusula original.
       </Callout>
     </>
@@ -822,7 +847,7 @@ export default function TutorialPluginIosPage() {
           <div className="eb-sidebar-agent">
             <div>
               <div className="eb-sidebar-agent-name">EvenBetter iOS</div>
-              <div className="eb-sidebar-agent-sub">Plugin · 12 skills</div>
+              <div className="eb-sidebar-agent-sub">Plugin · 15 skills</div>
             </div>
           </div>
           <div className="eb-side-title">Etapas</div>
@@ -847,7 +872,7 @@ export default function TutorialPluginIosPage() {
             <div className="eb-pager-done">
               <div className="eb-pager-done-icon"><Icon name="check" size={14} /></div>
               <div>
-                <h4>Você conhece todas as 12 skills</h4>
+                <h4>Você conhece todas as 15 skills</h4>
                 <p>
                   Use o índice na lateral para revisitar qualquer etapa. Para sugestões e contribuições,
                   acesse o repositório no GitHub.
