@@ -115,7 +115,7 @@ const CATEGORIES: Category[] = [
         id: 'perf-audit',
         name: 'evenbetter-swiftui-performance-audit',
         desc: 'Diagnostica scrolling travado, hangs, picos de CPU e re-renderizações excessivas em SwiftUI.',
-        code: '@performance-audit FeedView.swift',
+        code: '/evenbetter-ios:evenbetter-swiftui-performance-audit FeedView.swift',
         href: '/tutorial/plugins/ios#performance',
       },
       {
