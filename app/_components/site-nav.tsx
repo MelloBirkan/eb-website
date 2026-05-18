@@ -86,7 +86,7 @@ export function SiteNav() {
     }
     if (href === '/') return false
     if (href === '/about') return pathname === '/about'
-    if (href === GUIAS_HREF) return pathname.startsWith(GUIAS_HREF)
+    if (href === GUIAS_HREF) return pathname.startsWith('/tutorial')
     return pathname.startsWith(href)
   }
 
