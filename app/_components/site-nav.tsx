@@ -8,9 +8,13 @@ import { Logo } from './tutorial-primitives'
 import { CommandPalette } from '../../components/_eb/command-palette'
 
 type NavLink = { href: string; label: string }
+
+/** Header "Guias" opens the EvenBetter iOS plugin tutorial (primary product guide). */
+const GUIAS_HREF = '/tutorial/plugins/ios'
+
 const LINKS: NavLink[] = [
   { href: '/', label: 'Início' },
-  { href: '/#escolha-seu-agente', label: 'Guias' },
+  { href: GUIAS_HREF, label: 'Guias' },
   { href: '/about', label: 'Sobre' },
 ]
 
@@ -75,15 +79,14 @@ export function SiteNav() {
   function isActive(href: string) {
     if (!pathname) return false
     if (isHome) {
-      // Scroll-spy on the home page: top → Início, anchored sections → Guias.
+      // Scroll-spy on the home page: top → Início; agents/skills band → Guias (iOS guide).
       if (href === '/') return !inGuidesSection
-      if (href.startsWith('/#')) return inGuidesSection
+      if (href === GUIAS_HREF) return inGuidesSection
       return false
     }
     if (href === '/') return false
     if (href === '/about') return pathname === '/about'
-    // "Guias" is the /tutorial/* anchor — active inside any tutorial page.
-    if (href.startsWith('/#')) return pathname.startsWith('/tutorial')
+    if (href === GUIAS_HREF) return pathname.startsWith(GUIAS_HREF)
     return pathname.startsWith(href)
   }
 
@@ -96,19 +99,6 @@ export function SiteNav() {
       // Drop any leftover hash so back/forward + share urls feel right.
       if (window.location.hash) {
         window.history.replaceState(null, '', window.location.pathname + window.location.search)
-      }
-    }
-  }
-
-  /** Clicking Guias while already on / should smooth-scroll to the section. */
-  function handleGuiasClick(e: MouseEvent<HTMLAnchorElement>) {
-    if (isHome) {
-      e.preventDefault()
-      const target = document.getElementById('escolha-seu-agente')
-      if (target) {
-        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
-        window.history.replaceState(null, '', '/#escolha-seu-agente')
       }
     }
   }
@@ -137,10 +127,9 @@ export function SiteNav() {
               {LINKS.map((l) => {
                 const active = isActive(l.href)
                 const isInicio = l.href === '/'
-                const isGuias = l.href.startsWith('/#')
-                const onClick = isInicio ? handleInicioClick : isGuias ? handleGuiasClick : undefined
-                // Custom handlers manage scroll for same-page links; let Next handle real route changes.
-                const skipNextScroll = isInicio || isGuias
+                const onClick = isInicio ? handleInicioClick : undefined
+                // Início uses a same-route handler; other links use default navigation + scroll.
+                const skipNextScroll = isInicio
                 return (
                   <Link
                     key={l.href}
