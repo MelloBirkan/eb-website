@@ -140,7 +140,10 @@ export function SiteNav() {
                 const isGuias = l.href.startsWith('/#')
                 const onClick = isInicio ? handleInicioClick : isGuias ? handleGuiasClick : undefined
                 // Custom handlers manage scroll for same-page links; let Next handle real route changes.
-                const skipNextScroll = isInicio || isGuias
+                // Guias: scroll={false} maps to NoScroll, which prevents the App Router
+                // from applying the hash target when leaving /tutorial/*. Only skip on
+                // the home page, where handleGuiasClick scrolls manually.
+                const skipNextScroll = isInicio || (isGuias && isHome)
                 return (
                   <Link
                     key={l.href}
