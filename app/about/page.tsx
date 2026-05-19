@@ -135,6 +135,58 @@ const REFERENCES = [
   },
 ]
 
+const RESEARCH_UPDATES = [
+  {
+    title: 'Escopo implementado',
+    text: (
+      <>
+        A versão do artigo consolida <strong>2 plugins</strong> (<code>evenbetter-ios</code> e{' '}
+        <code>evenbetter-general</code>), <strong>17 skills instaláveis</strong>,{' '}
+        <strong>49 cláusulas iOS</strong> em sete domínios e geração de artefatos em{' '}
+        <code>.evenbetter/</code>.
+      </>
+    ),
+  },
+  {
+    title: 'Avaliação com desenvolvedores',
+    text: (
+      <>
+        Avaliação exploratória com <strong>10 desenvolvedores iOS</strong> em ambiente controlado,
+        cobrindo descoberta no site, planejamento com skill, leitura de relatório e percepção de uso.
+      </>
+    ),
+  },
+  {
+    title: 'Resultado SUS',
+    text: (
+      <>
+        A pontuação média foi <strong>79,5</strong> (mediana 81,25; desvio padrão 15,1; mínimo 57,5;
+        máximo 100), acima do benchmark 68 usado como referência em estudos de usabilidade.
+      </>
+    ),
+  },
+  {
+    title: 'Achados de auditoria no estudo',
+    text: (
+      <>
+        No protocolo com o app Aroma Care, os participantes leram corretamente um relatório com{' '}
+        <strong>55 achados</strong> (15 críticos e 40 altos). O corpus de 49 cláusulas funciona como
+        base normativa; múltiplos achados podem surgir para a mesma cláusula em telas diferentes.
+      </>
+    ),
+  },
+  {
+    title: 'Maturidade do fluxo',
+    text: (
+      <>
+        A verificação interna estabilizou o uso em fases separadas (
+        <code>plan → analyze → validate → fix</code>), com rastreabilidade por evidência, domínio,
+        severidade e referência de diretriz.
+      </>
+    ),
+  },
+]
+
 export default function AboutPage() {
   return (
     <div className="eb-root">
@@ -308,6 +360,27 @@ export default function AboutPage() {
               )
             })}
           </ul>
+        </section>
+
+        {/* ───── Research updates ───── */}
+        <section className="eb-skills-section" id="atualizacoes-artigo" aria-labelledby="atualizacoes-h2">
+          <div className="eb-section-head">
+            <h2 id="atualizacoes-h2">Atualizações do artigo.</h2>
+            <p className="eb-lede">
+              Pontos adicionados a partir da versão consolidada do TCC, mantendo o conteúdo atual do
+              site e ampliando o contexto de avaliação.
+            </p>
+          </div>
+          <ol className="eb-refs">
+            {RESEARCH_UPDATES.map((item) => (
+              <li key={item.title}>
+                <div className="eb-ref">
+                  <p className="eb-ref-title">{item.title}</p>
+                  <p className="eb-ref-meta">{item.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </section>
 
         {/* ───── References ───── */}

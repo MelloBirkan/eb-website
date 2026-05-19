@@ -148,6 +148,14 @@ function StepVisaoGeral() {
         do trabalho. Você invoca uma de cada vez, na ordem que faz sentido para o que está fazendo.
       </p>
 
+      <Callout kind="note" title="Base empírica do artigo (TCC)">
+        Na versão consolidada da pesquisa, o framework reúne <strong>2 plugins</strong> e{' '}
+        <strong>17 skills</strong> no total (incluindo <code>evenbetter-general</code>), com{' '}
+        <strong>49 cláusulas iOS</strong> e avaliação com 10 desenvolvedores (
+        <strong>SUS 79,5</strong>). O guia abaixo mantém foco operacional no plugin{' '}
+        <code>evenbetter-ios</code> e no fluxo de uso no dia a dia.
+      </Callout>
+
       <div className="eb-agent-chat-highlight">
         <div className="eb-agent-chat-highlight-head">
           <span className="eb-agent-chat-highlight-eyebrow">Agente · ao vivo</span>
@@ -415,6 +423,12 @@ function StepAuditoria() {
       <Callout kind="warn" title="O analyzer nunca modifica seu código">
         As skills de auditoria escrevem seus resultados em <code>.evenbetter/</code>. O{' '}
         <code>analyze</code> e o <code>validate</code> são read-only no seu source.
+      </Callout>
+
+      <Callout kind="note" title="49 cláusulas não significa 49 achados">
+        No estudo com o app Aroma Care, um único relatório trouxe 55 achados (15 críticos e 40 altos)
+        mesmo com 49 cláusulas no corpus. Isso acontece porque uma mesma cláusula pode gerar múltiplas
+        ocorrências em arquivos, telas e estados diferentes.
       </Callout>
 
       <Callout kind="tip" title="Re-rodar a análise é grátis">

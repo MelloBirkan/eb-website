@@ -120,11 +120,6 @@ export default function Home() {
             </div>
             <div className="eb-hero-right">
               <div className="eb-hero-illo-stage"><HeroIllo /></div>
-              <div className="eb-hero-chips">
-                <span className="eb-hero-chip"><span className="eb-dot" /> 15 skills</span>
-                <span className="eb-hero-chip"><span className="eb-dot" /> 5 etapas</span>
-                <span className="eb-hero-chip"><span className="eb-dot" /> 31 → 69%</span>
-              </div>
             </div>
           </div>
         </div>

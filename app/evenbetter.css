@@ -591,32 +591,6 @@
   max-width: 460px;
   height: auto;
 }
-.eb-hero-chips {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  flex-wrap: wrap;
-}
-.eb-hero-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: var(--eb-cream);
-  border-radius: 999px;
-  font-family: var(--eb-font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--eb-teal-deep);
-}
-.eb-hero-chip .eb-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--eb-teal);
-}
 
 /* ───── Steps ───── */
 
