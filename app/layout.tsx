@@ -25,7 +25,7 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://evenbetter.dev";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://evenbetter.mellofattura.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
