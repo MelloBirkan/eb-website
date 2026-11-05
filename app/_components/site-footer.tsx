@@ -41,7 +41,7 @@ export function SiteFooter() {
       <div className="mx-auto grid w-full max-w-[1240px] gap-12 px-6 pt-16 pb-10 md:grid-cols-[1.3fr_2fr] lg:px-10">
         <div className="max-w-sm">
           <Link href="/" className="hit relative inline-flex items-center gap-3 font-semibold tracking-[-0.02em]">
-            <BrandMark size={34} className="grid place-items-center rounded-[10px] bg-ink text-glow" />
+            <BrandMark size={34} />
             <span className="text-lg">
               Even<span className="font-serif text-[1.2em] font-normal italic">Better</span>
             </span>
