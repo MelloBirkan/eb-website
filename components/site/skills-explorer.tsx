@@ -158,19 +158,19 @@ export function SkillsExplorer() {
                 tabIndex={on ? 0 : -1}
                 onClick={() => setActive(i)}
                 className={`relative flex shrink-0 items-center justify-between gap-4 rounded-full border px-4 py-2.5 text-left text-[15px] font-medium transition-colors lg:rounded-2xl lg:border-transparent lg:px-5 lg:py-4 ${
-                  on ? 'border-transparent text-on-night' : 'border-line-2 text-ink-2 hover:text-ink lg:hover:bg-card'
+                  on ? 'border-transparent text-on-pick' : 'border-line-2 text-ink-2 hover:text-ink lg:hover:bg-card'
                 }`}
               >
                 {on && (
                   <motion.span
                     layoutId="skills-pill"
-                    className="absolute inset-0 rounded-full bg-night lg:rounded-2xl"
+                    className="absolute inset-0 rounded-full bg-pick lg:rounded-2xl"
                     transition={SPRING.ui}
                     aria-hidden
                   />
                 )}
                 <span className="relative whitespace-nowrap">{g.label}</span>
-                <span className={`relative font-mono text-[12.5px] ${on ? 'text-glow' : 'text-ink-3'}`}>
+                <span className={`relative font-mono text-[12.5px] ${on ? 'text-pick-accent' : 'text-ink-3'}`}>
                   {g.skills.length}
                 </span>
               </button>

@@ -303,7 +303,6 @@ export function AgentDemo() {
         <button
           type="button"
           onClick={() => setPlaying((p) => !p)}
-          aria-pressed={!playing}
           className="absolute top-2.5 right-3 z-10 inline-flex h-8 items-center gap-1.5 rounded-full border border-white/12 bg-white/8 px-3 font-mono text-[11.5px] text-on-night-2 backdrop-blur transition-colors hover:bg-white/14 hover:text-on-night focus-visible:outline-glow"
         >
           {playing ? (

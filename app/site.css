@@ -385,6 +385,15 @@
   white-space: nowrap;
 }
 
+/* A reference flashes when a citation marker jumps to it. */
+.ref-item:target {
+  animation: ref-flash 2.4s ease-out;
+}
+@keyframes ref-flash {
+  0%, 35% { background: var(--s-mint); color: var(--s-ink); }
+  100% { background: transparent; }
+}
+
 /* Focus rings on dark surfaces use the glow tone. */
 .sn-wrap :focus-visible,
 .on-night :focus-visible {

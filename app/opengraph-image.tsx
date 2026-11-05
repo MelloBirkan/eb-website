@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "EvenBetter — Skills curadas para acessibilidade em iOS";
+export const alt = "EvenBetter · Skills curadas para acessibilidade em iOS";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -71,7 +71,7 @@ export default async function OpengraphImage() {
               color: "#3a5552",
             }}
           >
-            TCC II · Mackenzie · 2026
+            Artigo aceito na JIIHC 2026
           </div>
         </div>
 
@@ -96,7 +96,7 @@ export default async function OpengraphImage() {
               maxWidth: 800,
             }}
           >
-            Framework para Codex, Claude Code e o plugin EvenBetter iOS.
+            O seu agente de IA planeja, audita e corrige apps SwiftUI com o HIG da Apple e a WCAG 2.2.
           </div>
         </div>
 
@@ -105,16 +105,15 @@ export default async function OpengraphImage() {
             display: "flex",
             alignItems: "center",
             gap: 12,
-            fontSize: 18,
+            fontSize: 20,
             fontFamily: "ui-monospace, monospace",
-            letterSpacing: 1.5,
-            textTransform: "uppercase",
+            letterSpacing: 0.5,
             color: "#266b65",
           }}
         >
-          <span>31% &mdash; 69%</span>
+          <span>16 skills · 49 cláusulas</span>
           <span style={{ color: "#a9d4c4" }}>·</span>
-          <span style={{ color: "#3a5552" }}>cobertura de a11y · Zhong et al., 2025</span>
+          <span style={{ color: "#3a5552" }}>SUS 79,5 com dez devs iOS</span>
         </div>
       </div>
     ),

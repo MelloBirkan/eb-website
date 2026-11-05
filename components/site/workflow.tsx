@@ -55,8 +55,8 @@ const STEPS: Step[] = [
     label: 'Validar',
     skills: ['evenbetter-validate'],
     title: 'Uma segunda leitura antes de confiar.',
-    text: 'O relatório é aberto de novo. A evidência sustenta o achado? A severidade está certa? O que não se confirma sai do relatório.',
-    human: 'Você revisa evidências, não um veredito fechado.',
+    text: 'O agente relê o relatório. A evidência sustenta o achado? A severidade está certa? O que não se confirma sai do relatório.',
+    human: 'Você confere a evidência antes de aceitar um achado.',
     href: '/tutorial/plugins/ios#auditoria',
     alt: 'Exemplo: a validação confirma dois achados, ajusta a severidade de um terceiro e remove um achado sem evidência.',
     Visual: ValidateVisual,
@@ -190,13 +190,13 @@ export function Workflow() {
                   tabIndex={active ? 0 : -1}
                   onClick={() => pick(i)}
                   className={`relative flex h-11 min-w-0 items-center justify-center gap-2 rounded-full px-1 text-[13.5px] font-medium transition-colors duration-200 sm:h-12 sm:px-2 sm:text-[15px] ${
-                    active ? 'text-on-night' : 'text-ink-2 hover:text-ink'
+                    active ? 'text-on-pick' : 'text-ink-2 hover:text-ink'
                   }`}
                 >
                   {active && (
-                    <motion.span layoutId="wf-pill" className="absolute inset-0 rounded-full bg-night" transition={SPRING.ui} aria-hidden />
+                    <motion.span layoutId="wf-pill" className="absolute inset-0 rounded-full bg-pick" transition={SPRING.ui} aria-hidden />
                   )}
-                  <span className={`relative hidden font-mono text-[11.5px] sm:inline ${active ? 'text-glow' : 'text-ink-3'}`}>
+                  <span className={`relative hidden font-mono text-[11.5px] sm:inline ${active ? 'text-pick-accent' : 'text-ink-3'}`}>
                     0{i + 1}
                   </span>
                   <span className="relative truncate">{s.label}</span>

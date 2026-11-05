@@ -26,10 +26,19 @@ function splitWords(root: HTMLElement): Split {
   }
 
   for (const node of nodes) {
+    // Spaces at the edges stay plain text outside the split. Inside it they
+    // become an empty word box, which can start a line and indent it.
+    const [, lead, core, trail] = node.data.match(/^(\s*)([\s\S]*?)(\s*)$/) ?? ['', '', node.data, '']
     const holder = document.createElement('span')
-    holder.textContent = node.data
-    node.replaceWith(holder)
-    restores.push(() => holder.replaceWith(node))
+    holder.textContent = core
+    const parts: Node[] = [holder]
+    if (lead) parts.unshift(document.createTextNode(lead))
+    if (trail) parts.push(document.createTextNode(trail))
+    node.replaceWith(...parts)
+    restores.push(() => {
+      parts[0].parentNode?.replaceChild(node, parts[0])
+      for (const part of parts.slice(1)) part.parentNode?.removeChild(part)
+    })
     const split = splitText(holder, { wordClass: 'split-word' })
     holder.removeAttribute('aria-label')
     holder.setAttribute('aria-hidden', 'true')

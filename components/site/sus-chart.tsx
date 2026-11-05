@@ -14,8 +14,8 @@ export const SUS_BENCHMARK = 68
 
 // Adjective ranges of Bangor et al. (2009), as drawn in the paper.
 const BANDS = [
-  { label: 'OK', range: '52–71', from: 52, to: 72, tone: 'bg-med/[0.07]', dot: 'bg-med border-med', chip: 'border-med bg-med text-white' },
-  { label: 'Bom', range: '72–84', from: 72, to: 85, tone: 'bg-brand/[0.07]', dot: 'bg-brand/60 border-brand', chip: 'border-brand bg-card text-brand-ink' },
+  { label: 'OK', range: '52 a 71', from: 52, to: 72, tone: 'bg-med/[0.07]', dot: 'bg-med border-med', chip: 'border-med bg-med text-white' },
+  { label: 'Bom', range: '72 a 84', from: 72, to: 85, tone: 'bg-brand/[0.07]', dot: 'bg-brand/60 border-brand', chip: 'border-brand bg-card text-brand-ink' },
   { label: 'Excelente', range: '≥ 85', from: 85, to: 100, tone: 'bg-brand/[0.14]', dot: 'bg-brand border-brand', chip: 'border-brand bg-brand text-on-brand' },
 ]
 
@@ -25,13 +25,14 @@ const pct = (v: number) => ((v - MIN) / (MAX - MIN)) * 100
 const fmt = (v: number) => v.toLocaleString('pt-BR', { maximumFractionDigits: 2 })
 const bandOf = (v: number) => BANDS.find((b) => v >= b.from && v < b.to + (b.to === MAX ? 1 : 0)) ?? BANDS[0]
 
-export function SusChart({ className = '' }: { className?: string }) {
+/** `summary={false}` drops the phone-only stat row when the page already shows those numbers. */
+export function SusChart({ className = '', summary = true }: { className?: string; summary?: boolean }) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, amount: 0.45 })
 
   return (
     <figure className={className}>
-      <SusCompact />
+      <SusCompact summary={summary} />
       <div ref={ref} aria-hidden className="relative mx-3.5 hidden select-none sm:block">
         {/* Bands with their labels */}
         <div className="relative h-[170px] sm:h-[180px]">
@@ -145,7 +146,7 @@ export function SusChart({ className = '' }: { className?: string }) {
 }
 
 /** Phones: one row per adjective range, so no label ever has to share space. */
-function SusCompact() {
+function SusCompact({ summary }: { summary: boolean }) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, amount: 0.4 })
   const rows = [...BANDS].reverse()
@@ -177,18 +178,20 @@ function SusCompact() {
           )
         })}
       </ul>
-      <dl className="mt-5 grid grid-cols-3 gap-2 text-center font-mono">
-        {[
-          { k: 'Média', v: <AnimateNumber locales="pt-BR" format={{ minimumFractionDigits: 1 }}>{inView ? SUS_MEAN : SUS_BENCHMARK}</AnimateNumber>, tone: 'text-brand-ink' },
-          { k: 'Mediana', v: '81,25', tone: 'text-ink' },
-          { k: 'Referência', v: '68', tone: 'text-ink' },
-        ].map((m) => (
-          <div key={m.k} className="rounded-2xl border border-line px-2 py-3">
-            <dt className="text-[11.5px] text-ink-3">{m.k}</dt>
-            <dd className={`mt-1 text-[17px] font-semibold ${m.tone}`}>{m.v}</dd>
-          </div>
-        ))}
-      </dl>
+      {summary && (
+        <dl className="mt-5 grid grid-cols-3 gap-2 text-center font-mono">
+          {[
+            { k: 'Média', v: <AnimateNumber locales="pt-BR" format={{ minimumFractionDigits: 1 }}>{inView ? SUS_MEAN : SUS_BENCHMARK}</AnimateNumber>, tone: 'text-brand-ink' },
+            { k: 'Mediana', v: '81,25', tone: 'text-ink' },
+            { k: 'Referência', v: '68', tone: 'text-ink' },
+          ].map((m) => (
+            <div key={m.k} className="rounded-2xl border border-line px-2 py-3">
+              <dt className="text-[11.5px] text-ink-3">{m.k}</dt>
+              <dd className={`mt-1 text-[17px] font-semibold ${m.tone}`}>{m.v}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
     </div>
   )
 }

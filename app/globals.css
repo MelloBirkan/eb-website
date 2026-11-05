@@ -100,6 +100,10 @@
   --color-high-n: var(--s-high-n);
   --color-med-n: var(--s-med-n);
   --color-low-n: var(--s-low-n);
+  --color-pick: var(--s-pick);
+  --color-on-pick: var(--s-on-pick);
+  --color-on-pick-2: var(--s-on-pick-2);
+  --color-pick-accent: var(--s-pick-accent);
 }
 
 /* ───────────────────────────────────────────────────────────
@@ -141,6 +145,11 @@
   --s-high-n: #f5b544;
   --s-med-n: #7aa7ff;
   --s-low-n: #5fd08f;
+  /* The sliding pill on the chosen tab or option: night on paper, mint in dark mode */
+  --s-pick: #0b1a18;
+  --s-on-pick: #e7f3ef;
+  --s-on-pick-2: #a9c2bb;
+  --s-pick-accent: #b6efd9;
 
   /* Cursor-tracked specular hotspot (set by JS) */
   --mx: 50%;
@@ -172,6 +181,10 @@
     --s-high: #f5b544;
     --s-med: #8ab4ff;
     --s-low: #6ad69a;
+    --s-pick: #7fd6bf;
+    --s-on-pick: #06110f;
+    --s-on-pick-2: #1d4d45;
+    --s-pick-accent: #0f3b35;
   }
 }
 

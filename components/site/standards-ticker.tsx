@@ -35,7 +35,6 @@ export function StandardsTicker() {
           <button
             type="button"
             onClick={() => setPaused((p) => !p)}
-            aria-pressed={paused}
             aria-label={paused ? 'Continuar a faixa' : 'Pausar a faixa'}
             className="grid size-9 shrink-0 place-items-center rounded-full border border-line-2 text-ink-2 transition-colors hover:bg-card hover:text-ink"
           >

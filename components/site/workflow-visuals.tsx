@@ -322,7 +322,7 @@ export function RepairVisual({ paused }: { paused: boolean }) {
             </div>
             <p className="mt-2 text-[14.5px] leading-snug">O texto do botão depende do produto. O que o VoiceOver deve ler?</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {['“Favoritar”', '“Salvar nos favoritos”', 'Outro texto'].map((o) => (
+              {['"Favoritar"', '"Salvar nos favoritos"', 'Outro texto'].map((o) => (
                 <span key={o} className="rounded-full border border-white/14 px-3 py-1.5 text-[13.5px] text-on-night-2">
                   {o}
                 </span>

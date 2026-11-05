@@ -101,7 +101,7 @@ export function StudyHighlight() {
       <Reveal className="mt-8 flex flex-col items-start justify-between gap-5 rounded-[24px] border border-dashed border-line-2 p-6 sm:flex-row sm:items-center">
         <p className="max-w-[60ch] text-[15px] leading-relaxed text-ink-2">
           É um estudo formativo, sem grupo de comparação, então os números descrevem este grupo e não provam efeito. O
-          artigo detalha o método, os limites e o que vem a seguir.
+          método e os limites do estudo estão na página da pesquisa, junto com os próximos passos.
         </p>
         <ButtonLink href="/pesquisa#resultados" variant="secondary">
           Ver os resultados completos
