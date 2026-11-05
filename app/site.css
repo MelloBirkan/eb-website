@@ -124,6 +124,30 @@
   to { opacity: 1; }
 }
 
+/* ───── Hero entrance, in CSS so it plays with the first paint ───── */
+
+.hero-word {
+  display: inline-block;
+  animation: hero-in 950ms cubic-bezier(.22, 1, .36, 1) backwards;
+  animation-delay: calc(var(--d0, 100ms) + var(--i, 0) * var(--step, 60ms));
+  --y: 0.42em;
+  --b: 8px;
+}
+.hero-rise {
+  animation: hero-in 900ms cubic-bezier(.22, 1, .36, 1) backwards;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(var(--y, 16px)); filter: blur(var(--b, 0px)); }
+}
+/* Reduced motion keeps the fade and drops the rise and the blur. */
+@keyframes hero-fade {
+  from { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-word, .hero-rise { animation-name: hero-fade; }
+}
+
 /* ───── Night sections ───── */
 
 .on-night {
@@ -163,6 +187,16 @@
   -webkit-backdrop-filter: blur(18px) saturate(1.5);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 10px 30px -18px rgba(5, 14, 13, 0.6);
   transition: box-shadow 300ms ease, background-color 300ms ease;
+}
+/* Drops in once on load. Plain CSS, so it does not wait for the JavaScript. */
+.sn-enter {
+  animation: sn-enter 760ms cubic-bezier(.22, 1, .36, 1) 50ms backwards;
+}
+@keyframes sn-enter {
+  from { opacity: 0; transform: translateY(-24px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sn-enter { animation-name: hero-fade; }
 }
 .sn-wrap[data-scrolled="true"] .sn-bar {
   background: rgba(11, 26, 24, 0.9);
@@ -331,6 +365,19 @@
 @media (max-width: 860px) {
   .sn-links, .sn-cta:not(.sn-cta-wide) { display: none; }
   .sn-menu-btn { display: grid; }
+  /* Phones: 44px targets, and the bar slides away while you read down the page. */
+  .sn-icon, .sn-search { width: 44px; height: 44px; }
+  .sn-brand { height: 44px; padding-left: 2px; }
+  .sn-wrap { transition: transform 420ms cubic-bezier(.22, 1, .36, 1); }
+  .sn-wrap[data-hidden="true"] { transform: translateY(calc(-100% - 16px)); }
+}
+.sn-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgba(5, 14, 13, 0.38);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
 /* ───── Footer wordmark ───── */
@@ -350,6 +397,37 @@
 
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Grows the tap area to at least 44px without changing the look.
+   The element needs its own position (relative or absolute). */
+.hit::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  transform: translate(-50%, -50%);
+}
+
+/* Commands stay on one line and scroll sideways when they do not fit. The fade
+   marks the cut edge, and the padding lets the last characters scroll past it. */
+.code-x {
+  white-space: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  padding-right: 28px;
+  mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+}
+.code-x::-webkit-scrollbar { display: none; }
+
+/* Sideways rows of chips or cards: both ends fade, over the row's own padding. */
+.fade-x {
+  mask-image: linear-gradient(90deg, transparent, #000 22px, #000 calc(100% - 22px), transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 22px, #000 calc(100% - 22px), transparent);
+}
 
 .code-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
 
@@ -384,6 +462,20 @@
   vertical-align: 0.15em;
   white-space: nowrap;
 }
+/* Citation numbers are tiny; on touch screens each one gets a taller, wider tap area.
+   Kept narrow enough that the numbers in [6, 7] stay separate. */
+@media (pointer: coarse) {
+  .cite a { position: relative; }
+  .cite a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 22px);
+    height: 40px;
+    transform: translate(-50%, -50%);
+  }
+}
 
 /* A reference flashes when a citation marker jumps to it. */
 .ref-item:target {
@@ -392,6 +484,14 @@
 @keyframes ref-flash {
   0%, 35% { background: var(--s-mint); color: var(--s-ink); }
   100% { background: transparent; }
+}
+
+/* Phones: the references after the first six slide in when the list opens. */
+@media (max-width: 767.98px) and (prefers-reduced-motion: no-preference) {
+  .ref-reveal { animation: ref-in 520ms cubic-bezier(.22, 1, .36, 1) both; }
+}
+@keyframes ref-in {
+  from { opacity: 0; transform: translateY(12px); }
 }
 
 /* Focus rings on dark surfaces use the glow tone. */

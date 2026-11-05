@@ -56,7 +56,7 @@ export function TeamFan() {
           </div>
           <figcaption className={`flex items-center justify-between px-2 pt-2 pb-1 ${i === 2 ? 'flex-row-reverse' : ''}`}>
             <span className="text-[13.5px] font-semibold text-ink">{m.short}</span>
-            <span className="font-mono text-[10.5px] text-ink-3">{m.role}</span>
+            <span className="font-mono text-[11.5px] text-ink-3">{m.role}</span>
           </figcaption>
         </motion.figure>
       ))}

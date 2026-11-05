@@ -409,7 +409,9 @@ export function AgentChat() {
   return (
     <div className="eb-agent-chat-frame">
       <div className="eb-chat-bar">
-        <span className="eb-chat-tag">EVENBETTER iOS AGENT · POWERED BY CLAUDE</span>
+        <span className="eb-chat-tag">
+          EVENBETTER iOS AGENT<span className="eb-chat-tag-more"> · POWERED BY CLAUDE</span>
+        </span>
         <span className={`eb-agent-chat-status ${phase}`}>
           <span className="eb-agent-chat-dot" />
           {statusLabel}

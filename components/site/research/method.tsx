@@ -205,7 +205,7 @@ export function SessionStrip() {
               }`}
             >
               {on && <motion.span layoutId="session-on" className="absolute inset-0 rounded-xl bg-pick" transition={SPRING.ui} aria-hidden />}
-              <span className={`relative font-mono text-[10.5px] ${on ? 'text-pick-accent' : 'text-ink-3'}`}>0{i + 1}</span>
+              <span className={`relative font-mono text-[11px] ${on ? 'text-pick-accent' : 'text-ink-3'}`}>0{i + 1}</span>
               <span className="relative text-[12.5px] leading-tight font-medium break-words sm:text-[13.5px]">{task.name}</span>
             </button>
           )

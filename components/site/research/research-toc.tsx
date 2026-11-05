@@ -26,6 +26,7 @@ function jump(e: MouseEvent<HTMLAnchorElement>, id: string, after?: () => void) 
 function useActiveSection() {
   const [active, setActive] = useState<SectionId>(SECTIONS[0].id)
   const [pastHero, setPastHero] = useState(false)
+  const [atEnd, setAtEnd] = useState(false)
 
   useEffect(() => {
     const spy = new IntersectionObserver(
@@ -43,19 +44,28 @@ function useActiveSection() {
     const heroWatch = new IntersectionObserver(([entry]) => setPastHero(!entry.isIntersecting), { threshold: 0 })
     if (hero) heroWatch.observe(hero)
 
+    // From the closing call to action down to the footer, the pill would cover buttons and links.
+    const end = document.querySelector('[aria-labelledby="pesquisa-cta"]')
+    const endWatch = new IntersectionObserver(
+      ([entry]) => setAtEnd(entry.isIntersecting || entry.boundingClientRect.top < 0),
+      { threshold: 0 },
+    )
+    if (end) endWatch.observe(end)
+
     return () => {
       spy.disconnect()
       heroWatch.disconnect()
+      endWatch.disconnect()
     }
   }, [])
 
   // Back at the top, the hero is on screen and no section is under the reading line.
-  return { active: pastHero ? active : SECTIONS[0].id, pastHero }
+  return { active: pastHero ? active : SECTIONS[0].id, pastHero, atEnd }
 }
 
 /** "Nesta página": a sticky rail on wide screens and a floating pill with a sheet on phones. */
 export function ResearchToc() {
-  const { active, pastHero } = useActiveSection()
+  const { active, pastHero, atEnd } = useActiveSection()
   const [open, setOpen] = useState(false)
   const sheetRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll()
@@ -121,7 +131,7 @@ export function ResearchToc() {
       </aside>
 
       <AnimatePresence>
-        {pastHero && (
+        {pastHero && !atEnd && (
           <motion.div
             ref={sheetRef}
             initial={{ y: 90, opacity: 0 }}

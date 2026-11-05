@@ -31,7 +31,7 @@ export function TeamCards() {
                 <a
                   href={`mailto:${m.email}`}
                   aria-label={`E-mail de ${m.name}`}
-                  className="inline-flex h-10 items-center gap-2 rounded-full border border-line-2 px-4 text-[14px] font-medium text-ink transition-colors hover:border-ink/40 hover:bg-paper-2"
+                  className="inline-flex h-10 items-center gap-2 rounded-full border border-line-2 px-4 text-[14px] font-medium text-ink transition-[border-color,background-color,scale] hover:border-ink/40 hover:bg-paper-2 active:scale-[0.97] pointer-coarse:h-11"
                 >
                   <Mail size={15} />
                   E-mail
@@ -41,7 +41,7 @@ export function TeamCards() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`ORCID de ${m.name}`}
-                  className="inline-flex h-10 items-center gap-2 rounded-full border border-line-2 px-4 text-[14px] font-medium text-ink transition-colors hover:border-ink/40 hover:bg-paper-2"
+                  className="inline-flex h-10 items-center gap-2 rounded-full border border-line-2 px-4 text-[14px] font-medium text-ink transition-[border-color,background-color,scale] hover:border-ink/40 hover:bg-paper-2 active:scale-[0.97] pointer-coarse:h-11"
                 >
                   <Orcid size={15} />
                   ORCID

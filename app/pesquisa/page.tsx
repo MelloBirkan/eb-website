@@ -16,9 +16,10 @@ import { ContextLayers, Evolution } from '../../components/site/research/framewo
 import { GapDemo } from '../../components/site/research/gap-demo'
 import { DsrSteps, Participants, SessionStrip } from '../../components/site/research/method'
 import { Oversight } from '../../components/site/research/oversight'
-import { AUTHORS, PAPER, REFERENCES, sectionNumber, type SectionId } from '../../components/site/research/paper'
+import { AUTHORS, PAPER, sectionNumber, type SectionId } from '../../components/site/research/paper'
 import { FindingParts, ReportFigure, SeverityMap } from '../../components/site/research/report-figure'
 import { Requirements } from '../../components/site/research/requirements'
+import { ReferenceList } from '../../components/site/research/reference-list'
 import { ResearchHero } from '../../components/site/research/research-hero'
 import { ResearchToc } from '../../components/site/research/research-toc'
 import { Journey, Qualitative, SusResults } from '../../components/site/research/results'
@@ -201,7 +202,7 @@ export default function ResearchPage() {
                   <RevealItem key={r.id} className="flex flex-col rounded-[24px] border border-line bg-card p-6">
                     <p className="font-mono text-[13px] font-semibold text-brand">{r.id}</p>
                     <p className="mt-2 flex-1 text-[16.5px] leading-snug font-medium text-ink">{r.q}</p>
-                    <a href={r.href} className="link mt-4 w-fit text-[14px] font-medium">
+                    <a href={r.href} className="hit link relative mt-4 w-fit text-[14px] font-medium">
                       {r.a}
                     </a>
                   </RevealItem>
@@ -509,7 +510,7 @@ export default function ResearchPage() {
                     href={PAPER.code}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="link mt-4 inline-flex w-fit items-center gap-1 text-[14px] font-medium"
+                    className="hit link relative mt-4 inline-flex w-fit items-center gap-1 text-[14px] font-medium"
                   >
                     MelloBirkan/EvenBetterFramework <ArrowUpRight size={14} />
                   </a>
@@ -541,11 +542,11 @@ export default function ResearchPage() {
               }
             >
               <Citation />
-              <Reveal className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-[14.5px]">
-                <a href={PAPER.slides} target="_blank" rel="noopener noreferrer" className="link inline-flex items-center gap-1 font-medium">
+              <Reveal className="mt-5 flex flex-wrap gap-x-6 gap-y-3 text-[14.5px]">
+                <a href={PAPER.slides} target="_blank" rel="noopener noreferrer" className="hit link relative inline-flex items-center gap-1 font-medium">
                   Slides da apresentação <ArrowUpRight size={14} />
                 </a>
-                <a href={PAPER.program} target="_blank" rel="noopener noreferrer" className="link inline-flex items-center gap-1 font-medium">
+                <a href={PAPER.program} target="_blank" rel="noopener noreferrer" className="hit link relative inline-flex items-center gap-1 font-medium">
                   Programa do evento <ArrowUpRight size={14} />
                 </a>
               </Reveal>
@@ -561,28 +562,7 @@ export default function ResearchPage() {
                 </>
               }
             >
-              <ol className="mt-10 grid gap-1">
-                {REFERENCES.map((r) => (
-                  <li
-                    key={r.n}
-                    id={`ref-${r.n}`}
-                    className="ref-item grid grid-cols-[34px_minmax(0,1fr)] gap-2 rounded-xl px-3 py-2.5 text-[14px] leading-relaxed text-ink-2"
-                  >
-                    <span className="font-mono text-[12.5px] text-ink-3">[{r.n}]</span>
-                    <span className="min-w-0 [overflow-wrap:anywhere]">
-                      <span lang="en">{r.text}</span>
-                      {r.url && (
-                        <>
-                          {' '}
-                          <a href={r.url} target="_blank" rel="noopener noreferrer" className="link font-mono text-[12.5px]">
-                            {r.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
-                          </a>
-                        </>
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ol>
+              <ReferenceList />
             </Section>
           </div>
         </div>

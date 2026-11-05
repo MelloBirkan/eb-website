@@ -1,11 +1,16 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { AnimatePresence, LayoutGroup, motion } from 'motion/react'
 import { Check, Close, FileCode, Person } from './icons'
 import { SPRING } from './motion'
+import { useReducedMotion } from './use-reduced-motion'
 import { useStages } from './use-stages'
 
-const card = 'rounded-[24px] border border-white/10 bg-night p-5 text-on-night shadow-[0_1px_0_rgba(255,255,255,.06)_inset] md:p-6'
+const frame = 'rounded-[24px] border border-white/10 bg-night text-on-night shadow-[0_1px_0_rgba(255,255,255,.06)_inset]'
+const card = `${frame} p-4 sm:p-5 md:p-6`
+/** On phones every visual keeps this height, so switching steps does not move the page. */
+const phoneHeight = 'min-h-[476px] md:min-h-[420px]'
 
 /* ───── 01 Plan ───── */
 
@@ -39,69 +44,84 @@ function Options({ group, items, picked }: { group: string; items: string[]; pic
 
 export function PlanVisual({ paused }: { paused: boolean }) {
   const s = useStages(PLAN_DELAYS, paused)
+  const reduce = useReducedMotion()
+  const chatRef = useRef<HTMLDivElement>(null)
   const plan = ['Dynamic Type em todas as telas', 'Rótulo de VoiceOver nos botões de ícone', 'Confirmar antes de excluir uma tarefa']
+
+  // On phones the chat has a fixed height and follows the newest message, like a messaging app.
+  useEffect(() => {
+    const el = chatRef.current
+    if (!el || el.scrollHeight <= el.clientHeight) return
+    el.scrollTo({ top: el.scrollHeight, behavior: reduce ? 'auto' : 'smooth' })
+  }, [s, reduce])
+
   return (
-    <div className={`${card} flex min-h-[420px] flex-col gap-3`}>
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={SPRING.ui}
-        className="ml-auto max-w-[85%] rounded-[18px] rounded-br-md bg-glow px-4 py-2.5 text-[14.5px] leading-snug text-night"
+    <div className={`${frame} flex h-[476px] flex-col overflow-hidden px-4 pb-4 sm:px-5 sm:pb-5 md:h-auto md:min-h-[420px] md:overflow-visible md:p-6`}>
+      <div
+        ref={chatRef}
+        className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden pt-4 *:shrink-0 [mask-image:linear-gradient(to_bottom,transparent,#000_16px)] sm:pt-5 md:overflow-visible md:pt-0 md:[mask-image:none]"
       >
-        Planeje um app para organizar a limpeza da casa.
-      </motion.p>
-      <AnimatePresence>
-        {s >= 1 && (
-          <motion.div
-            key="q1"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={SPRING.gentle}
-            className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
-          >
-            <p className="font-mono text-[11.5px] tracking-[0.12em] text-on-night-3 uppercase">Pergunta · público</p>
-            <p className="mt-1 text-[15px] font-medium">Quem vai usar o app no dia a dia?</p>
-            <Options group="q1" items={['Só eu', 'A casa toda', 'Uma diarista']} picked={s >= 2 ? 1 : null} />
-          </motion.div>
-        )}
-        {s >= 3 && (
-          <motion.div
-            key="q2"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={SPRING.gentle}
-            className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
-          >
-            <p className="font-mono text-[11.5px] tracking-[0.12em] text-on-night-3 uppercase">Pergunta · estado vazio</p>
-            <p className="mt-1 text-[15px] font-medium">O que a lista mostra sem tarefas?</p>
-            <Options group="q2" items={['Mensagem e botão de criar', 'Lista em branco']} picked={s >= 4 ? 0 : null} />
-          </motion.div>
-        )}
-        {s >= 5 && (
-          <motion.div
-            key="plan"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={SPRING.gentle}
-            className="rounded-2xl border border-glow/30 bg-glow/[0.06] p-4"
-          >
-            <p className="font-mono text-[11.5px] tracking-[0.12em] text-glow uppercase">Plano · critérios de aceite</p>
-            <ul className="mt-2 space-y-1.5">
-              {plan.map((item, i) => (
-                <motion.li
-                  key={item}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={s >= 5 + i ? { opacity: 1, x: 0 } : { opacity: 0, x: -8 }}
-                  transition={SPRING.ui}
-                  className="flex items-center gap-2 text-[14px] text-on-night"
-                >
-                  <Check size={14} className="text-glow" /> {item}
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={SPRING.ui}
+          className="ml-auto max-w-[85%] rounded-[18px] rounded-br-md bg-glow px-4 py-2.5 text-[14.5px] leading-snug text-night"
+        >
+          Planeje um app para organizar a limpeza da casa.
+        </motion.p>
+        <AnimatePresence>
+          {s >= 1 && (
+            <motion.div
+              key="q1"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={SPRING.gentle}
+              className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+            >
+              <p className="font-mono text-[11.5px] tracking-[0.12em] text-on-night-3 uppercase">Pergunta · público</p>
+              <p className="mt-1 text-[15px] font-medium">Quem vai usar o app no dia a dia?</p>
+              <Options group="q1" items={['Só eu', 'A casa toda', 'Uma diarista']} picked={s >= 2 ? 1 : null} />
+            </motion.div>
+          )}
+          {s >= 3 && (
+            <motion.div
+              key="q2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={SPRING.gentle}
+              className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+            >
+              <p className="font-mono text-[11.5px] tracking-[0.12em] text-on-night-3 uppercase">Pergunta · estado vazio</p>
+              <p className="mt-1 text-[15px] font-medium">O que a lista mostra sem tarefas?</p>
+              <Options group="q2" items={['Mensagem e botão de criar', 'Lista em branco']} picked={s >= 4 ? 0 : null} />
+            </motion.div>
+          )}
+          {s >= 5 && (
+            <motion.div
+              key="plan"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={SPRING.gentle}
+              className="rounded-2xl border border-glow/30 bg-glow/[0.06] p-4"
+            >
+              <p className="font-mono text-[11.5px] tracking-[0.12em] text-glow uppercase">Plano · critérios de aceite</p>
+              <ul className="mt-2 space-y-1.5">
+                {plan.map((item, i) => (
+                  <motion.li
+                    key={item}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={s >= 5 + i ? { opacity: 1, x: 0 } : { opacity: 0, x: -8 }}
+                    transition={SPRING.ui}
+                    className="flex items-center gap-2 text-[14px] text-on-night"
+                  >
+                    <Check size={14} className="text-glow" /> {item}
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }
@@ -124,6 +144,7 @@ const SEV_TONE: Record<string, string> = {
   high: 'border-high-n/50 text-high-n',
   med: 'border-med-n/50 text-med-n',
 }
+const SEV_TEXT: Record<string, string> = { crit: 'text-crit-n', high: 'text-high-n', med: 'text-med-n' }
 
 // One stage per line of CODE, then one more for the scan line to fade out.
 const ANALYZE_DELAYS = [500, 500, 500, 500, 650, 650, 650, 500, 600]
@@ -133,12 +154,12 @@ export function AnalyzeVisual({ paused }: { paused: boolean }) {
   // The scan line sits on CODE[s - 1] while it moves.
   const scanned = Math.min(s, CODE.length)
   return (
-    <div className={`${card} min-h-[420px]`}>
+    <div className={`${card} ${phoneHeight}`}>
       <div className="flex items-center gap-2 text-on-night-3">
         <FileCode size={15} />
         <span className="font-mono text-[12.5px]">Views/FavoriteRow.swift</span>
       </div>
-      <div className="relative mt-4 overflow-hidden rounded-2xl border border-white/8 bg-black/25 py-3 font-mono text-[11.5px] leading-[2] [--ind:9px] sm:text-[13px] sm:[--ind:14px]">
+      <div className="relative mt-4 overflow-hidden rounded-2xl border border-white/8 bg-black/25 py-3 font-mono text-[11.5px] leading-[2] [--ind:6px] sm:text-[13px] sm:[--ind:14px]">
         <motion.span
           aria-hidden
           className="absolute inset-x-0 h-[26px] bg-glow/10 shadow-[inset_2px_0_0_var(--s-glow)]"
@@ -146,8 +167,15 @@ export function AnalyzeVisual({ paused }: { paused: boolean }) {
           transition={SPRING.ui}
         />
         {CODE.map((l, i) => (
-          <div key={l.n} className="relative flex items-center gap-3 px-3 whitespace-nowrap" style={{ height: 26 }}>
-            <span className="w-5 shrink-0 text-right text-on-night-3/70">{l.n}</span>
+          <div key={l.n} className="relative flex items-center gap-2 px-3 whitespace-nowrap sm:gap-3" style={{ height: 26 }}>
+            {/* A flagged line number takes the finding's color, so each finding below points back to its line. */}
+            <span
+              className={`w-5 shrink-0 text-right transition-colors duration-300 ${
+                l.flag && i < scanned ? `font-semibold ${SEV_TEXT[l.flag.sev]}` : 'text-on-night-3/70'
+              }`}
+            >
+              {l.n}
+            </span>
             <span className={i < scanned ? 'text-on-night' : 'text-on-night-3'} style={{ paddingLeft: `calc(var(--ind) * ${l.indent})` }}>
               {l.code}
             </span>
@@ -164,11 +192,11 @@ export function AnalyzeVisual({ paused }: { paused: boolean }) {
               transition={SPRING.lively}
               className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.04] px-3 py-2 text-[13.5px]"
             >
-              <span className={`rounded-md border px-1.5 py-px font-mono text-[11px] font-semibold ${SEV_TONE[l.flag!.sev]}`}>
+              <span className={`shrink-0 rounded-md border px-1.5 py-px font-mono text-[11px] font-semibold whitespace-nowrap ${SEV_TONE[l.flag!.sev]}`}>
                 {l.flag!.id}
               </span>
-              <span className="truncate text-on-night">{l.flag!.text}</span>
-              <span className="ml-auto shrink-0 font-mono text-[11.5px] text-on-night-3">linha {l.n}</span>
+              <span className="min-w-0 truncate text-on-night">{l.flag!.text}</span>
+              <span className="ml-auto hidden shrink-0 font-mono text-[11.5px] text-on-night-3 sm:inline">linha {l.n}</span>
             </motion.li>
           ))}
         </AnimatePresence>
@@ -194,7 +222,7 @@ export function ValidateVisual({ paused }: { paused: boolean }) {
   const s = useStages(VALIDATE_DELAYS, paused)
   const dropped = s >= 5
   return (
-    <div className={`${card} min-h-[420px]`}>
+    <div className={`${card} ${phoneHeight}`}>
       <div className="flex items-center justify-between">
         <p className="font-mono text-[12.5px] text-on-night-3">evenbetter-analyze-report.html</p>
         <motion.span
@@ -286,12 +314,12 @@ const REPAIR_DELAYS = [400, 260, 260, 260, 260, 260, 260, 700, 600]
 export function RepairVisual({ paused }: { paused: boolean }) {
   const s = useStages(REPAIR_DELAYS, paused)
   return (
-    <div className={`${card} min-h-[420px]`}>
+    <div className={`${card} ${phoneHeight}`}>
       <div className="flex items-center gap-2 text-on-night-3">
         <FileCode size={15} />
         <span className="font-mono text-[12.5px]">Views/FavoriteRow.swift</span>
       </div>
-      <div className="mt-4 overflow-hidden rounded-2xl border border-white/8 bg-black/25 py-2 font-mono text-[11.5px] leading-[1.9] sm:text-[13px]">
+      <div className="mt-3 overflow-hidden rounded-2xl border border-white/8 bg-black/25 py-1.5 font-mono text-[11.5px] leading-[1.75] sm:mt-4 sm:py-2 sm:text-[13px] sm:leading-[1.9]">
         {DIFF.map((d, i) => (
           <motion.div
             key={i}
@@ -311,14 +339,14 @@ export function RepairVisual({ paused }: { paused: boolean }) {
             initial={{ opacity: 0, y: 12, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={SPRING.gentle}
-            className="mt-4 rounded-2xl border border-glow/40 bg-glow/[0.07] p-4"
+            className="mt-3 rounded-2xl border border-glow/40 bg-glow/[0.07] p-3.5 sm:mt-4 sm:p-4"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className="grid size-7 place-items-center rounded-full bg-glow text-night">
                 <Person size={15} />
               </span>
-              <p className="font-mono text-[11.5px] font-semibold tracking-[0.12em] text-glow uppercase">Decisão sua</p>
-              <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[11.5px] text-on-night-2">
+              <p className="font-mono text-[11.5px] font-semibold tracking-[0.12em] whitespace-nowrap text-glow uppercase">Decisão sua</p>
+              <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[11.5px] whitespace-nowrap text-on-night-2">
                 <motion.span
                   className="size-2 rounded-full bg-glow"
                   animate={paused ? { opacity: 1 } : { opacity: [1, 0.3, 1] }}
@@ -328,9 +356,9 @@ export function RepairVisual({ paused }: { paused: boolean }) {
               </span>
             </div>
             <p className="mt-2 text-[14.5px] leading-snug">O texto do botão depende do produto. O que o VoiceOver deve ler?</p>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-1.5 sm:gap-2">
               {['"Favoritar"', '"Salvar nos favoritos"', 'Outro texto'].map((o) => (
-                <span key={o} className="rounded-full border border-white/14 px-3 py-1.5 text-[13.5px] text-on-night-2">
+                <span key={o} className="rounded-full border border-white/14 px-2.5 py-1 text-[13px] text-on-night-2 sm:px-3 sm:py-1.5 sm:text-[13.5px]">
                   {o}
                 </span>
               ))}

@@ -1,8 +1,8 @@
 'use client'
 
-import { useId, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
 import Link from 'next/link'
-import { AnimatePresence, LayoutGroup, motion } from 'motion/react'
+import { AnimatePresence, LayoutGroup, motion, useScroll } from 'motion/react'
 import { CopyButton } from './copy-button'
 import { ArrowRight } from './icons'
 import { EASE_OUT, SPRING } from './motion'
@@ -131,7 +131,9 @@ export function SkillsExplorer() {
   }
 
   return (
-    <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-8 md:mt-16 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-12">
+    <>
+    <SkillsCarousel />
+    <div className="mt-14 hidden grid-cols-[minmax(0,1fr)] gap-8 sm:grid md:mt-16 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-12">
       <LayoutGroup id={`${uid}-groups`}>
         <div
           role="tablist"
@@ -211,7 +213,7 @@ export function SkillsExplorer() {
                 </div>
                 <p className="mt-2.5 flex-1 text-[15px] leading-relaxed text-ink-2">{s.text}</p>
                 <div className="mt-4 flex items-center gap-2 rounded-xl bg-paper-2 py-1.5 pr-1.5 pl-3">
-                  <code className="min-w-0 flex-1 truncate font-mono text-[12px] text-ink-2">/evenbetter-ios:{s.name}</code>
+                  <code className="code-x min-w-0 flex-1 font-mono text-[12px] text-ink-2">/evenbetter-ios:{s.name}</code>
                   <CopyButton text={`/evenbetter-ios:${s.name}`} label={`o comando da skill ${s.name}`} className="size-7" />
                 </div>
               </motion.li>
@@ -229,6 +231,156 @@ export function SkillsExplorer() {
           </Link>
         </div>
       </div>
+    </div>
+    </>
+  )
+}
+
+const ALL = GROUPS.flatMap((g, gi) => g.skills.map((skill) => ({ skill, group: g, gi })))
+const FIRST_OF_GROUP = GROUPS.map((g) => ALL.findIndex((a) => a.group.id === g.id))
+
+/**
+ * Phones: all 16 skills in one row you swipe through, with native snapping.
+ * The group chips follow the card in view, and a tap on a chip jumps to its group.
+ */
+function SkillsCarousel() {
+  const uid = useId()
+  const rowRef = useRef<HTMLUListElement>(null)
+  const chipsRef = useRef<HTMLDivElement>(null)
+  const chipRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const [card, setCard] = useState(0)
+  const { scrollXProgress } = useScroll({ container: rowRef })
+  const active = ALL[card]?.gi ?? 0
+
+  // The card that is most in view sets the active group.
+  useEffect(() => {
+    const row = rowRef.current
+    if (!row) return
+    const seen = new Map<number, number>()
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) seen.set(Number((e.target as HTMLElement).dataset.i), e.intersectionRatio)
+        let best = 0
+        let ratio = -1
+        for (const [i, r] of seen) {
+          if (r > ratio || (r === ratio && i < best)) {
+            best = i
+            ratio = r
+          }
+        }
+        setCard(best)
+      },
+      { root: row, threshold: [0, 0.25, 0.5, 0.75, 1] },
+    )
+    for (const el of row.children) io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  // Keep the active chip in sight inside its own sideways row.
+  useEffect(() => {
+    const chips = chipsRef.current
+    const chip = chipRefs.current[active]
+    if (!chips || !chip) return
+    const left = chip.offsetLeft - (chips.clientWidth - chip.offsetWidth) / 2
+    chips.scrollTo({ left, behavior: 'smooth' })
+  }, [active])
+
+  function jump(gi: number) {
+    const row = rowRef.current
+    const target = row?.children[FIRST_OF_GROUP[gi]] as HTMLElement | undefined
+    if (!row || !target) return
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // The row is positioned, so offsetLeft counts from its padding edge; 24px is the row's own padding.
+    row.scrollTo({ left: target.offsetLeft - 24, behavior: still ? 'auto' : 'smooth' })
+  }
+
+  return (
+    <div className="mt-10 sm:hidden">
+      <LayoutGroup id={`${uid}-chips`}>
+        <div
+          ref={chipsRef}
+          role="group"
+          aria-label="Ir para um grupo de skills"
+          className="no-scrollbar fade-x relative -mx-6 flex gap-2 overflow-x-auto px-6 py-1"
+        >
+          {GROUPS.map((g, i) => {
+            const on = i === active
+            return (
+              <button
+                key={g.id}
+                ref={(el) => {
+                  chipRefs.current[i] = el
+                }}
+                type="button"
+                aria-pressed={on}
+                onClick={() => jump(i)}
+                className={`relative flex h-11 shrink-0 items-center gap-2.5 rounded-full border px-4 text-[15px] font-medium transition-colors ${
+                  on ? 'border-transparent text-on-pick' : 'border-line-2 text-ink-2'
+                }`}
+              >
+                {on && (
+                  <motion.span
+                    layoutId="skills-chip"
+                    className="absolute inset-0 rounded-full bg-pick"
+                    transition={SPRING.ui}
+                    aria-hidden
+                  />
+                )}
+                <span className="relative whitespace-nowrap">{g.label}</span>
+                <span className={`relative font-mono text-[12.5px] ${on ? 'text-pick-accent' : 'text-ink-3'}`}>
+                  {g.skills.length}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </LayoutGroup>
+
+      <ul
+        ref={rowRef}
+        aria-label="As 16 skills do plugin iOS"
+        className="no-scrollbar relative -mx-6 mt-5 flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto overscroll-x-contain px-6 pb-2"
+      >
+        {ALL.map(({ skill, group }, i) => (
+          <li
+            key={skill.name}
+            data-i={i}
+            className="flex w-[84%] shrink-0 snap-start flex-col rounded-[22px] border border-line bg-card p-5"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-mono text-[12px] font-semibold tracking-[0.12em] text-brand-ink uppercase">{group.label}</p>
+              {skill.isNew && (
+                <span className="shrink-0 rounded-full bg-mint px-2 py-0.5 font-mono text-[12px] font-semibold text-brand-ink">
+                  nova
+                </span>
+              )}
+            </div>
+            <code className="mt-3 font-mono text-[14px] font-semibold break-all text-ink">{skill.name}</code>
+            <p className="mt-2 flex-1 text-[15px] leading-relaxed text-ink-2">{skill.text}</p>
+            <div className="mt-4 flex items-center gap-2 rounded-xl bg-paper-2 py-1.5 pr-1.5 pl-3">
+              <code className="code-x min-w-0 flex-1 font-mono text-[12px] text-ink-2">/evenbetter-ios:{skill.name}</code>
+              <CopyButton text={`/evenbetter-ios:${skill.name}`} label={`o comando da skill ${skill.name}`} className="size-8" />
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-4 flex items-center gap-4" aria-hidden>
+        <div className="h-1 flex-1 overflow-hidden rounded-full bg-line">
+          <motion.div className="h-full origin-left rounded-full bg-brand" style={{ scaleX: scrollXProgress }} />
+        </div>
+        <span className="num font-mono text-[12.5px] text-ink-3">
+          {String(card + 1).padStart(2, '0')} / {ALL.length}
+        </span>
+      </div>
+
+      <p className="mt-6 text-[14.5px] text-ink-3">
+        Também há o plugin <code className="inline-code">evenbetter-general</code>, com duas skills de planejamento para
+        qualquer plataforma.
+      </p>
+      <Link href="/tutorial/plugins/ios" className="hit link relative mt-3 inline-flex items-center gap-1.5 text-[15px] font-medium">
+        Todas as skills no guia <ArrowRight size={15} />
+      </Link>
     </div>
   )
 }

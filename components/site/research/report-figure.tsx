@@ -81,7 +81,7 @@ export function ReportFigure() {
                   }}
                   aria-label={`Ampliar: ${s.title}`}
                   tabIndex={hidden ? -1 : 0}
-                  className="absolute grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-glow font-mono text-[12.5px] font-semibold text-night shadow-[0_0_0_4px_rgba(182,239,217,.25)]"
+                  className="hit absolute grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-glow font-mono text-[12.5px] font-semibold text-night shadow-[0_0_0_4px_rgba(182,239,217,.25)]"
                   style={{ left: `${s.x}%`, top: `${s.y}%`, pointerEvents: hidden ? 'none' : 'auto' }}
                   initial={false}
                   animate={{ opacity: hidden ? 0 : 1, scale: hidden ? 0.5 : 1 }}

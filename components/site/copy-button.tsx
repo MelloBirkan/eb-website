@@ -41,7 +41,7 @@ export function CopyButton({ text, label, tone = 'light', className = '' }: Prop
       type="button"
       onClick={copy}
       aria-label={`Copiar ${label}`}
-      className={`relative grid size-8 shrink-0 place-items-center rounded-full border transition-colors ${base} ${className}`}
+      className={`hit relative grid size-8 shrink-0 place-items-center rounded-full border transition-[background-color,color,scale] active:scale-90 ${base} ${className}`}
     >
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span

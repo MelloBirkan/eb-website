@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { CodeBlock, Callout, Icon } from '../../_components/tutorial-primitives'
 import { SiteNav } from '../../_components/site-nav'
 import { SiteFooter } from '../../_components/site-footer'
+import { GuidePager, GuideSteps } from '../../_components/guide-steps'
 
 type StepId = 'marketplace' | 'instalar' | 'chamar' | 'desinstalar'
 
@@ -292,21 +293,7 @@ export default function TutorialCodexPage() {
               <div className="eb-sidebar-agent-sub">OpenAI Codex CLI</div>
             </div>
           </div>
-          <div className="eb-side-title">Etapas</div>
-          {STEPS.map((s, idx) => {
-            const isActive = s.id === step
-            const isSectionDone = idx < stepIdx
-            return (
-              <div
-                key={s.id}
-                className={`eb-side-item${isActive ? ' active' : ''}${isSectionDone ? ' done' : ''}`}
-                onClick={() => setStep(s.id)}
-              >
-                <span className="eb-num">{isSectionDone ? '✓' : `0${idx + 1}`}</span>
-                <span>{s.title}</span>
-              </div>
-            )
-          })}
+          <GuideSteps steps={STEPS} current={step} onPick={setStep} />
         </aside>
         <main className="eb-content eb-fade-page" key={step}>
           {step === 'marketplace' && <StepMarketplace />}
@@ -322,20 +309,7 @@ export default function TutorialCodexPage() {
               </div>
             </div>
           )}
-          <div className="eb-pager">
-            {prev
-              ? <div className="eb-pager-card" onClick={() => setStep(prev.id)}>
-                  <span className="eb-dir">← Anterior</span>
-                  <span className="eb-ttl">{prev.title}</span>
-                </div>
-              : <div />}
-            {next
-              ? <div className="eb-pager-card next" onClick={() => setStep(next.id)}>
-                  <span className="eb-dir">Próximo →</span>
-                  <span className="eb-ttl">{next.title}</span>
-                </div>
-              : <div />}
-          </div>
+          <GuidePager prev={prev} next={next} onPick={setStep} />
         </main>
       </div>
       <SiteFooter />

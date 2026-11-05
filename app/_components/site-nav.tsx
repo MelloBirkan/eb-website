@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState, type MouseEvent } from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { AnimatePresence, LayoutGroup, motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { CommandPalette } from '../../components/_eb/command-palette'
 import { BrandMark, Close, GitHub, Menu, Search } from '../../components/site/icons'
@@ -24,9 +24,32 @@ export function SiteNav() {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  // Phones only (see site.css): the bar slides away while you read down and comes back as soon as you scroll up.
+  const [hidden, setHidden] = useState(false)
+  const lastY = useRef(0)
+  const headerRef = useRef<HTMLElement>(null)
   const { scrollY } = useScroll()
 
-  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 12))
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    setScrolled(y > 12)
+    const dy = y - lastY.current
+    // Small moves add up until they pass the threshold, so a slow scroll still counts.
+    if (Math.abs(dy) < 10) return
+    lastY.current = y
+    const focusInside = headerRef.current?.contains(document.activeElement) ?? false
+    setHidden(dy > 0 && y > 160 && !focusInside)
+  })
+
+  // The open menu holds the page still and keeps the bar in place.
+  useEffect(() => {
+    if (!menuOpen) return
+    const root = document.documentElement
+    const before = root.style.overflow
+    root.style.overflow = 'hidden'
+    return () => {
+      root.style.overflow = before
+    }
+  }, [menuOpen])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -60,14 +83,29 @@ export function SiteNav() {
 
   return (
     <>
-      <header className="sn-wrap" data-scrolled={scrolled || menuOpen ? 'true' : 'false'}>
-        <motion.nav
-          aria-label="Principal"
-          className="sn-bar"
-          initial={{ y: -24, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ ...SPRING.gentle, delay: 0.05 }}
-        >
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="scrim"
+            aria-hidden
+            className="sn-scrim"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+      <header
+        ref={headerRef}
+        className="sn-wrap"
+        data-scrolled={scrolled || menuOpen ? 'true' : 'false'}
+        data-hidden={hidden && !menuOpen && !paletteOpen ? 'true' : 'false'}
+        onFocus={() => setHidden(false)}
+      >
+        {/* The entrance is CSS (.sn-enter), so the bar shows with the first paint instead of after hydration. */}
+        <nav aria-label="Principal" className="sn-bar sn-enter">
           <Link href="/" className="sn-brand" onClick={toTop} aria-label="EvenBetter, início">
             <BrandMark size={30} className="sn-mark" />
             <span className="sn-word">
@@ -133,7 +171,7 @@ export function SiteNav() {
               </AnimatePresence>
             </button>
           </div>
-        </motion.nav>
+        </nav>
 
         <AnimatePresence>
           {menuOpen && (

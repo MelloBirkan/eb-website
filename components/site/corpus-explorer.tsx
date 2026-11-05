@@ -1,11 +1,12 @@
 'use client'
 
-import { useMemo, useRef, useState, type KeyboardEvent } from 'react'
-import { AnimatePresence, LayoutGroup, motion, stagger } from 'motion/react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { AnimatePresence, LayoutGroup, motion, stagger, useInView } from 'motion/react'
 import { ScrambleText } from 'motion-plus/react'
 import { CORPUS, CLAUSE_COUNT, type Clause, type Severity } from './corpus-data'
-import { ArrowUpRight } from './icons'
-import { SPRING } from './motion'
+import { ArrowUpRight, Close } from './icons'
+import { EASE_OUT, SPRING } from './motion'
+import { useReducedMotion } from './use-reduced-motion'
 
 const SEVERITY: Record<Severity, { label: string; tile: string; solid: string; chip: string }> = {
   error: {
@@ -52,12 +53,56 @@ function formatDate(iso: string) {
   return `${d} de ${MONTHS[m - 1]} de ${y}`
 }
 
+/** Below this width the clause opens in the dock instead of the side card. */
+const DOCK_QUERY = '(max-width: 1023.98px)'
+const SHEET_SPRING = { type: 'spring', stiffness: 400, damping: 40 } as const
+
 export function CorpusExplorer() {
   const [selected, setSelected] = useState('A11Y-UI-001')
   const [filter, setFilter] = useState<Filter>('all')
+  // Phones and tablets: a tap opens the clause in a card docked at the bottom of the screen.
+  const [docked, setDocked] = useState(false)
   const tileRefs = useRef(new Map<string, HTMLButtonElement>())
+  const gridRef = useRef<HTMLDivElement>(null)
+  const dockRef = useRef<HTMLDivElement>(null)
+  const gridInView = useInView(gridRef, { amount: 0.05 })
+  const reduce = useReducedMotion()
 
   const current = useMemo(() => FLAT.find((f) => f.clause.id === selected) ?? FLAT[0], [selected])
+  const dockOpen = docked && gridInView
+
+  // Once the grid leaves the screen the dock closes for good, so it does not reopen on the way back.
+  const [wasInView, setWasInView] = useState(gridInView)
+  if (wasInView !== gridInView) {
+    setWasInView(gridInView)
+    if (!gridInView) setDocked(false)
+  }
+
+  useEffect(() => {
+    if (!dockOpen) return
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'Escape') setDocked(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [dockOpen])
+
+  function pick(id: string) {
+    setSelected(id)
+    if (!window.matchMedia(DOCK_QUERY).matches) return
+    setDocked(true)
+    // Scroll a little when the dock would cover the tile that was just tapped.
+    requestAnimationFrame(() => {
+      const tile = tileRefs.current.get(id)
+      const dock = dockRef.current
+      if (!tile || !dock) return
+      const covered = tile.getBoundingClientRect().bottom - (window.innerHeight - dock.offsetHeight - 28)
+      if (covered > 0) {
+        const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        window.scrollBy({ top: covered, behavior: still ? 'auto' : 'smooth' })
+      }
+    })
+  }
 
   function move(e: KeyboardEvent<HTMLDivElement>) {
     const i = FLAT.findIndex((f) => f.clause.id === selected)
@@ -91,7 +136,7 @@ export function CorpusExplorer() {
                 type="button"
                 aria-pressed={on}
                 onClick={() => setFilter(f)}
-                className={`relative inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-[14px] font-medium transition-colors ${
+                className={`relative inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-[14px] font-medium transition-colors pointer-coarse:h-11 ${
                   on ? 'border-ink bg-ink text-paper' : 'border-line-2 text-ink-2 hover:border-ink/30 hover:text-ink'
                 }`}
               >
@@ -106,9 +151,11 @@ export function CorpusExplorer() {
             )
           })}
         </div>
+        <p className="mt-4 text-[14.5px] text-ink-3 lg:hidden">Toque numa cláusula para ver a fonte.</p>
 
         <LayoutGroup id="corpus">
           <motion.div
+            ref={gridRef}
             role="group"
             aria-label="Cláusulas do corpus por domínio. Use as setas para navegar."
             onKeyDown={move}
@@ -123,7 +170,7 @@ export function CorpusExplorer() {
                   {d.name}
                   <span className="ml-2 font-mono text-[12px] text-ink-3">{d.clauses.length}</span>
                 </p>
-                <div className="grid grid-cols-9 gap-1 sm:flex sm:flex-wrap sm:gap-1.5">
+                <div className="grid grid-cols-7 gap-1 sm:flex sm:flex-wrap sm:gap-1.5">
                   {d.clauses.map((c, col) => {
                     const on = c.id === selected
                     const dim = filter !== 'all' && c.severity !== filter
@@ -147,7 +194,7 @@ export function CorpusExplorer() {
                           aria-pressed={on}
                           aria-label={`${c.id}: ${c.title}. ${s.label}.`}
                           tabIndex={on ? 0 : -1}
-                          onClick={() => setSelected(c.id)}
+                          onClick={() => pick(c.id)}
                           className={`relative grid size-full place-items-center rounded-[10px] border font-mono leading-[1.15] font-semibold transition-[opacity,background-color,color,translate,scale] duration-200 hover:-translate-y-0.5 active:scale-95 sm:rounded-[12px] ${
                             on ? s.solid : s.tile
                           } ${dim ? 'opacity-20' : ''}`}
@@ -160,7 +207,7 @@ export function CorpusExplorer() {
                               className="absolute -inset-[4px] rounded-[13px] border-2 border-ink sm:rounded-[15px]"
                             />
                           )}
-                          <span aria-hidden className="hidden text-[10px] sm:block">
+                          <span aria-hidden className="text-[10px] min-[400px]:text-[11px]">
                             {kind}
                             <br />
                             {n}
@@ -176,7 +223,7 @@ export function CorpusExplorer() {
         </LayoutGroup>
       </div>
 
-      <div className="lg:sticky lg:top-28 lg:self-start">
+      <div className="hidden lg:sticky lg:top-28 lg:block lg:self-start">
         <div className="relative overflow-hidden rounded-[28px] border border-line bg-card p-6 shadow-[0_30px_80px_-40px_rgba(15,37,35,.35)] sm:p-7">
           <div className="flex items-center justify-between gap-3">
             <p className="font-mono text-[12px] tracking-[0.14em] text-ink-3 uppercase">{current.domain}</p>
@@ -250,6 +297,82 @@ export function CorpusExplorer() {
           </p>
         </div>
       </div>
+
+      <AnimatePresence>
+        {dockOpen && (
+          <motion.div
+            ref={dockRef}
+            key="dock"
+            role="region"
+            aria-label="Cláusula escolhida"
+            className="fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom))] z-50 mx-auto max-w-[560px] touch-none rounded-[26px] border border-line bg-card/95 px-5 pt-2.5 pb-5 shadow-[0_30px_80px_-24px_rgba(15,37,35,.55)] backdrop-blur-xl lg:hidden"
+            initial={reduce ? { opacity: 0 } : { y: '120%' }}
+            animate={reduce ? { opacity: 1 } : { y: 0 }}
+            exit={reduce ? { opacity: 0 } : { y: '120%' }}
+            transition={reduce ? { duration: 0.15 } : SHEET_SPRING}
+            drag={reduce ? false : 'y'}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0.08, bottom: 0.8 }}
+            onDragEnd={(_, info) => {
+              if (info.offset.y > 64 || info.velocity.y > 600) setDocked(false)
+            }}
+          >
+            <div aria-hidden className="mx-auto h-1.5 w-10 rounded-full bg-line-2" />
+            <div className="mt-3 flex items-center gap-2">
+              <p className="min-w-0 flex-1 truncate font-mono text-[12px] tracking-[0.12em] text-ink-3 uppercase">
+                {current.domain}
+              </p>
+              <span className={`shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-[12px] font-semibold ${sev.chip}`}>
+                {sev.label}
+              </span>
+              <button
+                type="button"
+                onClick={() => setDocked(false)}
+                aria-label="Fechar a cláusula"
+                className="hit relative -mr-1 grid size-8 shrink-0 place-items-center rounded-full bg-paper-2 text-ink-2 transition-[scale] active:scale-90"
+              >
+                <Close size={14} />
+              </button>
+            </div>
+            <div className="relative min-h-[120px]">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.div
+                  key={clause.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8, transition: { duration: 0.12 } }}
+                  transition={{ duration: 0.3, ease: EASE_OUT }}
+                >
+                  <p className="mt-2 font-mono text-[20px] font-semibold tracking-[-0.01em] text-ink">
+                    <span className="sr-only">{clause.id}</span>
+                    {reduce ? (
+                      <span aria-hidden>{clause.id}</span>
+                    ) : (
+                      <ScrambleText
+                        aria-hidden
+                        duration={0.45}
+                        delay={stagger(0.02)}
+                        interval={0.04}
+                        chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-"
+                      >
+                        {clause.id}
+                      </ScrambleText>
+                    )}
+                  </p>
+                  <h3 className="mt-1 text-[17px] leading-snug font-semibold tracking-[-0.015em] text-ink">{clause.title}</h3>
+                  <p className="mt-2.5 text-[14px] leading-relaxed text-ink-3">
+                    <a href={clause.url} target="_blank" rel="noopener noreferrer" className="link font-medium">
+                      {clause.source}
+                      <ArrowUpRight size={13} className="ml-1 inline-block align-[-2px]" />
+                    </a>
+                    <span className="mt-0.5 block text-[13.5px]">Consultada em {formatDate(clause.retrieved)}</span>
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

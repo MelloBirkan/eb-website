@@ -1,11 +1,14 @@
 import Link from 'next/link'
 import { AgentDemo } from './agent-demo'
 import { ButtonLink } from './button'
+import { HeroHeading, HeroRise } from './hero-heading'
 import { ArrowRight } from './icons'
-import { Reveal } from './reveal'
-import { SplitHeading } from './split-heading'
 import { TiltOnScroll } from './tilt-on-scroll'
 
+/**
+ * The hero plays its entrance in CSS, so it starts with the first paint. On a
+ * phone the page would otherwise stay blank until the JavaScript loads.
+ */
 export function Hero() {
   return (
     <section aria-labelledby="hero-title" className="relative isolate pt-14 md:pt-20">
@@ -16,32 +19,34 @@ export function Hero() {
       />
 
       <div className="wrap text-center">
-        <Reveal y={12} blur={false}>
+        <HeroRise y={12}>
           <Link
             href="/pesquisa"
-            className="group inline-flex items-center gap-2.5 rounded-full border border-line-2 bg-card/80 py-1.5 pr-3 pl-1.5 text-[14px] text-ink-2 shadow-[0_6px_20px_-12px_rgba(15,37,35,.35)] backdrop-blur transition-colors hover:border-ink/30 hover:text-ink"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-line-2 bg-card/80 py-1.5 pr-3 pl-1.5 text-[14px] pointer-coarse:min-h-11 text-ink-2 shadow-[0_6px_20px_-12px_rgba(15,37,35,.35)] backdrop-blur transition-colors hover:border-ink/30 hover:text-ink"
           >
             <span className="rounded-full bg-ink px-2.5 py-0.5 font-mono text-[11.5px] font-semibold tracking-[0.08em] text-paper uppercase">
               Novo
             </span>
-            Artigo aceito na JIIHC 2026, em Talca, Chile
+            <span>
+              Artigo aceito na JIIHC 2026<span className="hidden sm:inline">, em Talca, Chile</span>
+            </span>
             <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
           </Link>
-        </Reveal>
+        </HeroRise>
 
-        <SplitHeading as="h1" id="hero-title" immediate delay={0.1} className="display mx-auto mt-8 max-w-[15ch] md:max-w-[19ch]">
+        <HeroHeading id="hero-title" className="display mx-auto mt-8 max-w-[15ch] md:max-w-[19ch]">
           Skills <span className="serif">curadas</span> para acessibilidade em iOS.
-        </SplitHeading>
+        </HeroHeading>
 
-        <Reveal delay={0.35} y={16}>
+        <HeroRise delay={350} blur>
           <p className="lede mx-auto mt-7 max-w-[40rem]">
             O EvenBetter ensina o seu agente de IA a planejar, auditar e corrigir apps SwiftUI com o HIG da
             Apple e a WCAG 2.2. Você continua no comando de cada decisão.
           </p>
-        </Reveal>
+        </HeroRise>
 
-        <Reveal delay={0.5} y={12} blur={false}>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <HeroRise delay={500} y={12}>
+          <div className="mx-auto mt-9 flex max-w-sm flex-col items-stretch gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
             <ButtonLink href="#comecar" size="lg">
               Instalar no Claude Code ou Codex
             </ButtonLink>
@@ -52,7 +57,7 @@ export function Hero() {
           <p className="mt-6 font-mono text-[13px] text-ink-3">
             Código aberto · 16 skills no plugin iOS · 49 cláusulas com fonte
           </p>
-        </Reveal>
+        </HeroRise>
       </div>
 
       <div className="wrap mt-14 md:mt-20">

@@ -81,7 +81,7 @@ export function Requirements() {
           aria-label="Requisitos de design"
           aria-orientation="vertical"
           onKeyDown={onKey}
-          className="-mx-6 flex gap-2 overflow-x-auto px-6 no-scrollbar lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0"
+          className="-mx-6 flex gap-2 overflow-x-auto overscroll-x-contain px-6 no-scrollbar [mask-image:linear-gradient(90deg,transparent,#000_22px,#000_calc(100%-22px),transparent)] lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0 lg:[mask-image:none]"
         >
           {REQS.map((q, i) => {
             const on = i === active
@@ -151,7 +151,7 @@ export function Requirements() {
                   </li>
                 ))}
               </ul>,
-              <a key="a" href={r.href} className="link mt-6 inline-block text-[14.5px] font-medium">
+              <a key="a" href={r.href} className="hit link relative mt-6 inline-block text-[14.5px] font-medium">
                 Onde aparece: {r.where}
               </a>,
             ].map((child) => (

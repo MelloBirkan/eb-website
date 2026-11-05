@@ -69,7 +69,8 @@ export function Segmented<T extends string>({
   const pill = night ? 'bg-glow' : 'bg-pick'
   const on = night ? 'text-night' : 'text-on-pick'
   const off = night ? 'text-on-night-2 hover:text-on-night' : 'text-ink-2 hover:text-ink'
-  const height = size === 'lg' ? 'min-h-12 px-5 text-[15px]' : 'min-h-10 px-4 text-[14px]'
+  // Touch screens get the 44px target of the HIG; a mouse keeps the tighter row.
+  const height = size === 'lg' ? 'min-h-12 px-5 text-[15px]' : 'min-h-10 px-4 text-[14px] pointer-coarse:min-h-11'
 
   return (
     <LayoutGroup id={uid}>
@@ -111,7 +112,7 @@ export function Segmented<T extends string>({
               <span className="relative leading-tight whitespace-nowrap">{o.label}</span>
               {o.sub && (
                 <span
-                  className={`relative font-mono text-[10.5px] leading-tight font-normal whitespace-nowrap ${stack ? 'sm:mt-0.5' : 'mt-0.5'} ${
+                  className={`relative font-mono text-[11px] leading-tight font-normal whitespace-nowrap ${stack ? 'sm:mt-0.5' : 'mt-0.5'} ${
                     active ? (night ? 'text-night/70' : 'text-on-pick-2') : night ? 'text-on-night-3' : 'text-ink-3'
                   }`}
                 >

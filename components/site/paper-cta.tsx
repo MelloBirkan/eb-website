@@ -6,7 +6,7 @@ import { SplitHeading } from './split-heading'
 /** Closing band: the JIIHC 2026 paper, with links to the research page and the slides. */
 export function PaperCta() {
   return (
-    <section aria-labelledby="artigo-title" className="wrap pt-24 md:pt-32">
+    <section aria-labelledby="artigo-title" className="wrap pt-20 md:pt-32">
       <div className="relative isolate overflow-hidden rounded-[36px] border border-line bg-card px-6 py-14 text-center sm:px-12 md:py-20">
         <div aria-hidden className="dot-paper pointer-events-none absolute inset-0 -z-10 opacity-60 [mask-image:radial-gradient(closest-side,black,transparent)]" />
         <Reveal y={10} blur={false}>

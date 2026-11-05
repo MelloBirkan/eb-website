@@ -19,7 +19,7 @@ export default function Home() {
         <Hero />
         <StandardsTicker />
 
-        <section id="problema" aria-labelledby="problema-title" className="wrap py-24 md:py-32">
+        <section id="problema" aria-labelledby="problema-title" className="wrap py-20 md:py-32">
           <SectionHeader
             id="problema-title"
             eyebrow="O problema"
@@ -33,7 +33,7 @@ export default function Home() {
           <ProblemStats />
         </section>
 
-        <section id="como-funciona" aria-labelledby="fluxo-title" className="border-y border-line bg-paper-2/60 py-24 md:py-32">
+        <section id="como-funciona" aria-labelledby="fluxo-title" className="border-y border-line bg-paper-2/60 py-20 md:py-32">
           <div className="wrap">
             <SectionHeader
               id="fluxo-title"
@@ -49,7 +49,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="corpus" aria-labelledby="corpus-title" className="wrap py-24 md:py-32">
+        <section id="corpus" aria-labelledby="corpus-title" className="wrap py-20 md:py-32">
           <SectionHeader
             id="corpus-title"
             eyebrow="O corpus"
@@ -63,7 +63,7 @@ export default function Home() {
           <CorpusExplorer />
         </section>
 
-        <section id="estudo" aria-labelledby="estudo-title" className="border-y border-line bg-paper-2/60 py-24 md:py-32">
+        <section id="estudo" aria-labelledby="estudo-title" className="border-y border-line bg-paper-2/60 py-20 md:py-32">
           <div className="wrap">
             <SectionHeader
               id="estudo-title"
@@ -79,7 +79,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="skills" aria-labelledby="skills-title" className="wrap py-24 md:py-32">
+        <section id="skills" aria-labelledby="skills-title" className="wrap py-20 md:py-32">
           <SectionHeader
             id="skills-title"
             eyebrow="As skills"
@@ -93,7 +93,7 @@ export default function Home() {
           <SkillsExplorer />
         </section>
 
-        <section id="comecar" aria-labelledby="comecar-title" className="on-night night-glow py-24 md:py-32">
+        <section id="comecar" aria-labelledby="comecar-title" className="on-night night-glow py-20 md:py-32">
           <div className="wrap">
             <SectionHeader
               id="comecar-title"

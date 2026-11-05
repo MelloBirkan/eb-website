@@ -131,7 +131,7 @@ export function Install() {
                   <p className="text-[15.5px] leading-snug text-on-night">{s.text}</p>
                   {s.cmd && (
                     <div className="mt-3 flex items-center gap-3 rounded-xl border border-white/8 bg-black/30 py-2 pr-2 pl-4">
-                      <code className="min-w-0 flex-1 font-mono text-[13px] [overflow-wrap:anywhere] text-glow sm:text-[13.5px]">
+                      <code className="code-x min-w-0 flex-1 py-1 font-mono text-[13px] text-glow sm:text-[13.5px]">
                         {s.cmd}
                       </code>
                       <CopyButton text={s.cmd} label={`o comando: ${s.cmd}`} tone="night" />
@@ -145,12 +145,12 @@ export function Install() {
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[15px]">
-        <Link href={host.guide} className="inline-flex items-center gap-1.5 font-medium text-on-night underline decoration-white/25 underline-offset-4 hover:decoration-glow">
+        <Link href={host.guide} className="hit relative inline-flex items-center gap-1.5 font-medium text-on-night underline decoration-white/25 underline-offset-4 hover:decoration-glow">
           Guia completo do {host.label} <ArrowRight size={15} />
         </Link>
         <Link
           href="/tutorial/plugins/ios"
-          className="inline-flex items-center gap-1.5 font-medium text-on-night underline decoration-white/25 underline-offset-4 hover:decoration-glow"
+          className="hit relative inline-flex items-center gap-1.5 font-medium text-on-night underline decoration-white/25 underline-offset-4 hover:decoration-glow"
         >
           Guia do plugin iOS <ArrowRight size={15} />
         </Link>

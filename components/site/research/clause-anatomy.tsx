@@ -151,7 +151,7 @@ export function ClauseAnatomy() {
               href="https://developer.apple.com/documentation/swiftui/view/accessibilitylabel(_:)"
               target="_blank"
               rel="noopener noreferrer"
-              className="link text-[14.5px] font-medium"
+              className="hit link relative text-[14.5px] font-medium"
             >
               Apple Developer: accessibilityLabel
             </a>

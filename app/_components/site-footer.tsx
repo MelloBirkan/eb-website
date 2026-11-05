@@ -40,7 +40,7 @@ export function SiteFooter() {
     <footer className="relative z-[1] mt-24 overflow-hidden border-t border-line bg-paper-2 text-ink">
       <div className="mx-auto grid w-full max-w-[1240px] gap-12 px-6 pt-16 pb-10 md:grid-cols-[1.3fr_2fr] lg:px-10">
         <div className="max-w-sm">
-          <Link href="/" className="inline-flex items-center gap-3 font-semibold tracking-[-0.02em]">
+          <Link href="/" className="hit relative inline-flex items-center gap-3 font-semibold tracking-[-0.02em]">
             <BrandMark size={34} className="grid place-items-center rounded-[10px] bg-ink text-glow" />
             <span className="text-lg">
               Even<span className="font-serif text-[1.2em] font-normal italic">Better</span>
@@ -54,7 +54,7 @@ export function SiteFooter() {
             href={GITHUB}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-full border border-line-2 px-4 py-2 text-sm font-medium transition-colors hover:border-ink/40 hover:bg-card"
+            className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-line-2 px-4 py-2 text-sm font-medium transition-colors hover:border-ink/40 hover:bg-card"
           >
             <GitHub size={16} /> MelloBirkan/EvenBetterFramework
           </a>
@@ -72,12 +72,12 @@ export function SiteFooter() {
                         href={l.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[15px] text-ink-2 transition-colors hover:text-ink"
+                        className="hit relative text-[15px] text-ink-2 transition-colors hover:text-ink"
                       >
                         {l.label}
                       </a>
                     ) : (
-                      <Link href={l.href} className="text-[15px] text-ink-2 transition-colors hover:text-ink">
+                      <Link href={l.href} className="hit relative text-[15px] text-ink-2 transition-colors hover:text-ink">
                         {l.label}
                       </Link>
                     )}

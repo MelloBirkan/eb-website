@@ -5,6 +5,7 @@ import { SiteNav } from '../_components/site-nav'
 import { SiteFooter } from '../_components/site-footer'
 import { ButtonLink } from '../../components/site/button'
 import { ArrowRight, ArrowUpRight, Book, GitHub, Quote, Slides } from '../../components/site/icons'
+import { HeroHeading, HeroRise } from '../../components/site/hero-heading'
 import { Reveal, RevealGroup, RevealItem } from '../../components/site/reveal'
 import { SectionHeader } from '../../components/site/section-header'
 import { SplitHeading } from '../../components/site/split-heading'
@@ -68,29 +69,24 @@ export default function AboutPage() {
           />
           <div className="wrap grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-10">
             <div>
-              <Reveal y={10} blur={false}>
+              <HeroRise y={10}>
                 <p className="flex flex-wrap items-center gap-2 font-mono text-[12px] font-semibold">
                   <span className="rounded-full bg-brand px-3 py-1 text-on-brand">TCC</span>
                   <span className="rounded-full border border-line-2 bg-card px-3 py-1 text-ink-2">FCI · Mackenzie</span>
                   <span className="rounded-full border border-line-2 bg-card px-3 py-1 text-ink-2">Artigo na JIIHC 2026</span>
                 </p>
-              </Reveal>
-              <SplitHeading
-                as="h1"
-                immediate
-                delay={0.1}
-                className="mt-8 max-w-[14ch] text-[clamp(2.5rem,1.4rem+4vw,5rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance"
-              >
+              </HeroRise>
+              <HeroHeading className="mt-8 max-w-[14ch] text-[clamp(2.5rem,1.4rem+4vw,5rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance">
                 Um TCC que virou <span className="serif">ferramenta</span> e artigo.
-              </SplitHeading>
-              <Reveal delay={0.35} y={14}>
+              </HeroHeading>
+              <HeroRise delay={350} y={14} blur>
                 <p className="lede mt-7 max-w-[38rem] text-ink">
                   O EvenBetter é o trabalho de conclusão de curso de Marcello Birkan e Daniela Flauto na Faculdade de
                   Computação e Informática do Mackenzie, com orientação da Prof.ª Dr.ª Valéria Farinazzo Martins. O código
                   é aberto, e o artigo foi aceito na JIIHC 2026.
                 </p>
-              </Reveal>
-              <Reveal delay={0.5} y={12} blur={false}>
+              </HeroRise>
+              <HeroRise delay={500} y={12}>
                 <div className="mt-9 flex flex-wrap gap-3">
                   <ButtonLink href="/pesquisa" size="lg">
                     Ler a pesquisa
@@ -99,7 +95,7 @@ export default function AboutPage() {
                     Código no GitHub
                   </ButtonLink>
                 </div>
-              </Reveal>
+              </HeroRise>
             </div>
             <TeamFan />
           </div>

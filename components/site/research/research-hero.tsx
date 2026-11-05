@@ -1,8 +1,8 @@
 import { ButtonLink } from '../button'
 import { Count } from '../count'
 import { Orcid } from '../icons'
-import { Reveal, RevealGroup, RevealItem } from '../reveal'
-import { SplitHeading } from '../split-heading'
+import { HeroHeading, HeroRise } from '../hero-heading'
+import { RevealGroup, RevealItem } from '../reveal'
 import { AUTHORS, INSTITUTIONS, PAPER } from './paper'
 
 const NUMBERS = [
@@ -24,7 +24,7 @@ export function ResearchHero() {
         className="pointer-events-none absolute -top-40 right-[-10%] -z-10 size-[620px] rounded-full bg-[radial-gradient(closest-side,var(--s-mint),transparent)] opacity-70 blur-2xl"
       />
       <div className="wrap">
-        <Reveal y={10} blur={false}>
+        <HeroRise y={10}>
           <p className="flex flex-wrap items-center gap-2 font-mono text-[12px] font-semibold">
             <span className="rounded-full bg-brand px-3 py-1 text-on-brand">Artigo aceito</span>
             <span className="rounded-full border border-line-2 bg-card px-3 py-1 text-ink-2">{PAPER.venue}</span>
@@ -32,26 +32,21 @@ export function ResearchHero() {
               {PAPER.place} · 10 nov. 2026
             </span>
           </p>
-        </Reveal>
+        </HeroRise>
 
         <div lang="en">
-          <SplitHeading
-            as="h1"
-            immediate
-            delay={0.1}
-            className="mt-8 max-w-[24ch] text-[clamp(2.25rem,1.15rem+3.6vw,4.5rem)] leading-[1.02] font-semibold tracking-[-0.045em] text-balance"
-          >
+          <HeroHeading className="mt-8 max-w-[24ch] text-[clamp(2.25rem,1.15rem+3.6vw,4.5rem)] leading-[1.02] font-semibold tracking-[-0.045em] text-balance">
             <span className="serif">Curated Agent Skills</span> for Context-Aware Intelligent Support in iOS UX and
             Accessibility
-          </SplitHeading>
+          </HeroHeading>
         </div>
 
-        <Reveal delay={0.35} y={14}>
+        <HeroRise delay={350} y={14} blur>
           <p className="mt-6 max-w-[46rem] text-[1.1rem] leading-snug text-ink-2 md:text-[1.2rem]">{PAPER.titlePt}.</p>
-        </Reveal>
+        </HeroRise>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <Reveal delay={0.45} y={14}>
+          <HeroRise delay={450} y={14} blur>
             <p className="lede max-w-[40rem] text-ink">
               O EvenBetter transforma o HIG, a documentação de acessibilidade da Apple e a WCAG 2.2 em skills que o
               agente de IA segue passo a passo. Num estudo com dez devs iOS, a usabilidade percebida ficou em 79,5.
@@ -65,7 +60,7 @@ export function ResearchHero() {
                     href={`https://orcid.org/${a.orcid}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="grid size-7 place-items-center rounded-full transition-colors hover:bg-paper-2"
+                    className="hit relative grid size-7 place-items-center rounded-full transition-colors hover:bg-paper-2"
                     aria-label={`ORCID de ${a.name}`}
                   >
                     <Orcid size={15} />
@@ -81,9 +76,9 @@ export function ResearchHero() {
                 </li>
               ))}
             </ol>
-          </Reveal>
+          </HeroRise>
 
-          <Reveal delay={0.55} y={12} blur={false}>
+          <HeroRise delay={550} y={12}>
             <div className="flex flex-wrap gap-3 lg:flex-col lg:items-stretch">
               <ButtonLink href="#citar" size="lg">
                 Como citar
@@ -95,7 +90,7 @@ export function ResearchHero() {
                 Código no GitHub
               </ButtonLink>
             </div>
-          </Reveal>
+          </HeroRise>
         </div>
 
         <RevealGroup
