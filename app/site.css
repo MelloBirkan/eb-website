@@ -1,0 +1,392 @@
+/* ───────────────────────────────────────────────────────────
+   EvenBetter site, 2026 redesign.
+   Pieces that are awkward as utilities: the floating nav, split
+   headings, background textures and a few shared text styles.
+   Colors come from the --s-* tokens in globals.css.
+   ─────────────────────────────────────────────────────────── */
+
+/* ───── Page shell ───── */
+
+.site {
+  position: relative;
+  min-height: 100vh;
+  background: var(--s-paper);
+  color: var(--s-ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.6;
+  overflow-x: clip;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+@media (min-width: 1024px) {
+  .wrap { padding-inline: 40px; }
+}
+
+/* Engineering-paper grid that fades out from the top. */
+.grid-paper {
+  background-image:
+    linear-gradient(var(--s-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--s-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: -1px -1px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 78%);
+}
+
+.dot-paper {
+  background-image: radial-gradient(var(--s-line-2) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+
+/* ───── Type ───── */
+
+.display {
+  font-weight: 600;
+  font-size: clamp(2.75rem, 1.35rem + 5.2vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.048em;
+  text-wrap: balance;
+}
+.h2 {
+  font-weight: 600;
+  font-size: clamp(2.1rem, 1.25rem + 3vw, 3.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.042em;
+  text-wrap: balance;
+}
+.h3 {
+  font-weight: 600;
+  font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.028em;
+}
+.lede {
+  font-size: clamp(1.1rem, 1rem + 0.35vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--s-ink-2);
+  text-wrap: pretty;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s-ink-3);
+}
+.eyebrow::before {
+  content: "";
+  width: 18px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.6;
+}
+.on-night .eyebrow { color: var(--s-on-night-3); }
+.on-night .lede { color: var(--s-on-night-2); }
+
+/* Instrument Serif has a real italic; it sits a touch larger than Geist. */
+.serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  font-size: 1.08em;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ───── Split headings (Motion+ splitText) ───── */
+
+.split-word {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+@media (scripting: enabled) {
+  [data-split="pending"] {
+    opacity: 0;
+    animation: split-failsafe 0s linear 2.5s forwards;
+  }
+}
+@keyframes split-failsafe {
+  to { opacity: 1; }
+}
+
+/* ───── Night sections ───── */
+
+.on-night {
+  background: var(--s-night);
+  color: var(--s-on-night);
+}
+.night-glow {
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 0%, rgba(182, 239, 217, 0.12), transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%, rgba(31, 107, 96, 0.28), transparent 70%),
+    var(--s-night);
+}
+
+/* ───── Floating nav ───── */
+
+.sn-wrap {
+  position: sticky;
+  top: 12px;
+  z-index: 60;
+  padding-inline: 16px;
+  view-transition-name: site-header;
+}
+.sn-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 1120px;
+  height: 58px;
+  margin-inline: auto;
+  padding: 7px 7px 7px 16px;
+  border-radius: 999px;
+  color: var(--s-on-night);
+  background: rgba(11, 26, 24, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 10px 30px -18px rgba(5, 14, 13, 0.6);
+  transition: box-shadow 300ms ease, background-color 300ms ease;
+}
+.sn-wrap[data-scrolled="true"] .sn-bar {
+  background: rgba(11, 26, 24, 0.9);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 18px 50px -20px rgba(5, 14, 13, 0.75);
+}
+.sn-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 12px;
+  margin-right: 4px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: var(--s-on-night);
+  text-decoration: none;
+  border-radius: 999px;
+}
+.sn-mark {
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--s-glow);
+  color: #0b1a18;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: transform 400ms cubic-bezier(.22, 1, .36, 1);
+}
+.sn-brand:hover .sn-mark { transform: rotate(-8deg) scale(1.06); }
+.sn-word-em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.18em;
+  letter-spacing: -0.01em;
+}
+.sn-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.sn-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 15px;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--s-on-night-2);
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+.sn-link:hover { color: var(--s-on-night); }
+.sn-link[data-active="true"] { color: #0b1a18; font-weight: 600; }
+.sn-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--s-glow);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.sn-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.sn-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 6px 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--s-on-night-2);
+  font-size: 14px;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+.sn-search:hover { background: rgba(255, 255, 255, 0.12); color: var(--s-on-night); }
+.sn-kbd {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--s-on-night-2);
+}
+.sn-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: var(--s-on-night-2);
+  transition: background-color 200ms ease, color 200ms ease;
+}
+.sn-icon:hover { background: rgba(255, 255, 255, 0.1); color: var(--s-on-night); }
+.sn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--s-glow);
+  color: #0b1a18;
+  font-size: 14.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 250ms cubic-bezier(.22, 1, .36, 1), background-color 200ms ease;
+}
+.sn-cta:hover { background: #ffffff; transform: translateY(-1px); }
+.sn-menu-btn { display: none; }
+.sn-sheet {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: calc(100% + 8px);
+  padding: 10px;
+  border-radius: 28px;
+  color: var(--s-on-night);
+  background: rgba(11, 26, 24, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 30px 60px -20px rgba(5, 14, 13, 0.7);
+  transform-origin: top center;
+}
+.sn-sheet-link {
+  display: block;
+  padding: 14px 16px;
+  border-radius: 18px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--s-on-night);
+  text-decoration: none;
+}
+.sn-sheet-link[aria-current="page"] { background: rgba(182, 239, 217, 0.12); color: var(--s-glow); }
+.sn-sheet-link:hover { background: rgba(255, 255, 255, 0.06); }
+.sn-sheet-actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 6px 6px;
+}
+.sn-cta-wide { flex: 1; height: 48px; font-size: 16px; }
+.sn-sheet-gh {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--s-on-night);
+  font-weight: 500;
+}
+
+@media (max-width: 1020px) {
+  .sn-search-label, .sn-kbd { display: none; }
+  .sn-search { width: 40px; padding: 0; justify-content: center; }
+}
+@media (max-width: 860px) {
+  .sn-links, .sn-cta:not(.sn-cta-wide) { display: none; }
+  .sn-menu-btn { display: grid; }
+}
+
+/* ───── Footer wordmark ───── */
+
+.footer-wordmark {
+  font-size: clamp(4.5rem, 17vw, 15.5rem);
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--s-line-2);
+  background: linear-gradient(180deg, var(--s-ink) 0%, transparent 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0.9;
+  padding-block: 0.06em 0.02em;
+}
+
+/* ───── Misc ───── */
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+.code-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
+
+/* Underline that draws in on hover, for inline links in prose. */
+.link {
+  color: var(--s-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--s-line-2);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 200ms ease, color 200ms ease;
+}
+.link:hover { text-decoration-color: var(--s-brand); color: var(--s-brand); }
+
+/* Research page prose. */
+.prose-r p { color: var(--s-ink-2); font-size: 17.5px; line-height: 1.7; text-wrap: pretty; }
+.prose-r p + p { margin-top: 1em; }
+.prose-r strong { color: var(--s-ink); font-weight: 600; }
+.prose-r code, .inline-code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  padding: 0.12em 0.42em;
+  border-radius: 6px;
+  background: var(--s-paper-2);
+  border: 1px solid var(--s-line);
+  color: var(--s-ink);
+}
+.cite {
+  font-family: var(--font-mono);
+  font-size: 0.78em;
+  color: var(--s-ink-3);
+  vertical-align: 0.15em;
+  white-space: nowrap;
+}
+
+/* Focus rings on dark surfaces use the glow tone. */
+.sn-wrap :focus-visible,
+.on-night :focus-visible {
+  outline-color: var(--s-glow);
+}

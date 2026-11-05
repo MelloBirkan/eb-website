@@ -3,105 +3,30 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState, type MouseEvent } from 'react'
-import { LayoutGroup, motion } from 'motion/react'
-import { Logo } from './tutorial-primitives'
+import { AnimatePresence, LayoutGroup, motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { CommandPalette } from '../../components/_eb/command-palette'
+import { BrandMark, Close, GitHub, Menu, Search } from '../../components/site/icons'
+import { SPRING } from '../../components/site/motion'
 
-type NavLink = { href: string; label: string }
-
-/** Header "Guias" opens the EvenBetter iOS plugin tutorial (primary product guide). */
-const GUIAS_HREF = '/tutorial/plugins/ios'
+type NavLink = { href: string; label: string; match: (path: string) => boolean }
 
 const LINKS: NavLink[] = [
-  { href: '/', label: 'Início' },
-  { href: GUIAS_HREF, label: 'Guias' },
-  { href: '/about', label: 'Sobre' },
+  { href: '/', label: 'Início', match: (p) => p === '/' },
+  { href: '/pesquisa', label: 'Pesquisa', match: (p) => p.startsWith('/pesquisa') },
+  { href: '/tutorial/plugins/ios', label: 'Guias', match: (p) => p.startsWith('/tutorial') },
+  { href: '/about', label: 'Sobre', match: (p) => p.startsWith('/about') },
 ]
 
-/** Sections on the home page that map to nav links. */
-const HOME_GUIDE_SECTIONS = ['escolha-seu-agente', 'skills']
-
-/**
- * Scroll-spy: returns true if any of the given section ids has its top edge
- * above the line `viewport - rootMarginBottom`. Top-of-page returns false.
- */
-function useScrollSpy(ids: string[], enabled: boolean) {
-  const [hit, setHit] = useState(false)
-
-  useEffect(() => {
-    if (!enabled || ids.length === 0) {
-      // Reset state when scroll-spy disabled (e.g. leaving the home page).
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setHit(false)
-      return
-    }
-
-    const els = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null)
-    if (els.length === 0) return
-
-    const evaluate = () => {
-      // "Hit" when at least one tracked section's top has crossed the
-      // line at 1/3 of the viewport from the top — feels right for sticky nav.
-      const trigger = window.innerHeight * 0.33
-      const anyAbove = els.some((el) => el.getBoundingClientRect().top <= trigger)
-      setHit(anyAbove)
-    }
-
-    evaluate()
-    let raf = 0
-    const onScroll = () => {
-      if (raf) return
-      raf = requestAnimationFrame(() => {
-        evaluate()
-        raf = 0
-      })
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [ids, enabled])
-
-  return hit
-}
+const GITHUB = 'https://github.com/MelloBirkan/EvenBetterFramework'
 
 export function SiteNav() {
-  const pathname = usePathname()
+  const pathname = usePathname() ?? '/'
   const [paletteOpen, setPaletteOpen] = useState(false)
-  const isHome = pathname === '/'
-  const inGuidesSection = useScrollSpy(HOME_GUIDE_SECTIONS, isHome)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const { scrollY } = useScroll()
 
-  function isActive(href: string) {
-    if (!pathname) return false
-    if (isHome) {
-      // Scroll-spy on the home page: top → Início; agents/skills band → Guias (iOS guide).
-      if (href === '/') return !inGuidesSection
-      if (href === GUIAS_HREF) return inGuidesSection
-      return false
-    }
-    if (href === '/') return false
-    if (href === '/about') return pathname === '/about'
-    if (href === GUIAS_HREF) return pathname.startsWith('/tutorial')
-    return pathname.startsWith(href)
-  }
-
-  /** Clicking Início while already on / should scroll to top + drop the hash. */
-  function handleInicioClick(e: MouseEvent<HTMLAnchorElement>) {
-    if (isHome) {
-      e.preventDefault()
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
-      // Drop any leftover hash so back/forward + share urls feel right.
-      if (window.location.hash) {
-        window.history.replaceState(null, '', window.location.pathname + window.location.search)
-      }
-    }
-  }
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 12))
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -109,67 +34,154 @@ export function SiteNav() {
         e.preventDefault()
         setPaletteOpen((v) => !v)
       }
+      if (e.key === 'Escape') setMenuOpen(false)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  // Close the mobile menu after navigating.
+  const [lastPath, setLastPath] = useState(pathname)
+  if (lastPath !== pathname) {
+    setLastPath(pathname)
+    setMenuOpen(false)
+  }
+
+  /** Clicking the brand or Início on the home page scrolls back to the top. */
+  function toTop(e: MouseEvent<HTMLAnchorElement>) {
+    if (pathname !== '/') return
+    e.preventDefault()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (window.location.hash) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    }
+  }
+
   return (
     <>
-      <div className="eb-nav-wrap">
-        <LayoutGroup id="nav-tabs">
-          <nav className="eb-nav" aria-label="Principal">
-            <Link href="/" className="eb-brand" onClick={handleInicioClick}>
-              <span className="eb-brand-mark"><Logo /></span>
-              EVENBETTER
-            </Link>
-            <div className="eb-nav-links">
+      <header className="sn-wrap" data-scrolled={scrolled || menuOpen ? 'true' : 'false'}>
+        <motion.nav
+          aria-label="Principal"
+          className="sn-bar"
+          initial={{ y: -24, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ ...SPRING.gentle, delay: 0.05 }}
+        >
+          <Link href="/" className="sn-brand" onClick={toTop} aria-label="EvenBetter, início">
+            <BrandMark size={30} className="sn-mark" />
+            <span className="sn-word">
+              Even<span className="sn-word-em">Better</span>
+            </span>
+          </Link>
+
+          <LayoutGroup id="site-nav">
+            <ul className="sn-links" role="list">
               {LINKS.map((l) => {
-                const active = isActive(l.href)
-                const isInicio = l.href === '/'
-                const onClick = isInicio ? handleInicioClick : undefined
-                // Início uses a same-route handler; other links use default navigation + scroll.
-                const skipNextScroll = isInicio
+                const active = l.match(pathname)
                 return (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    onClick={onClick}
-                    scroll={!skipNextScroll}
-                    className={`eb-nav-link ${active ? 'active' : ''}`}
-                    aria-current={active ? 'page' : undefined}
-                    style={{ position: 'relative' }}
-                  >
-                    {active && (
-                      <motion.span
-                        layoutId="nav-active-pill"
-                        className="eb-nav-active-pill"
-                        transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                        aria-hidden
-                      />
-                    )}
-                    <span style={{ position: 'relative', zIndex: 1 }}>{l.label}</span>
-                  </Link>
+                  <li key={l.href}>
+                    <Link
+                      href={l.href}
+                      onClick={l.href === '/' ? toTop : undefined}
+                      className="sn-link"
+                      data-active={active ? 'true' : 'false'}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      {active && (
+                        <motion.span layoutId="sn-pill" className="sn-pill" transition={SPRING.ui} aria-hidden />
+                      )}
+                      <span className="relative">{l.label}</span>
+                    </Link>
+                  </li>
                 )
               })}
-            </div>
-            <div className="eb-nav-spacer" />
+            </ul>
+          </LayoutGroup>
+
+          <div className="sn-actions">
+            <button type="button" className="sn-search" onClick={() => setPaletteOpen(true)} aria-label="Buscar no site (⌘K)">
+              <Search size={15} />
+              <span className="sn-search-label">Buscar</span>
+              <kbd className="sn-kbd">⌘K</kbd>
+            </button>
+            <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="sn-icon" aria-label="EvenBetter no GitHub">
+              <GitHub size={17} />
+            </a>
+            <Link href="/#comecar" className="sn-cta">
+              Instalar
+            </Link>
             <button
               type="button"
-              className="eb-search-trigger"
-              onClick={() => setPaletteOpen(true)}
-              aria-label="Abrir busca (Cmd+K)"
+              className="sn-icon sn-menu-btn"
+              aria-expanded={menuOpen}
+              aria-controls="sn-mobile"
+              aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+              onClick={() => setMenuOpen((v) => !v)}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="7" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-              <span>Buscar</span>
-              <span className="eb-kbd">⌘K</span>
+              <AnimatePresence initial={false} mode="wait">
+                <motion.span
+                  key={menuOpen ? 'close' : 'menu'}
+                  initial={{ rotate: -45, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 45, opacity: 0 }}
+                  transition={{ duration: 0.16 }}
+                  className="grid place-items-center"
+                >
+                  {menuOpen ? <Close size={18} /> : <Menu size={18} />}
+                </motion.span>
+              </AnimatePresence>
             </button>
-          </nav>
-        </LayoutGroup>
-      </div>
+          </div>
+        </motion.nav>
+
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              id="sn-mobile"
+              className="sn-sheet"
+              initial={{ opacity: 0, y: -10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.98 }}
+              transition={SPRING.ui}
+            >
+              <motion.ul
+                role="list"
+                initial="hidden"
+                animate="shown"
+                variants={{ shown: { transition: { staggerChildren: 0.04, delayChildren: 0.04 } } }}
+              >
+                {LINKS.map((l) => (
+                  <motion.li
+                    key={l.href}
+                    variants={{ hidden: { opacity: 0, y: 8 }, shown: { opacity: 1, y: 0 } }}
+                    transition={SPRING.ui}
+                  >
+                    <Link
+                      href={l.href}
+                      className="sn-sheet-link"
+                      aria-current={l.match(pathname) ? 'page' : undefined}
+                      onClick={(e) => {
+                        if (l.href === '/') toTop(e)
+                        setMenuOpen(false)
+                      }}
+                    >
+                      {l.label}
+                    </Link>
+                  </motion.li>
+                ))}
+              </motion.ul>
+              <div className="sn-sheet-actions">
+                <Link href="/#comecar" className="sn-cta sn-cta-wide" onClick={() => setMenuOpen(false)}>
+                  Instalar o plugin
+                </Link>
+                <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="sn-sheet-gh">
+                  <GitHub size={16} /> GitHub
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </>
   )

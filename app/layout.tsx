@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import "./evenbetter.css";
+import "./site.css";
+import { MotionProvider } from "../components/site/motion-provider";
 
 const geist = Geist({
   weight: "variable",
@@ -30,11 +32,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://evenbetter.mellofa
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "EvenBetter — Skills curadas para acessibilidade em iOS",
+    default: "EvenBetter · Skills curadas para acessibilidade em iOS",
     template: "%s · EvenBetter",
   },
   description:
-    "Framework de skills curadas para Codex, Claude Code e o plugin EvenBetter iOS. Acessibilidade e UX desde o dia zero do desenvolvimento mobile.",
+    "Skills curadas que ensinam o seu agente de IA a planejar, auditar e corrigir apps SwiftUI com o HIG da Apple e a WCAG 2.2. Funciona no Claude Code e no Codex. Artigo aceito na JIIHC 2026.",
   keywords: [
     "EvenBetter",
     "iOS",
@@ -47,6 +49,8 @@ export const metadata: Metadata = {
     "TCC",
     "WCAG",
     "HIG",
+    "JIIHC 2026",
+    "human-in-command",
   ],
   authors: [
     { name: "Marcello Birkan" },
@@ -57,16 +61,16 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "EvenBetter",
-    title: "EvenBetter — Skills curadas para acessibilidade em iOS",
+    title: "EvenBetter · Skills curadas para acessibilidade em iOS",
     description:
-      "Framework de skills curadas para Codex, Claude Code e o plugin EvenBetter iOS.",
+      "Skills curadas para o seu agente de IA planejar, auditar e corrigir apps SwiftUI. Você continua no comando.",
     url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
     title: "EvenBetter",
     description:
-      "Framework de skills curadas para Codex, Claude Code e o plugin EvenBetter iOS.",
+      "Skills curadas para o seu agente de IA planejar, auditar e corrigir apps SwiftUI. Você continua no comando.",
   },
   robots: {
     index: true,
@@ -86,8 +90,15 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <a href="#main" className="eb-skip-link">Pular para o conteúdo</a>
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );
 }
+
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f6f7f3" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a1513" },
+  ],
+};

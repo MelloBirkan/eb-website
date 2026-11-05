@@ -65,13 +65,82 @@
 }
 
 /* ───────────────────────────────────────────────────────────
+   Site palette (2026 redesign). Semantic names resolve through
+   CSS variables, so every utility (bg-paper, text-ink, border-line…)
+   flips with the color scheme. Same family as the JIIHC deck:
+   paper, forest ink, mint, plus the severity colors of the report.
+   ─────────────────────────────────────────────────────────── */
+
+@theme inline {
+  --color-paper: var(--s-paper);
+  --color-paper-2: var(--s-paper-2);
+  --color-card: var(--s-card);
+  --color-ink: var(--s-ink);
+  --color-ink-2: var(--s-ink-2);
+  --color-ink-3: var(--s-ink-3);
+  --color-line: var(--s-line);
+  --color-line-2: var(--s-line-2);
+  --color-brand: var(--s-brand);
+  --color-brand-ink: var(--s-brand-ink);
+  --color-on-brand: var(--s-on-brand);
+  --color-mint: var(--s-mint);
+  --color-mint-2: var(--s-mint-2);
+  --color-night: var(--s-night);
+  --color-night-2: var(--s-night-2);
+  --color-night-3: var(--s-night-3);
+  --color-on-night: var(--s-on-night);
+  --color-on-night-2: var(--s-on-night-2);
+  --color-on-night-3: var(--s-on-night-3);
+  --color-glow: var(--s-glow);
+  --color-crit: var(--s-crit);
+  --color-high: var(--s-high);
+  --color-med: var(--s-med);
+  --color-low: var(--s-low);
+  --color-crit-n: var(--s-crit-n);
+  --color-high-n: var(--s-high-n);
+  --color-med-n: var(--s-med-n);
+  --color-low-n: var(--s-low-n);
+}
+
+/* ───────────────────────────────────────────────────────────
    Root + dark mode tokens. evenbetter.css's --eb-* tokens
    resolve through these so flipping color-scheme cascades.
    ─────────────────────────────────────────────────────────── */
 
 :root {
-  --background: oklch(89% 0.013 165);   /* sage-300 */
-  --foreground: oklch(20% 0.018 180);   /* teal-900 */
+  --background: #f6f7f3;               /* paper */
+  --foreground: #0f2523;               /* ink */
+
+  /* Site palette, light */
+  --s-paper: #f6f7f3;
+  --s-paper-2: #edf1ea;
+  --s-card: #ffffff;
+  --s-ink: #0f2523;
+  --s-ink-2: #3a534f;
+  --s-ink-3: #5b706c;
+  --s-line: rgba(15, 37, 35, 0.1);
+  --s-line-2: rgba(15, 37, 35, 0.18);
+  --s-brand: #1b6b60;
+  --s-brand-ink: #145a50;
+  --s-on-brand: #ffffff;
+  --s-mint: #cdeedd;
+  --s-mint-2: #a8e3c8;
+  --s-night: #0b1a18;
+  --s-night-2: #11241f;
+  --s-night-3: #183230;
+  --s-on-night: #e7f3ef;
+  --s-on-night-2: #a9c2bb;
+  --s-on-night-3: #7f9a94;
+  --s-glow: #b6efd9;
+  /* Severity, on paper (AA) and on night */
+  --s-crit: #c93a3f;
+  --s-high: #a0620a;
+  --s-med: #2f63c8;
+  --s-low: #25774a;
+  --s-crit-n: #ff6b6b;
+  --s-high-n: #f5b544;
+  --s-med-n: #7aa7ff;
+  --s-low-n: #5fd08f;
 
   /* Cursor-tracked specular hotspot (set by JS) */
   --mx: 50%;
@@ -80,8 +149,29 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: oklch(15% 0.015 182);  /* teal-950 */
-    --foreground: oklch(94% 0.015 168);  /* on-dark */
+    --background: #0a1513;
+    --foreground: #e7f2ef;
+
+    --s-paper: #0a1513;
+    --s-paper-2: #0f1d1b;
+    --s-card: #12221f;
+    --s-ink: #e7f2ef;
+    --s-ink-2: #b3c7c2;
+    --s-ink-3: #8ca59f;
+    --s-line: rgba(231, 242, 239, 0.09);
+    --s-line-2: rgba(231, 242, 239, 0.16);
+    --s-brand: #7fd6bf;
+    --s-brand-ink: #a6e8d4;
+    --s-on-brand: #0a1513;
+    --s-mint: #173a33;
+    --s-mint-2: #1f4d44;
+    --s-night: #050e0d;
+    --s-night-2: #0c1a18;
+    --s-night-3: #132724;
+    --s-crit: #ff7b7b;
+    --s-high: #f5b544;
+    --s-med: #8ab4ff;
+    --s-low: #6ad69a;
   }
 }
 
@@ -127,14 +217,13 @@ body {
 .eb-skip-link:focus,
 .eb-skip-link:focus-visible {
   transform: translateY(0);
-  outline: 2px solid var(--color-teal-100);
+  outline: 2px solid var(--s-brand);
   outline-offset: 4px;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-teal-100);
+  outline: 2px solid var(--s-brand);
   outline-offset: 3px;
-  border-radius: 6px;
 }
 
 ::selection {
