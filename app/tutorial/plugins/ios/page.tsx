@@ -116,8 +116,9 @@ const SKILL_GROUPS: { title: string; skills: { name: string; desc: string }[] }[
   {
     title: 'Auditoria HIG e WCAG',
     skills: [
-      { name: 'evenbetter-analyze', desc: 'Analisa um projeto SwiftUI contra HIG e WCAG 2.2 e grava relatório HTML em .evenbetter/.' },
-      { name: 'evenbetter-validate',    desc: 'Faz uma segunda passada nas violações de severidade alta para filtrar falsos positivos.' },
+      { name: 'evenbetter-analyze',  desc: 'Audita o projeto SwiftUI contra o HIG e a WCAG 2.2 e grava um relatório HTML em .evenbetter/, com arquivo, linha e duas formas de corrigir.' },
+      { name: 'evenbetter-validate', desc: 'Relê cada achado contra o código, o corpus e a documentação da Apple, corrige o relatório e remove falsos positivos.' },
+      { name: 'evenbetter-repair',   desc: 'Aplica as correções técnicas de um relatório validado e devolve para você as decisões de produto, texto e design.' },
     ],
   },
   {
@@ -143,7 +144,7 @@ function StepVisaoGeral() {
       <Crumbs last="VISÃO GERAL" />
       <h1 id="visao-geral">O plugin <span className="eb-accent">EvenBetter iOS</span></h1>
       <p className="eb-lede">
-        Quinze skills coordenadas para planejar, implementar, auditar e evoluir produtos iOS em SwiftUI,
+        Dezesseis skills coordenadas para planejar, implementar, auditar e evoluir produtos iOS em SwiftUI,
         com Apple HIG, WCAG 2.2 e o ecossistema da Apple sempre como fonte de verdade. Cada skill é uma fase
         do trabalho. Você invoca uma de cada vez, na ordem que faz sentido para o que está fazendo.
       </p>
@@ -152,8 +153,9 @@ function StepVisaoGeral() {
         Na versão consolidada da pesquisa, o framework reúne <strong>2 plugins</strong> e{' '}
         <strong>17 skills</strong> no total (incluindo <code>evenbetter-general</code>), com{' '}
         <strong>49 cláusulas iOS</strong> e avaliação com 10 desenvolvedores (
-        <strong>SUS 79,5</strong>). O guia abaixo mantém foco operacional no plugin{' '}
-        <code>evenbetter-ios</code> e no fluxo de uso no dia a dia.
+        <strong>SUS 79,5</strong>). Depois do estudo, a <code>evenbetter-repair</code> entrou como quarta etapa
+        do fluxo, e o plugin <code>evenbetter-ios</code> passou a ter 16 skills. O guia abaixo mostra o uso no dia
+        a dia.
       </Callout>
 
       <div className="eb-agent-chat-highlight">
@@ -163,8 +165,8 @@ function StepVisaoGeral() {
             Não sabe qual skill usar? <span className="eb-accent">Pergunte ao agente.</span>
           </h2>
           <p className="eb-agent-chat-highlight-sub">
-            Um Claude Managed Agent treinado nas 15 skills deste plugin. Descreva seu cenário
-            e ele recomenda o caminho — você responde no chat exatamente como faria no seu terminal.
+            Um Claude Managed Agent que conhece as skills deste plugin. Descreva seu cenário
+            e ele recomenda o caminho. Você responde no chat como faria no seu terminal.
           </p>
         </div>
         <AgentChat />
@@ -210,7 +212,7 @@ function StepVisaoGeral() {
 
       <Callout kind="tip" title="Atalho mental">
         Pense no fluxo como um funil: <strong>planeja</strong> (feature/epic/pesquisa/launcher), <strong>constrói</strong> (design + SwiftUI),
-        <strong> audita</strong> (analyze → validate), <strong>otimiza</strong> (performance/a11y/haptics),
+        <strong> audita</strong> (analyze → validate → repair), <strong>otimiza</strong> (performance/a11y/haptics),
         <strong> integra</strong> (App Intents/Debugger).
       </Callout>
     </>
@@ -363,40 +365,42 @@ function StepAuditoria() {
       <Crumbs last="AUDITORIA" />
       <h1 id="auditoria">Auditoria <span className="eb-accent">HIG e WCAG</span></h1>
       <p className="eb-lede">
-        Duas skills que rodam em sequência: <strong>analyze</strong> propõe e <strong>validate</strong> filtra.
-        É o padrão <em>orchestrator-workers-with-validators</em> aplicado a guidelines da Apple e WCAG 2.2.
+        Três skills em sequência, sobre o mesmo relatório: <strong>analyze</strong> encontra, <strong>validate</strong>{' '}
+        confere e <strong>repair</strong> corrige. Cada uma é uma chamada separada, e você decide quando passar para a
+        próxima.
       </p>
 
       <div className="eb-steps-frame" style={{ marginTop: '1.5rem' }}>
         <div className="eb-step">
           <div className="eb-step-num">01</div>
           <div className="eb-step-body">
-            <h4>analyze · gera relatório</h4>
-            <p>Lê o projeto sem modificar e grava <code>.evenbetter/analyze-{'{N}'}.json</code>.</p>
+            <h4>analyze · gera o relatório</h4>
+            <p>
+              Lê o projeto sem alterar o código e grava <code>.evenbetter/{'<projeto>'}/evenbetter-analyze-report.html</code>.
+            </p>
           </div>
         </div>
         <div className="eb-step">
           <div className="eb-step-num">02</div>
           <div className="eb-step-body">
-            <h4>validate · checa evidências</h4>
-            <p>Re-checa cada violação severa e grava <code>.evenbetter/evenbetter-validate-{'{N}'}.json</code>.</p>
+            <h4>validate · confere o relatório</h4>
+            <p>Relê cada achado contra o código e o corpus, remove falsos positivos e ajusta severidades no mesmo arquivo.</p>
           </div>
         </div>
         <div className="eb-step">
           <div className="eb-step-num">03</div>
           <div className="eb-step-body">
-            <h4>remediação guiada</h4>
-            <p>Com as violações validadas, aplique correções usando as skills de SwiftUI, design e sistema.</p>
+            <h4>repair · aplica as correções</h4>
+            <p>Só roda sobre um relatório validado. Corrige o que é técnico e pergunta a você o que depende do produto.</p>
           </div>
         </div>
       </div>
 
       <h2 style={{ marginTop: '2rem' }}>evenbetter-analyze</h2>
       <p>
-        Recebe o caminho absoluto do projeto e roda seis analisadores de domínio em paralelo: tipografia,
-        cor e theming, componentes, layout e interação, navegação, e acessibilidade. Cada domínio só consulta
-        seu próprio corpus markdown. O relatório final tem severidade por violação, escore por arquivo
-        e <code>overall_score</code> agregado.
+        Recebe o caminho do projeto e compara o código SwiftUI com as 49 cláusulas do corpus, em sete domínios. Cada
+        achado traz arquivo e linha, a cláusula de origem, a severidade, uma correção mínima, uma recomendada e um
+        prompt de correção. Cada nova análise substitui o relatório anterior do projeto.
       </p>
       <Invocation skill="evenbetter-analyze" args="projectPath: /caminho/absoluto/do/projeto" />
 
@@ -405,36 +409,44 @@ function StepAuditoria() {
         args="projectPath: /Users/me/MyApp"
         responseTitle="Análise completa"
         responseLines={[
-          'Wrote: .evenbetter/analyze-1.json',
-          'Findings: 47 total (12 error, 23 warning, 12 info)',
-          'overall_score: 72/100 · ui_score: 78 · a11y_score: 64',
+          'Wrote: .evenbetter/MyApp/evenbetter-analyze-report.html',
+          'Findings: 47 (12 critical, 23 high, 9 medium, 3 low)',
+          'Next: run evenbetter-validate on this report',
         ]}
       />
 
       <h2 style={{ marginTop: '2.25rem' }}>evenbetter-validate</h2>
       <p>
-        Pega <code>analyze-{'{N}'}.json</code> e re-julga apenas as violações <code>severity: error</code>:
-        re-lê o trecho de código, resolve a cláusula no corpus pelo <code>rule_id</code>, verifica a URL
-        do guideline e atribui um <code>confidence</code>. Tudo abaixo do threshold (default 0.7) cai pra{' '}
-        <code>dropped</code>.
+        Relê cada achado contra o código atual, o corpus e a documentação da Apple. Remove falsos positivos, corrige
+        severidades e reescreve correções erradas dentro do próprio relatório. Quando não há nada para mudar, responde
+        só <code>OK</code>.
       </p>
       <Invocation skill="evenbetter-validate" args="projectPath: /caminho/absoluto/do/projeto" />
 
-      <Callout kind="warn" title="O analyzer nunca modifica seu código">
-        As skills de auditoria escrevem seus resultados em <code>.evenbetter/</code>. O{' '}
-        <code>analyze</code> e o <code>validate</code> são read-only no seu source.
+      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-repair</h2>
+      <p>
+        Percorre os achados do relatório validado por ordem de severidade. Quando a mudança é técnica, aplica a
+        correção mínima ou a recomendada nos arquivos Swift e confere o resultado na cláusula. Quando a correção mexe em
+        texto, navegação, comportamento ou design visual, pergunta com opções fechadas ou deixa a decisão anotada para
+        você. No fim, cada achado fica marcado como aplicado, adiado, pulado ou com falha.
+      </p>
+      <Invocation skill="evenbetter-repair" args="projectPath: /caminho/absoluto/do/projeto" />
+
+      <Callout kind="warn" title="Só o repair altera o seu código">
+        O <code>analyze</code> e o <code>validate</code> escrevem apenas em <code>.evenbetter/</code>. O{' '}
+        <code>repair</code> é a única etapa que edita arquivos Swift, e ele se recusa a rodar sobre um relatório que o{' '}
+        <code>validate</code> ainda não conferiu.
+      </Callout>
+
+      <Callout kind="tip" title="Feche o ciclo com outro validate">
+        Depois do <code>repair</code>, rode o <code>validate</code> de novo. Ele remove do relatório o que foi resolvido
+        e marca como falha o que ainda viola a cláusula, para a próxima rodada de correção.
       </Callout>
 
       <Callout kind="note" title="49 cláusulas não significa 49 achados">
         No estudo com o app Aroma Care, um único relatório trouxe 55 achados (15 críticos e 40 altos)
         mesmo com 49 cláusulas no corpus. Isso acontece porque uma mesma cláusula pode gerar múltiplas
         ocorrências em arquivos, telas e estados diferentes.
-      </Callout>
-
-      <Callout kind="tip" title="Re-rodar a análise é grátis">
-        Cada execução do <code>analyze</code> gera um número novo (<code>analyze-2.json</code>,{' '}
-        <code>analyze-3.json</code>...). Rode <code>validate</code> sobre a run mais recente para reduzir
-        falsos positivos antes de abrir correções.
       </Callout>
     </>
   )
@@ -861,7 +873,7 @@ export default function TutorialPluginIosPage() {
           <div className="eb-sidebar-agent">
             <div>
               <div className="eb-sidebar-agent-name">EvenBetter iOS</div>
-              <div className="eb-sidebar-agent-sub">Plugin · 15 skills</div>
+              <div className="eb-sidebar-agent-sub">Plugin · 16 skills</div>
             </div>
           </div>
           <div className="eb-side-title">Etapas</div>
@@ -886,7 +898,7 @@ export default function TutorialPluginIosPage() {
             <div className="eb-pager-done">
               <div className="eb-pager-done-icon"><Icon name="check" size={14} /></div>
               <div>
-                <h4>Você conhece todas as 15 skills</h4>
+                <h4>Você conhece todas as 16 skills</h4>
                 <p>
                   Use o índice na lateral para revisitar qualquer etapa. Para sugestões e contribuições,
                   acesse o repositório no GitHub.
