@@ -1223,6 +1223,12 @@
   margin: 12px 0 8px;
 }
 .eb-side-item {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1477,7 +1483,7 @@
   flex-shrink: 0;
   color: white;
 }
-.eb-callout-body strong {
+.eb-callout-body > strong {
   display: block;
   margin-bottom: 3px;
   color: var(--eb-teal-deep);
@@ -1650,6 +1656,9 @@
   border-top: 1px solid var(--eb-line);
 }
 .eb-pager-card {
+  appearance: none;
+  font: inherit;
+  text-align: left;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -2373,7 +2382,7 @@ a.eb-team-card:hover .eb-team-photo {
   .eb-steps-frame { grid-template-columns: 1fr; }
   .eb-section-head { flex-direction: column; align-items: flex-start; }
   .eb-section-head .eb-lede { text-align: left; }
-  .eb-tut { grid-template-columns: 1fr; }
+  .eb-tut { grid-template-columns: minmax(0, 1fr); }
   .eb-sidebar { position: relative; top: auto; }
   .eb-content { padding: 28px 24px; }
   .eb-content h1 { font-size: 40px; }
@@ -3370,4 +3379,126 @@ ul.eb-agent-chat-list li::marker {
   .eb-agent-chat-input-row {
     padding: 12px;
   }
+}
+
+
+/* ───── Guides on phones ───── */
+
+/* The step switcher only shows on narrow screens, where the step list folds away. */
+.eb-steps-toggle { display: none; }
+
+@media (max-width: 940px) {
+  .eb-sidebar { padding: 10px; }
+  .eb-sidebar-back, .eb-side-title { display: none; }
+  .eb-sidebar-agent { margin-bottom: 10px; }
+  .eb-segmented { margin-bottom: 10px; }
+  .eb-steps-toggle {
+    appearance: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 56px;
+    padding: 8px 12px;
+    border: 1px solid var(--eb-glass-edge);
+    border-radius: var(--eb-r);
+    background: var(--eb-glass-light-2);
+    font: inherit;
+    text-align: left;
+    color: var(--eb-ink);
+    cursor: pointer;
+  }
+  .eb-steps-toggle .eb-num {
+    font-family: var(--eb-font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: var(--eb-teal-deep);
+    color: var(--eb-mint-bright);
+  }
+  .eb-steps-toggle-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+  .eb-steps-toggle-of {
+    font-family: var(--eb-font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--eb-ink-3);
+  }
+  .eb-steps-toggle-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
+  .eb-steps-toggle-chev { transition: transform 260ms var(--eb-ease); color: var(--eb-ink-3); }
+  .eb-steps-toggle[aria-expanded="true"] .eb-steps-toggle-chev { transform: rotate(180deg); }
+  .eb-side-list[data-open="false"] { display: none; }
+  .eb-side-list[data-open="true"] { margin-top: 6px; animation: eb-steps-in 280ms var(--eb-ease); }
+  .eb-side-item { min-height: 48px; font-size: 15px; }
+  .eb-side-item .eb-num { font-size: 11px; width: 26px; height: 26px; }
+}
+@keyframes eb-steps-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 560px) {
+  .eb-tut { padding: 14px 12px 72px; gap: 12px; }
+  .eb-content { padding: 24px 18px; border-radius: 24px; }
+  .eb-content h1 { font-size: 36px; }
+  .eb-content h2 { font-size: 24px; }
+  .eb-crumbs { font-size: 11.5px; flex-wrap: wrap; }
+  .eb-crumbs a { position: relative; }
+  .eb-crumbs a::after {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: max(100%, 44px);
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+  .eb-callout { padding: 14px; gap: 12px; }
+  .eb-code pre { padding: 16px; }
+  .eb-code-lang, .eb-skill-card-num, .eb-pager-card .eb-dir, .eb-chat-tag,
+  .eb-agent-chat-highlight-eyebrow, .eb-sidebar-agent-sub { font-size: 11px; }
+  .eb-copy { position: relative; }
+  .eb-copy::after {
+    content: "";
+    position: absolute;
+    inset: -8px -4px;
+  }
+  /* Sixteen stacked cards are a long scroll on a phone: they become a row you swipe. */
+  .eb-skills-grid {
+    display: flex;
+    gap: 10px;
+    margin-inline: -18px;
+    padding: 4px 18px 16px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 18px;
+    scrollbar-width: none;
+  }
+  .eb-skills-grid::-webkit-scrollbar { display: none; }
+  .eb-skills-grid > * {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+    padding: 18px 20px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.62);
+  }
+  .eb-agent-chat-highlight { padding: 20px 16px 18px; }
+  .eb-chat-tag-more { display: none; }
+  /* 16px stops iOS from zooming in when the field gets focus. */
+  .eb-agent-chat-input { font-size: 16px; }
+  .eb-agent-chat-input::placeholder { white-space: nowrap; }
+  .eb-agent-chat-send { padding: 10px 14px; min-height: 44px; }
+  .eb-pager { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 36px; padding-top: 24px; }
+  .eb-pager > div:empty { display: none; }
+  .eb-pager-card { min-height: 64px; }
+  .eb-pager-card .eb-ttl { font-size: 17px; }
+}
+@media (max-width: 560px) and (prefers-color-scheme: dark) {
+  .eb-skills-grid > * { background: rgba(255, 255, 255, 0.05); }
 }

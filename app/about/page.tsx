@@ -1,437 +1,203 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
-import type { ReactNode } from 'react'
-import { SiteNav } from '../_components/site-nav'
-import { SiteFooter } from '../_components/site-footer'
-import { Icon } from '../_components/icons'
-import { MetricCounter } from '../../components/_eb/metric-counter'
+import type { ComponentType } from 'react'
+import { ButtonLink } from '../../components/site/button'
+import { ArrowRight, ArrowUpRight, Book, GitHub, Quote, Slides } from '../../components/site/icons'
+import { HeroHeading, HeroRise } from '../../components/site/hero-heading'
+import { Reveal, RevealGroup, RevealItem } from '../../components/site/reveal'
+import { SectionHeader } from '../../components/site/section-header'
+import { SplitHeading } from '../../components/site/split-heading'
+import { Story } from '../../components/site/about/story'
+import { TeamCards } from '../../components/site/about/team-cards'
+import { TeamFan } from '../../components/site/about/team-fan'
+import { PAPER } from '../../components/site/research/paper'
 
-import valeriaPhoto from '../../public/team/valeria-farinazzo.png'
-import marcelloPhoto from '../../public/team/marcello-birkan.png'
-import danielaPhoto from '../../public/team/daniela-flauto.png'
+const DESCRIPTION =
+  'O EvenBetter nasceu como TCC na FCI/Mackenzie. Conheça quem fez, como o projeto saiu da linha de comando e virou skills, e onde ler o artigo da JIIHC 2026.'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Sobre',
-  description:
-    'TCC II da FCI/Mackenzie — um framework de skills curadas para levar UX e acessibilidade ao dia zero do desenvolvimento mobile.',
+  description: DESCRIPTION,
+  alternates: { canonical: '/about' },
+  openGraph: { title: 'Sobre o EvenBetter', description: DESCRIPTION, url: '/about' },
+  twitter: { card: 'summary_large_image', title: 'Sobre o EvenBetter', description: DESCRIPTION },
 }
 
-type TeamMember = {
-  name: string
-  role: string
-  bio: string
-  email?: string
-  mono: string
-  photo: typeof valeriaPhoto
-}
+type IconType = ComponentType<{ size?: number; className?: string }>
 
-const TEAM: TeamMember[] = [
+const READ_MORE: { title: string; text: string; href: string; external?: boolean; icon: IconType }[] = [
   {
-    name: 'Valéria F. Martins',
-    role: 'Orientadora',
-    bio: 'Professora orientadora da FCI/Mackenzie. Pesquisa em Interação Humano-Computador, acessibilidade e UX.',
-    email: 'valeria.farinazzo@mackenzie.br',
-    mono: 'V',
-    photo: valeriaPhoto,
+    title: 'A pesquisa, seção por seção',
+    text: 'Contexto, arquitetura, método, resultados e limites do artigo.',
+    href: '/pesquisa',
+    icon: Book,
   },
   {
-    name: 'Marcello Birkan',
-    role: 'Coautor',
-    bio: 'Estudante da FCI/Mackenzie, com foco em iOS e SwiftUI. Lidera a implementação das skills do plugin EvenBetter iOS.',
-    email: 'marcello.birkan@mackenzista.com.br',
-    mono: 'M',
-    photo: marcelloPhoto,
+    title: 'As 25 referências',
+    text: 'Do HIG e da WCAG 2.2 ao SkillsBench, com link para cada fonte.',
+    href: '/pesquisa#referencias',
+    icon: Quote,
   },
   {
-    name: 'Daniela Flauto',
-    role: 'Coautora',
-    bio: 'Estudante da FCI/Mackenzie. Foco em UX, acessibilidade e curadoria do corpus de cláusulas do framework.',
-    email: 'daniela.flauto@mackenzista.com.br',
-    mono: 'D',
-    photo: danielaPhoto,
-  },
-]
-
-const STATS: { num: ReactNode; text: ReactNode }[] = [
-  {
-    num: '5 etapas',
-    text: (
-      <>
-        Ciclo coberto pelas skills: <code>plan</code> → execução → <code>analyze</code> →{' '}
-        <code>validate</code> → <code>fix</code>, com rastreabilidade entre cada artefato.
-      </>
-    ),
+    title: 'Slides da apresentação',
+    text: 'O deck que vai para a JIIHC 2026, em inglês.',
+    href: PAPER.slides,
+    external: true,
+    icon: Slides,
   },
   {
-    num: '15 skills',
-    text: (
-      <>
-        Distribuídas no plugin <code>evenbetter-ios</code> entre planejamento, design, padrões de
-        SwiftUI, auditoria HIG/WCAG, performance, haptics e integração com sistema.
-      </>
-    ),
-  },
-  {
-    num: 'Open · Aberto',
-    text: (
-      <>
-        Skills no padrão aberto <code>SKILL.md</code>, executadas dentro dos agentes que o
-        desenvolvedor já usa — Codex, Claude Code, e o plugin direto.
-      </>
-    ),
-  },
-]
-
-const REFERENCES = [
-  {
-    title: 'Apple HIG',
-    meta: 'Apple — 2024. Diretrizes oficiais de UX, UI e acessibilidade para iOS, iPadOS, macOS, watchOS e visionOS.',
-    href: 'https://developer.apple.com/design/human-interface-guidelines/',
-  },
-  {
-    title: 'Material Design 3',
-    meta: 'Google — 2024. Sistema de design da plataforma Android, com regras de tipografia, cor, componentes e movimento.',
-    href: 'https://m3.material.io/',
-  },
-  {
-    title: 'WCAG 2.2',
-    meta: 'W3C — 2024. Diretrizes internacionais de acessibilidade web, ainda usadas como baseline em mobile.',
-    href: 'https://www.w3.org/TR/WCAG22/',
-  },
-  {
-    title: 'ScreenAudit',
-    meta: 'Zhong et al. — 2025 (CHI). Detecção de erros de leitor de tela em apps mobile usando LLMs.',
-    href: 'https://scholar.google.com/scholar?q=ScreenAudit+Mobile+Apps+Large+Language+Models+Zhong',
-  },
-  {
-    title: 'AccessGuru',
-    meta: 'Fathallah et al. — 2025 (ASSETS). LLMs detectando e corrigindo violações de acessibilidade em HTML.',
-    href: 'https://scholar.google.com/scholar?q=AccessGuru+LLMs+Web+Accessibility+HTML+Fathallah',
-  },
-  {
-    title: 'Agent Skills',
-    meta: 'Anthropic — 2025. Engineering blog e Claude Docs sobre Agent Skills, progressive disclosure e SKILL.md.',
-    href: 'https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills',
-  },
-  {
-    title: 'SKILL.md spec',
-    meta: 'agentskills.io — 2025. Especificação aberta do formato SKILL.md compartilhada entre agentes de IA.',
-    href: 'https://agentskills.io/specification',
-  },
-  {
-    title: 'SkillsBench',
-    meta: 'Li et al. — 2026. Benchmark comparando skills curadas e skills geradas em tempo de execução.',
-    href: 'https://arxiv.org/abs/2602.12670',
-  },
-  {
-    title: 'Global Report on AT',
-    meta: 'OMS — 2022. Relatório global sobre tecnologias assistivas e os mais de 2,5 bilhões de pessoas que dependem delas.',
-    href: 'https://www.who.int/publications/i/item/9789240049451',
-  },
-  {
-    title: '10 Heurísticas',
-    meta: 'Nielsen — 1994. Heurísticas de usabilidade que ainda estruturam a avaliação de UX em produtos digitais.',
-    href: 'https://www.nngroup.com/articles/ten-usability-heuristics/',
-  },
-]
-
-const RESEARCH_UPDATES = [
-  {
-    title: 'Escopo implementado',
-    text: (
-      <>
-        A versão do artigo consolida <strong>2 plugins</strong> (<code>evenbetter-ios</code> e{' '}
-        <code>evenbetter-general</code>), <strong>17 skills instaláveis</strong>,{' '}
-        <strong>49 cláusulas iOS</strong> em sete domínios e geração de artefatos em{' '}
-        <code>.evenbetter/</code>.
-      </>
-    ),
-  },
-  {
-    title: 'Avaliação com desenvolvedores',
-    text: (
-      <>
-        Avaliação exploratória com <strong>10 desenvolvedores iOS</strong> em ambiente controlado,
-        cobrindo descoberta no site, planejamento com skill, leitura de relatório e percepção de uso.
-      </>
-    ),
-  },
-  {
-    title: 'Resultado SUS',
-    text: (
-      <>
-        A pontuação média foi <strong>79,5</strong> (mediana 81,25; desvio padrão 15,1; mínimo 57,5;
-        máximo 100), acima do benchmark 68 usado como referência em estudos de usabilidade.
-      </>
-    ),
-  },
-  {
-    title: 'Achados de auditoria no estudo',
-    text: (
-      <>
-        No protocolo com o app Aroma Care, os participantes leram corretamente um relatório com{' '}
-        <strong>55 achados</strong> (15 críticos e 40 altos). O corpus de 49 cláusulas funciona como
-        base normativa; múltiplos achados podem surgir para a mesma cláusula em telas diferentes.
-      </>
-    ),
-  },
-  {
-    title: 'Maturidade do fluxo',
-    text: (
-      <>
-        A verificação interna estabilizou o uso em fases separadas (
-        <code>plan → analyze → validate → fix</code>), com rastreabilidade por evidência, domínio,
-        severidade e referência de diretriz.
-      </>
-    ),
+    title: 'Código, skills e corpus',
+    text: 'Os plugins e as 49 cláusulas estão abertos no GitHub.',
+    href: PAPER.code,
+    external: true,
+    icon: GitHub,
   },
 ]
 
 export default function AboutPage() {
   return (
-    <div className="eb-root">
-      <SiteNav />
+    <main id="main">
+      <header className="relative isolate overflow-hidden pt-14 pb-20 md:pt-20 md:pb-24">
+        <div aria-hidden className="grid-paper pointer-events-none absolute inset-0 -z-10" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-48 left-[-12%] -z-10 size-[620px] rounded-full bg-[radial-gradient(closest-side,var(--s-mint),transparent)] opacity-70 blur-2xl"
+        />
+        <div className="wrap grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-10">
+          <div>
+            <HeroRise y={10}>
+              <p className="flex flex-wrap items-center gap-2 font-mono text-[12px] font-semibold">
+                <span className="rounded-full bg-brand px-3 py-1 text-on-brand">TCC</span>
+                <span className="rounded-full border border-line-2 bg-card px-3 py-1 text-ink-2">FCI · Mackenzie</span>
+                <span className="rounded-full border border-line-2 bg-card px-3 py-1 text-ink-2">Artigo na JIIHC 2026</span>
+              </p>
+            </HeroRise>
+            <HeroHeading className="mt-8 max-w-[14ch] text-[clamp(2.5rem,1.4rem+4vw,5rem)] leading-[1] font-semibold tracking-[-0.045em] text-balance">
+              Um TCC que virou <span className="serif">ferramenta</span> e artigo.
+            </HeroHeading>
+            <HeroRise delay={350} y={14} blur>
+              <p className="lede mt-7 max-w-[38rem] text-ink">
+                O EvenBetter é o trabalho de conclusão de curso de Marcello Birkan e Daniela Flauto na Faculdade de
+                Computação e Informática do Mackenzie, com orientação da Prof.ª Dr.ª Valéria Farinazzo Martins. O código
+                é aberto, e o artigo foi aceito na JIIHC 2026.
+              </p>
+            </HeroRise>
+            <HeroRise delay={500} y={12}>
+              <div className="mt-9 flex flex-wrap gap-3">
+                <ButtonLink href="/pesquisa" size="lg">
+                  Ler a pesquisa
+                </ButtonLink>
+                <ButtonLink href={PAPER.code} external icon="external" variant="secondary" size="lg">
+                  Código no GitHub
+                </ButtonLink>
+              </div>
+            </HeroRise>
+          </div>
+          <TeamFan />
+        </div>
+      </header>
 
-      <main id="main" className="eb-home eb-fade-page">
-        {/* ───── Hero — centered ───── */}
-        <div className="eb-hero-frame">
-          <div className="eb-hero-centered">
-            <div className="eb-hero-badge">
-              <span className="eb-dot" /> TCC II · Mackenzie · 2026
-            </div>
-            <h1>
-              Um framework de <span className="eb-accent">skills curadas</span> para levar UX e
-              acessibilidade ao <span className="eb-stroke">dia zero</span> do desenvolvimento mobile.
-            </h1>
-            <p className="eb-hero-centered-lede">
-              EvenBetter é o trabalho de conclusão de curso de <strong>Marcello Birkan</strong> e{' '}
-              <strong>Daniela Flauto</strong> na Faculdade de Computação e Informática da
-              Universidade Presbiteriana Mackenzie, sob orientação da{' '}
-              <strong>Prof.ª Dr.ª Valéria Farinazzo Martins</strong>.
-            </p>
-            <div className="eb-hero-actions">
-              <a
-                href="https://github.com/MelloBirkan/EvenBetterFramework"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="eb-btn eb-btn-primary"
+      <section id="historia" aria-labelledby="historia-title" className="wrap border-t border-line py-20 md:py-28">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+          <div className="self-start lg:sticky lg:top-28">
+            <SectionHeader
+              id="historia-title"
+              eyebrow="História"
+              title={
+                <>
+                  Da linha de comando ao <span className="serif">plugin</span>.
+                </>
+              }
+              lede="Antes das skills, o EvenBetter teve outras duas formas. As duas pesavam na hora de adotar, e isso definiu a terceira."
+            />
+          </div>
+          <Story />
+        </div>
+      </section>
+
+      <section id="equipe" aria-labelledby="equipe-title" className="wrap border-t border-line py-20 md:py-28">
+        <SectionHeader
+          id="equipe-title"
+          eyebrow="Equipe"
+          title={
+            <>
+              Quem fez o <span className="serif">EvenBetter</span>.
+            </>
+          }
+          lede="Três pessoas e um recorte: UX e acessibilidade no desenvolvimento iOS com agentes de IA."
+        />
+        <TeamCards />
+      </section>
+
+      <section id="referencias" aria-labelledby="referencias-title" className="wrap border-t border-line py-20 md:py-28">
+        <SectionHeader
+          id="referencias-title"
+          eyebrow="Para ler mais"
+          title={
+            <>
+              O artigo, as fontes e o <span className="serif">código</span>.
+            </>
+          }
+        />
+        <RevealGroup className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.07}>
+          {READ_MORE.map((item) => {
+            const Icon = item.icon
+            const Arrow = item.external ? ArrowUpRight : ArrowRight
+            const body = (
+              <>
+                <span className="flex items-start justify-between gap-3">
+                  <span className="grid size-11 place-items-center rounded-full bg-mint text-brand-ink">
+                    <Icon size={19} />
+                  </span>
+                  <Arrow
+                    size={18}
+                    className="text-ink-3 transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-ink"
+                  />
+                </span>
+                <span className="mt-8 block text-[17px] leading-snug font-semibold text-ink">{item.title}</span>
+                <span className="mt-1.5 block text-[14.5px] leading-relaxed text-ink-2">{item.text}</span>
+              </>
+            )
+            const cls =
+              'group flex h-full flex-col rounded-[26px] border border-line bg-card p-6 transition-[translate,border-color,box-shadow] duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:-translate-y-1 hover:border-line-2 hover:shadow-[0_24px_50px_-36px_rgba(15,37,35,.5)]'
+            return (
+              <RevealItem key={item.title} className="h-full">
+                {item.external ? (
+                  <a href={item.href} target="_blank" rel="noopener noreferrer" className={cls}>
+                    {body}
+                  </a>
+                ) : (
+                  <Link href={item.href} className={cls}>
+                    {body}
+                  </Link>
+                )}
+              </RevealItem>
+            )
+          })}
+        </RevealGroup>
+      </section>
+
+      <section aria-labelledby="sobre-cta" className="wrap pt-4">
+        <div className="on-night night-glow relative isolate overflow-hidden rounded-[36px] px-6 py-14 text-center sm:px-12 md:py-20">
+          <SplitHeading id="sobre-cta" className="h2 mx-auto max-w-[20ch] text-on-night">
+            Veja o fluxo no seu <span className="serif">projeto</span>.
+          </SplitHeading>
+          <Reveal delay={0.15} y={12}>
+            <p className="lede mx-auto mt-5 max-w-[40rem]">Instale o plugin, planeje uma feature e rode a primeira auditoria.</p>
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+              <ButtonLink href="/#comecar" variant="mint" size="lg">
+                Instalar o plugin
+              </ButtonLink>
+              <Link
+                href="/#como-funciona"
+                className="inline-flex h-13 items-center gap-2 rounded-full border border-white/15 px-6 font-medium text-on-night transition-colors hover:bg-white/8"
               >
-                Ver no GitHub <Icon name="arrow" size={13} />
-              </a>
-              <Link href="/#escolha-seu-agente" className="eb-btn eb-btn-secondary">
-                Voltar para os guias <Icon name="arrow" size={13} />
+                Ver como funciona <ArrowRight size={16} />
               </Link>
             </div>
-          </div>
+          </Reveal>
         </div>
-
-        {/* ───── Big stat — 31 → 69% ───── */}
-        <section aria-labelledby="bigstat-h2" className="eb-bigstat">
-          <span id="bigstat-h2" className="eb-bigstat-eyebrow">
-            <span>O salto que motiva o trabalho</span>
-          </span>
-          <div className="eb-bigstat-grid">
-            <div className="eb-bigstat-num" aria-hidden>
-              <span className="eb-from">
-                <MetricCounter value={31} suffix="%" />
-              </span>
-              <span className="eb-arrow"> → </span>
-              <span className="eb-to">
-                <MetricCounter value={69} suffix="%" />
-              </span>
-            </div>
-            <div className="eb-bigstat-bars">
-              <div className="eb-bigstat-bar-row">
-                <span className="eb-bigstat-bar-label">Estrutural</span>
-                <div className="eb-bigstat-bar-track">
-                  <div
-                    className="eb-bigstat-bar-fill muted"
-                    style={{ width: '31%' }}
-                  />
-                </div>
-                <span className="eb-bigstat-bar-val">31%</span>
-              </div>
-              <div className="eb-bigstat-bar-row">
-                <span className="eb-bigstat-bar-label">LLM-driven</span>
-                <div className="eb-bigstat-bar-track">
-                  <div
-                    className="eb-bigstat-bar-fill"
-                    style={{ width: '69%' }}
-                  />
-                </div>
-                <span className="eb-bigstat-bar-val">69%</span>
-              </div>
-              <p className="eb-bigstat-cite">
-                Cobertura de violações de acessibilidade em apps mobile nativos quando se troca a
-                verificação estrutural por avaliação semântica conduzida por modelos de linguagem.
-                <br />— Zhong et al. (2025), <em>ScreenAudit</em>, CHI&apos;25.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* ───── Stats — heading + description + 3 cards ───── */}
-        <section className="eb-stats-block" aria-labelledby="about-evenbetter">
-          <div className="eb-stats-head">
-            <h3 id="about-evenbetter">
-              Sobre o <span className="eb-accent">EvenBetter</span>
-            </h3>
-            <div className="eb-stats-desc">
-              <p>
-                EvenBetter parte de uma lacuna prática: ferramentas estruturais convencionais cobrem
-                cerca de 31% das violações de acessibilidade em mobile, enquanto abordagens com LLMs
-                sobem para 69%.
-              </p>
-              <p>
-                Em vez de inserir mais um app ou agente proprietário no fluxo de trabalho, o framework
-                distribui <em>skills</em> curadas que rodam dentro dos agentes que o desenvolvedor já
-                usa, no padrão aberto de <code>SKILL.md</code>.
-              </p>
-              <p>
-                O ciclo cobre planejamento, execução, análise, validação e correção, com
-                rastreabilidade entre cláusula, achado, alteração e revalidação. O foco operacional
-                inicial é SwiftUI/iOS, validado por <em>precision</em>, <em>recall</em> e{' '}
-                <em>F1</em>, com comparação ao Xcode Accessibility Audit.
-              </p>
-            </div>
-          </div>
-          <div className="eb-stats">
-            {STATS.map((s, i) => (
-              <div key={i} className="eb-stat">
-                <div className="eb-stat-num">{s.num}</div>
-                <p>{s.text}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ───── Testimonial ───── */}
-        <figure className="eb-testimonial">
-          <blockquote>
-            guidelines não como auditoria final, mas como restrição de projeto desde a concepção da
-            funcionalidade
-          </blockquote>
-          <figcaption>
-            <div className="eb-testimonial-avatar" aria-hidden>EB</div>
-            <p className="eb-testimonial-name">Artigo de TCC II</p>
-            <p className="eb-testimonial-byline">Marcello, Daniela &amp; Valéria — FCI/Mackenzie, 2026</p>
-          </figcaption>
-        </figure>
-
-        {/* ───── Team ───── */}
-        <section className="eb-team-block" aria-labelledby="quem-esta-por-tras">
-          <div className="eb-section-head">
-            <h2 id="quem-esta-por-tras">Quem está por trás.</h2>
-            <p className="eb-lede">
-              Três pessoas trabalhando em torno do mesmo recorte: UX e acessibilidade no ciclo de
-              vida de aplicações mobile nativas.
-            </p>
-          </div>
-          <ul role="list" className="eb-team">
-            {TEAM.map((m) => {
-              const Inner = (
-                <>
-                  <div className="eb-team-photo">
-                    <Image
-                      src={m.photo}
-                      alt={m.name}
-                      placeholder="blur"
-                      sizes="(max-width: 940px) 220px, 33vw"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                    />
-                  </div>
-                  <div>
-                    <p className="eb-team-role">{m.role}</p>
-                    <p className="eb-team-name">{m.name}</p>
-                    <p className="eb-team-bio">{m.bio}</p>
-                  </div>
-                </>
-              )
-              return (
-                <li key={m.name}>
-                  {m.email ? (
-                    <a className="eb-team-card" href={`mailto:${m.email}`}>
-                      {Inner}
-                    </a>
-                  ) : (
-                    <div className="eb-team-card">{Inner}</div>
-                  )}
-                </li>
-              )
-            })}
-          </ul>
-        </section>
-
-        {/* ───── Research updates ───── */}
-        <section className="eb-skills-section" id="atualizacoes-artigo" aria-labelledby="atualizacoes-h2">
-          <div className="eb-section-head">
-            <h2 id="atualizacoes-h2">Atualizações do artigo.</h2>
-            <p className="eb-lede">
-              Pontos adicionados a partir da versão consolidada do TCC, mantendo o conteúdo atual do
-              site e ampliando o contexto de avaliação.
-            </p>
-          </div>
-          <ol className="eb-refs">
-            {RESEARCH_UPDATES.map((item) => (
-              <li key={item.title}>
-                <div className="eb-ref">
-                  <p className="eb-ref-title">{item.title}</p>
-                  <p className="eb-ref-meta">{item.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* ───── References ───── */}
-        <section className="eb-skills-section" id="referencias" aria-labelledby="referencias-h2">
-          <div className="eb-section-head">
-            <h2 id="referencias-h2">Referências.</h2>
-            <p className="eb-lede">
-              Recorte das fontes que sustentam o trabalho. A bibliografia completa está no artigo
-              de TCC II.
-            </p>
-          </div>
-          <ol className="eb-refs">
-            {REFERENCES.map((r) => (
-              <li key={r.title}>
-                <a className="eb-ref" href={r.href} target="_blank" rel="noopener noreferrer">
-                  <p className="eb-ref-title">{r.title}</p>
-                  <p className="eb-ref-meta">{r.meta}</p>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* ───── CTA ───── */}
-        <section className="eb-cta" aria-labelledby="cta-h2">
-          <div>
-            <h2 id="cta-h2">
-              Quer ver o EvenBetter <span className="eb-accent">em ação</span>?
-            </h2>
-            <p style={{ marginTop: 12 }}>
-              Os guias mostram como instalar as skills no Codex, no Claude Code ou direto no plugin
-              EvenBetter iOS, em poucos passos.
-            </p>
-          </div>
-          <div className="eb-cta-actions">
-            <Link href="/#escolha-seu-agente" className="eb-btn eb-btn-primary">
-              Ver os guias <Icon name="arrow" size={13} />
-            </Link>
-            <a
-              href="https://github.com/MelloBirkan/EvenBetterFramework"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="eb-btn eb-btn-secondary"
-            >
-              Ver no GitHub <Icon name="arrow" size={13} />
-            </a>
-          </div>
-        </section>
-      </main>
-
-      <SiteFooter />
-    </div>
+      </section>
+    </main>
   )
 }

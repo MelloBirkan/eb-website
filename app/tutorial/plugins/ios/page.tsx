@@ -1,916 +1,984 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { CodeBlock, Callout, Icon } from '../../../_components/tutorial-primitives'
-import { SiteNav } from '../../../_components/site-nav'
-import { SiteFooter } from '../../../_components/site-footer'
-import { AgentChat } from '../../../_components/agent-chat'
+import { motion } from 'motion/react'
+import { AgentChat } from '../../../../components/site/guide/agent-chat'
+import { setAgent, useAgent, type Agent } from '../../../../components/site/guide/agent-choice'
+import {
+  AgentCode,
+  Callout,
+  CardGrid,
+  CodeBlock,
+  Invocation,
+  MenuPath,
+  PromptList,
+  SkillSession,
+  Step,
+  Steps,
+  TagList,
+  Terminal,
+  type CardItem,
+} from '../../../../components/site/guide/blocks'
+import {
+  GuideShell,
+  HeroField,
+  StepHead,
+  StepLink,
+  type GuideStep,
+} from '../../../../components/site/guide/guide-shell'
+import { useGuideStep } from '../../../../components/site/guide/use-guide-step'
+import { ArrowRight } from '../../../../components/site/icons'
+import { EASE_OUT, SPRING } from '../../../../components/site/motion'
+import { Segmented, type SegmentOption } from '../../../../components/site/research/segmented'
 
-type StepId =
-  | 'visao-geral'
-  | 'planejamento-ux'
-  | 'swiftui'
-  | 'auditoria'
-  | 'performance'
-  | 'xcode-mcp'
-  | 'sistema'
+type StepId = 'visao-geral' | 'planejamento-ux' | 'swiftui' | 'auditoria' | 'performance' | 'xcode-mcp' | 'sistema'
 
-const STEPS: { id: StepId; title: string }[] = [
-  { id: 'visao-geral',     title: 'Visão geral' },
+const STEPS: GuideStep<StepId>[] = [
+  { id: 'visao-geral', title: 'Visão geral' },
   { id: 'planejamento-ux', title: 'Planejamento de UX' },
-  { id: 'swiftui',         title: 'Padrões SwiftUI' },
-  { id: 'auditoria',       title: 'Auditoria HIG/WCAG' },
-  { id: 'performance',     title: 'Performance e A11y' },
-  { id: 'xcode-mcp',       title: 'Xcode MCP' },
-  { id: 'sistema',         title: 'Integração com sistema' },
+  { id: 'swiftui', title: 'Padrões SwiftUI' },
+  { id: 'auditoria', title: 'Auditoria HIG/WCAG' },
+  { id: 'performance', title: 'Performance e A11y' },
+  { id: 'xcode-mcp', title: 'Xcode MCP' },
+  { id: 'sistema', title: 'Integração com sistema' },
 ]
 
-/* ─── Invocation: only thing that actually differs between agents,
-       so this is the only place we show both. Everything else stays single. ─── */
+const IDS = STEPS.map((s) => s.id)
 
-function Invocation({ skill, args }: { skill: string; args?: string }) {
-  const tail = args ? ' ' + args : ''
+const AGENT_OPTIONS: SegmentOption<Agent>[] = [
+  { id: 'claude', label: 'Claude Code', sub: '/evenbetter-ios:skill' },
+  { id: 'codex', label: 'Codex', sub: '@skill' },
+]
+
+const pad = (n: number) => String(n).padStart(2, '0')
+
+/* ───── 01 · Visão geral ───── */
+
+const PHASES: { to: StepId; verb: string; skills: string }[] = [
+  { to: 'planejamento-ux', verb: 'Planejar', skills: 'feature, épico, pesquisa e lançamento' },
+  { to: 'swiftui', verb: 'Construir', skills: 'design e padrões SwiftUI' },
+  { to: 'auditoria', verb: 'Auditar', skills: 'analyze, validate e repair' },
+  { to: 'performance', verb: 'Otimizar', skills: 'performance, acessibilidade e haptics' },
+  { to: 'sistema', verb: 'Integrar', skills: 'App Intents e simulador' },
+]
+
+/** The five phases the skills follow, each a way into its step. */
+function PhaseMap() {
   return (
-    <CodeBlock
-      lang="bash"
-      code={`# Claude Code\n/evenbetter-ios:${skill}${tail}\n\n# Codex\n@${skill}${tail}`}
-    />
+    <motion.ol
+      aria-label="As fases do plugin"
+      className="guide-block grid gap-2.5 sm:grid-cols-5 sm:gap-2"
+      initial="hidden"
+      whileInView="shown"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={{ hidden: {}, shown: { transition: { staggerChildren: 0.08 } } }}
+    >
+      {PHASES.map((p, i) => (
+        <motion.li
+          key={p.to}
+          className="relative"
+          variants={{
+            hidden: { opacity: 0, y: 12 },
+            shown: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_OUT } },
+          }}
+        >
+          <StepLink
+            to={p.to}
+            className="group flex h-full items-center gap-4 rounded-[18px] border border-line bg-card p-3.5 pr-4 transition-[translate,border-color,box-shadow] duration-300 ease-[cubic-bezier(.22,1,.36,1)] hover:-translate-y-0.5 hover:border-ink/25 hover:shadow-[0_18px_40px_-28px_rgba(15,37,35,.35)] sm:flex-col sm:items-start sm:gap-3 sm:p-4"
+          >
+            <span className="grid size-9 shrink-0 place-items-center rounded-full border border-line-2 bg-paper font-mono text-[12px] font-semibold text-brand transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-on-brand">
+              {pad(i + 1)}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[16px] leading-tight font-semibold text-ink">{p.verb}</span>
+              <span className="mt-1 block text-[13.5px] leading-snug text-ink-2">{p.skills}</span>
+            </span>
+            <ArrowRight
+              size={16}
+              className="shrink-0 text-ink-3 transition-[translate,color] duration-300 group-hover:translate-x-0.5 group-hover:text-brand sm:hidden"
+            />
+          </StepLink>
+          {i < PHASES.length - 1 && (
+            <motion.span
+              aria-hidden
+              className="absolute -bottom-[14px] left-[23px] z-10 grid size-[18px] place-items-center rounded-full border border-line-2 bg-paper text-ink-3 sm:top-[25px] sm:-right-[13px] sm:bottom-auto sm:left-auto"
+              variants={{
+                hidden: { opacity: 0, scale: 0.4 },
+                shown: { opacity: 1, scale: 1, transition: { ...SPRING.lively, delay: 0.25 } },
+              }}
+            >
+              <ArrowRight size={10} className="rotate-90 sm:rotate-0" />
+            </motion.span>
+          )}
+        </motion.li>
+      ))}
+    </motion.ol>
   )
 }
 
-/* ─── Chat mock: a single illustrative example. We use the Claude Code syntax;
-       readers in Codex mentally swap /evenbetter-ios:<skill> for @<skill>. ─── */
+type Phase = 'plan' | 'build' | 'audit' | 'tune' | 'integrate'
 
-function ChatMock({
-  skill,
-  args,
-  responseTitle,
-  responseLines,
-}: {
-  skill: string
-  args?: string
-  responseTitle: string
-  responseLines: string[]
-}) {
-  const cmd = `/evenbetter-ios:${skill}${args ? ' ' + args : ''}`
-  return (
-    <div className="eb-chat-mock">
-      <div className="eb-chat-bar">
-        <span className="eb-chat-tag">CLAUDE CODE</span>
-      </div>
-      <div className="eb-chat-body">
-        <div className="eb-chat-user">
-          <span className="eb-chat-prompt">›</span>
-          <span className="eb-chat-cmd">{cmd}</span>
-        </div>
-        <div className="eb-chat-response">
-          <div className="eb-chat-hex">⬡</div>
-          <div>
-            <div className="eb-chat-title">{responseTitle}</div>
-            <div className="eb-chat-lines">
-              {responseLines.map((line, i) => (
-                <div key={i}><span className="eb-chat-ok">✓</span> {line}</div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function Crumbs({ last }: { last: string }) {
-  return (
-    <div className="eb-crumbs">
-      <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>GUIA</Link>
-      <span className="eb-sep">/</span>
-      <span>PLUGIN iOS</span>
-      <span className="eb-sep">/</span>
-      <span>{last}</span>
-    </div>
-  )
-}
-
-/* ─── Step 01 ─── */
-
-const SKILL_GROUPS: { title: string; skills: { name: string; desc: string }[] }[] = [
+const SKILL_GROUPS: { phase: Phase; verb: string; title: string; skills: { name: string; desc: string }[] }[] = [
   {
+    phase: 'plan',
+    verb: 'Planejar',
     title: 'Planejamento e produto',
     skills: [
-      { name: 'evenbetter-ios-feature', desc: 'Workflow em estágios para uma única tela: brief, plano, validação, tickets, execução e revisão.' },
-      { name: 'evenbetter-ios-epic',    desc: 'Workflow para apps ou épicos multi-tela com brief, fluxos, plano técnico HIG e validação de arquitetura.' },
-      { name: 'evenbetter-app-opportunity-research', desc: 'Pesquisa oportunidades de app com análise de mercado, competidores e hipóteses priorizadas.' },
-      { name: 'evenbetter-app-launcher', desc: 'Orquestra o ciclo de vida completo: ideação, desenvolvimento, App Store, monetização e pós-lançamento.' },
+      {
+        name: 'evenbetter-ios-feature',
+        desc: 'Fluxo em estágios para uma única tela: brief, plano, validação, tickets, execução e revisão.',
+      },
+      {
+        name: 'evenbetter-ios-epic',
+        desc: 'Fluxo para apps ou épicos com várias telas: brief, fluxos, plano técnico pelo HIG e validação da arquitetura.',
+      },
+      {
+        name: 'evenbetter-app-opportunity-research',
+        desc: 'Pesquisa a oportunidade de um app com análise de mercado, concorrentes e hipóteses priorizadas.',
+      },
+      {
+        name: 'evenbetter-app-launcher',
+        desc: 'Conduz o ciclo de vida inteiro: ideia, desenvolvimento, App Store, monetização e pós-lançamento.',
+      },
     ],
   },
   {
+    phase: 'build',
+    verb: 'Construir',
     title: 'Design e SwiftUI',
     skills: [
-      { name: 'evenbetter-design',                 desc: 'Direciona interfaces SwiftUI com qualidade visual de produto e decisões de design não genéricas.' },
-      { name: 'evenbetter-swiftui-ui-patterns',   desc: 'Boas práticas para views, navegação, sheets, formulários, controles, Dynamic Type e composição.' },
-      { name: 'evenbetter-swiftui-view-refactor', desc: 'Refatora views grandes em subviews dedicadas, MV-first, com árvore estável e Observation correto.' },
-      { name: 'evenbetter-swiftui-liquid-glass',  desc: 'Implementa e revisa o Liquid Glass do iOS 26+ com containers, shapes consistentes e fallbacks.' },
+      {
+        name: 'evenbetter-design',
+        desc: 'Orienta interfaces SwiftUI com acabamento de produto e decisões de design que fogem do genérico.',
+      },
+      {
+        name: 'evenbetter-swiftui-ui-patterns',
+        desc: 'Boas práticas para views, navegação, sheets, formulários, controles, Dynamic Type e composição.',
+      },
+      {
+        name: 'evenbetter-swiftui-view-refactor',
+        desc: 'Quebra views grandes em subviews dedicadas, com MV primeiro, árvore estável e Observation correto.',
+      },
+      {
+        name: 'evenbetter-swiftui-liquid-glass',
+        desc: 'Implementa e revisa o Liquid Glass do iOS 26 com containers, formas consistentes e fallbacks.',
+      },
     ],
   },
   {
+    phase: 'audit',
+    verb: 'Auditar',
     title: 'Auditoria HIG e WCAG',
     skills: [
-      { name: 'evenbetter-analyze', desc: 'Analisa um projeto SwiftUI contra HIG e WCAG 2.2 e grava relatório HTML em .evenbetter/.' },
-      { name: 'evenbetter-validate',    desc: 'Faz uma segunda passada nas violações de severidade alta para filtrar falsos positivos.' },
+      {
+        name: 'evenbetter-analyze',
+        desc: 'Audita o projeto SwiftUI contra o HIG e a WCAG 2.2 e grava um relatório HTML em .evenbetter/, com arquivo, linha e duas formas de corrigir.',
+      },
+      {
+        name: 'evenbetter-validate',
+        desc: 'Relê cada achado contra o código, o corpus e a documentação da Apple, corrige o relatório e tira os falsos positivos.',
+      },
+      {
+        name: 'evenbetter-repair',
+        desc: 'Aplica as correções técnicas de um relatório validado e devolve para você as decisões de produto, texto e design.',
+      },
     ],
   },
   {
+    phase: 'tune',
+    verb: 'Otimizar',
     title: 'Performance e acessibilidade',
     skills: [
-      { name: 'evenbetter-swiftui-performance-audit', desc: 'Diagnostica scrolling travado, hangs, picos de CPU e re-renderizações excessivas em SwiftUI.' },
-      { name: 'evenbetter-swiftui-accessibility',     desc: 'Skill de referência: carrega cláusulas canônicas de acessibilidade do corpus Apple HIG e WCAG.' },
-      { name: 'evenbetter-ios-haptics',               desc: 'Projeta feedback tátil com .sensoryFeedback e Core Haptics com fallback e critérios de acessibilidade.' },
+      {
+        name: 'evenbetter-swiftui-performance-audit',
+        desc: 'Diagnostica rolagem travada, hangs, picos de CPU e re-renderizações demais em SwiftUI.',
+      },
+      {
+        name: 'evenbetter-swiftui-accessibility',
+        desc: 'Skill de referência: carrega as cláusulas de acessibilidade do corpus, vindas do HIG da Apple e da WCAG.',
+      },
+      {
+        name: 'evenbetter-ios-haptics',
+        desc: 'Projeta feedback tátil com .sensoryFeedback e Core Haptics, com fallback e critérios de acessibilidade.',
+      },
     ],
   },
   {
-    title: 'Integração com sistema',
+    phase: 'integrate',
+    verb: 'Integrar',
+    title: 'Integração com o sistema',
     skills: [
-      { name: 'evenbetter-ios-app-intents',    desc: 'Desenha e implementa App Intents, AppEntity e App Shortcuts para Siri, Spotlight, widgets e controles.' },
-      { name: 'evenbetter-ios-debugger-agent', desc: 'Usa o XcodeBuildMCP para compilar, rodar e inspecionar o app em um simulador iOS conectado.' },
+      {
+        name: 'evenbetter-ios-app-intents',
+        desc: 'Desenha e implementa App Intents, AppEntity e App Shortcuts para Siri, Spotlight, widgets e controles.',
+      },
+      {
+        name: 'evenbetter-ios-debugger-agent',
+        desc: 'Usa o XcodeBuildMCP para compilar, rodar e inspecionar o app em um simulador iOS.',
+      },
     ],
   },
 ]
+
+const SKILL_COUNT = SKILL_GROUPS.reduce((n, g) => n + g.skills.length, 0)
+
+const SKILL_FILTERS: SegmentOption<Phase | 'all'>[] = [
+  { id: 'all', label: <Count label="Todas" n={SKILL_COUNT} /> },
+  ...SKILL_GROUPS.map((g) => ({ id: g.phase, label: <Count label={g.verb} n={g.skills.length} /> })),
+]
+
+function Count({ label, n }: { label: string; n: number }) {
+  return (
+    <>
+      {label} <span className="font-mono text-[0.86em] font-normal opacity-55">{n}</span>
+    </>
+  )
+}
+
+/** All the skills, with a filter by phase so the sixteen cards stay easy to scan. */
+function SkillBrowser() {
+  const [phase, setPhase] = useState<Phase | 'all'>('all')
+  const items = useMemo<CardItem[]>(
+    () =>
+      SKILL_GROUPS.filter((g) => phase === 'all' || g.phase === phase).flatMap((g) =>
+        g.skills.map((s) => ({ title: s.name, meta: g.title, body: s.desc })),
+      ),
+    [phase],
+  )
+  return (
+    <div className="guide-block">
+      <Segmented<Phase | 'all'> label="Filtrar as skills por fase" options={SKILL_FILTERS} value={phase} onChange={setPhase} />
+      <div className="mt-4">
+        <CardGrid label="As skills do plugin" items={items} />
+      </div>
+    </div>
+  )
+}
 
 function StepVisaoGeral() {
   return (
     <>
-      <Crumbs last="VISÃO GERAL" />
-      <h1 id="visao-geral">O plugin <span className="eb-accent">EvenBetter iOS</span></h1>
-      <p className="eb-lede">
-        Quinze skills coordenadas para planejar, implementar, auditar e evoluir produtos iOS em SwiftUI,
-        com Apple HIG, WCAG 2.2 e o ecossistema da Apple sempre como fonte de verdade. Cada skill é uma fase
-        do trabalho. Você invoca uma de cada vez, na ordem que faz sentido para o que está fazendo.
-      </p>
+      <StepHead
+        title={
+          <>
+            Comece pela <span className="serif">visão geral</span>
+          </>
+        }
+      >
+        As skills seguem o caminho de um app, do plano à integração com o sistema. Escolha uma fase para ir direto à
+        etapa dela.
+      </StepHead>
 
-      <Callout kind="note" title="Base empírica do artigo (TCC)">
-        Na versão consolidada da pesquisa, o framework reúne <strong>2 plugins</strong> e{' '}
-        <strong>17 skills</strong> no total (incluindo <code>evenbetter-general</code>), com{' '}
-        <strong>49 cláusulas iOS</strong> e avaliação com 10 desenvolvedores (
-        <strong>SUS 79,5</strong>). O guia abaixo mantém foco operacional no plugin{' '}
-        <code>evenbetter-ios</code> e no fluxo de uso no dia a dia.
-      </Callout>
+      <PhaseMap />
 
-      <div className="eb-agent-chat-highlight">
-        <div className="eb-agent-chat-highlight-head">
-          <span className="eb-agent-chat-highlight-eyebrow">Agente · ao vivo</span>
-          <h2 className="eb-agent-chat-highlight-title">
-            Não sabe qual skill usar? <span className="eb-accent">Pergunte ao agente.</span>
-          </h2>
-          <p className="eb-agent-chat-highlight-sub">
-            Um Claude Managed Agent treinado nas 15 skills deste plugin. Descreva seu cenário
-            e ele recomenda o caminho — você responde no chat exatamente como faria no seu terminal.
-          </p>
-        </div>
-        <AgentChat />
-      </div>
-
-      <div className="eb-skills-grid" style={{ marginTop: '1.5rem' }}>
-        {SKILL_GROUPS.flatMap((group) =>
-          group.skills.map((skill) => (
-            <div key={skill.name} className="eb-skill-card">
-              <h4>{skill.name}</h4>
-              <p>{skill.desc}</p>
-            </div>
-          ))
-        )}
-      </div>
-
-      <h2 style={{ marginTop: '2rem' }}>Como invocar uma skill</h2>
+      <h3>Não sabe qual usar? Pergunte ao agente</h3>
       <p>
-        A única coisa que muda entre agentes é a sintaxe da invocação. Onde isso importa, mostramos os dois
-        exemplos no mesmo bloco. No restante do guia, exemplos seguem a forma do Claude Code, basta trocar{' '}
-        <code>/evenbetter-ios:&lt;skill&gt;</code> por <code>@&lt;skill&gt;</code> se você estiver no Codex.
+        Este chat fala com um Claude Managed Agent que conhece as skills do plugin. Conte o que você quer fazer e ele
+        indica por onde começar.
       </p>
-      <CodeBlock
-        lang="bash"
-        code={'# Claude Code\n/evenbetter-ios:<nome-da-skill>\n\n# Codex\n@<nome-da-skill>'}
-      />
+      <AgentChat />
+
+      <h3>As 16 skills</h3>
+      <SkillBrowser />
+
+      <h3>Como chamar uma skill</h3>
+      <p>
+        Entre os agentes, só muda o jeito de chamar. No Claude Code, a skill vem depois de uma barra e do nome do plugin.
+        No Codex, basta um <code>@</code> antes do nome. Escolha o seu agente no topo da página ou em qualquer bloco de
+        código, e os exemplos do guia mudam junto.
+      </p>
+      <Invocation skill="<nome-da-skill>" />
+
+      <Callout kind="note" title="Os números do artigo">
+        Na versão estudada no TCC, o framework tinha <strong>2 plugins</strong> e <strong>17 skills</strong> ao todo
+        (contando o <code>evenbetter-general</code>), <strong>49 cláusulas iOS</strong> e uma avaliação com 10
+        desenvolvedores, que deu <strong>SUS 79,5</strong>. Depois do estudo, a <code>evenbetter-repair</code> entrou
+        como quarta etapa do fluxo e o plugin <code>evenbetter-ios</code> chegou a 16 skills. Este guia mostra o uso no
+        dia a dia.
+      </Callout>
 
       <Callout kind="note" title="Ainda não instalou?">
-        As skills só ficam disponíveis depois que o plugin estiver instalado.
-        Veja {' '}
-        <Link href="/tutorial/anthropic" style={{ color: 'inherit' }}><strong>como instalar no Claude Code</strong></Link>
-        {' '}ou{' '}
-        <Link href="/tutorial/codex" style={{ color: 'inherit' }}><strong>como instalar no Codex</strong></Link>.
+        As skills só aparecem depois que o plugin está instalado. Veja como instalar no{' '}
+        <Link href="/tutorial/anthropic" className="link">
+          Claude Code
+        </Link>{' '}
+        ou no{' '}
+        <Link href="/tutorial/codex" className="link">
+          Codex
+        </Link>
+        .
       </Callout>
 
-      <Callout kind="tip" title="Existe também o plugin evenbetter-general">
-        O mesmo marketplace publica um segundo plugin, o <code>evenbetter-general</code>, com 2 skills
-        agnósticas de plataforma: <code>evenbetter-general-feature</code> e{' '}
-        <code>evenbetter-general-epic</code>. Útil quando o trabalho não é exclusivamente iOS, ou para
-        complementar os fluxos de planejamento daqui. Os dois plugins convivem sem conflito, basta instalar
-        com <code>/plugin install evenbetter-general@evenbetter</code> (ou pelo browser do Codex).
-      </Callout>
-
-      <Callout kind="tip" title="Atalho mental">
-        Pense no fluxo como um funil: <strong>planeja</strong> (feature/epic/pesquisa/launcher), <strong>constrói</strong> (design + SwiftUI),
-        <strong> audita</strong> (analyze → validate), <strong>otimiza</strong> (performance/a11y/haptics),
-        <strong> integra</strong> (App Intents/Debugger).
+      <Callout kind="tip" title="Existe também o evenbetter-general">
+        O mesmo marketplace publica um segundo plugin, com 2 skills que servem para qualquer plataforma:{' '}
+        <code>evenbetter-general-feature</code> e <code>evenbetter-general-epic</code>. Ele ajuda quando o trabalho não
+        é só iOS, ou para complementar o planejamento daqui. Os dois plugins convivem sem conflito. Para instalar, use{' '}
+        <code>/plugin install evenbetter-general@evenbetter</code> no Claude Code ou o browser de plugins do Codex.
       </Callout>
     </>
   )
 }
 
-/* ─── Step 02 — Planejamento de UX ─── */
+/* ───── 02 · Planejamento de UX ───── */
 
 function StepPlanejamentoUX() {
   return (
     <>
-      <Crumbs last="PLANEJAMENTO" />
-      <h1 id="planejamento-ux">Planejamento de <span className="eb-accent">UX</span></h1>
-      <p className="eb-lede">
-        Antes de escrever uma linha de SwiftUI, defina o problema. Estas quatro skills cobrem o ciclo de
-        descoberta ao planejamento executável e gravam tudo
-        dentro de <code>.evenbetter/&lt;nome&gt;/</code> no seu projeto.
-      </p>
+      <StepHead
+        title={
+          <>
+            Planejamento de <span className="serif">UX</span>
+          </>
+        }
+      >
+        Antes de escrever uma linha de SwiftUI, defina o problema. Estas quatro skills vão da descoberta ao plano
+        executável e guardam tudo em <code>.evenbetter/&lt;nome&gt;/</code>, dentro do seu projeto.
+      </StepHead>
 
-      <h2>evenbetter-ios-feature</h2>
+      <h3>
+        <code>evenbetter-ios-feature</code>
+      </h3>
       <p>
-        Workflow para uma única tela ou feature pequena. Oito estágios numerados, do <code>0-trigger-workflow</code>
-        ao <code>7-cross-artifact-validation</code>, cobrindo plano de UX, validação, tickets, execução e revisão
-        contra capturas de tela e código real.
+        Para uma tela ou uma feature pequena. São oito estágios numerados, do <code>0-trigger-workflow</code> ao{' '}
+        <code>7-cross-artifact-validation</code>: plano de UX, validação, tickets, execução e uma revisão feita contra
+        capturas de tela e o código real.
       </p>
       <Invocation skill="evenbetter-ios-feature" />
-
-      <ChatMock
+      <SkillSession
         skill="evenbetter-ios-feature"
         args="quero adicionar uma tela de filtros à minha lista"
-        responseTitle="Skill carregada · Estágio 0 (Trigger Workflow)"
-        responseLines={[
+        title="Skill carregada · Estágio 0 (Trigger Workflow)"
+        lines={[
           'Detectei projeto SwiftUI em ./MyApp',
           'Vou fazer 4 perguntas de múltipla escolha para clarear o escopo',
           'Pasta sugerida: .evenbetter/filtros-lista/',
         ]}
       />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-ios-epic</h2>
+      <h3>
+        <code>evenbetter-ios-epic</code>
+      </h3>
       <p>
-        Workflow para apps inteiros ou épicos multi-tela. Onze estágios cobrindo brief de UX, fluxos entre telas,
-        validação de PRD, plano técnico HIG, validação de arquitetura, tickets e revisão. Os artefatos chave
-        são <code>ios-ux-brief.md</code>, <code>screen-flows.md</code> e <code>ios-hig-tech-plan.md</code>.
+        Para apps inteiros ou épicos com várias telas. São onze estágios, que passam por brief de UX, fluxos entre
+        telas, validação do PRD, plano técnico pelo HIG, validação da arquitetura, tickets e revisão. Os artefatos
+        principais são <code>ios-ux-brief.md</code>, <code>screen-flows.md</code> e <code>ios-hig-tech-plan.md</code>.
       </p>
       <Invocation skill="evenbetter-ios-epic" />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-app-opportunity-research</h2>
+      <h3>
+        <code>evenbetter-app-opportunity-research</code>
+      </h3>
       <p>
-        Skill para descoberta de oportunidade de produto. Estrutura a pesquisa de nicho, mapeia competidores,
-        diferencia sinais reportados, estimados e inferidos, e entrega um recorte priorizado para decidir se
-        vale investir no app antes de entrar em execução.
+        Para descobrir se um app vale a pena antes de construir. A skill organiza a pesquisa de nicho, mapeia os
+        concorrentes, separa sinais reportados, estimados e inferidos e entrega um recorte priorizado para você decidir
+        se investe na ideia.
       </p>
       <Invocation skill="evenbetter-app-opportunity-research" args="analisar oportunidade para app de hábitos" />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-app-launcher</h2>
+      <h3>
+        <code>evenbetter-app-launcher</code>
+      </h3>
       <p>
-        Skill de ciclo completo para lançamento de app iOS: ideação, planejamento, desenvolvimento, preparação
-        de App Store, monetização, marketing e pós-lançamento. Funciona como playbook quando você precisa sair
-        do escopo de feature e organizar a operação do produto inteiro.
+        Cobre o ciclo inteiro de um app iOS: ideia, planejamento, desenvolvimento, preparação para a App Store,
+        monetização, marketing e o que vem depois do lançamento. Serve de roteiro quando o trabalho deixa de ser uma
+        feature e vira a operação do produto.
       </p>
       <Invocation skill="evenbetter-app-launcher" args="lançar app de finanças pessoais" />
 
       <Callout kind="tip" title="Estágios são opcionais">
-        A skill infere o estágio pelo seu pedido, mas você pode forçar passando{' '}
-        <code>stage: 3-ticket-breakdown</code> (ou qualquer outro) junto com a invocação.
+        A skill deduz o estágio pelo seu pedido, mas você pode escolher um passando <code>stage: 3-ticket-breakdown</code>{' '}
+        (ou outro) junto com a chamada.
       </Callout>
 
       <Callout kind="note" title="Artefatos versionáveis">
-        Tudo que as skills geram fica em <code>.evenbetter/&lt;feature&gt;/</code>, incluindo o plano,
-        os tickets em <code>tickets/UX-TICKET-NNN.md</code> e a revisão final. Comite essa pasta
-        para manter o histórico de decisões junto do código.
+        Tudo o que as skills geram fica em <code>.evenbetter/&lt;feature&gt;/</code>: o plano, os tickets em{' '}
+        <code>tickets/UX-TICKET-NNN.md</code> e a revisão final. Faça commit dessa pasta para manter o histórico das
+        decisões junto do código.
       </Callout>
     </>
   )
 }
 
-/* ─── Step 03 — Padrões SwiftUI ─── */
+/* ───── 03 · Padrões SwiftUI ───── */
 
 function StepSwiftUI() {
   return (
     <>
-      <Crumbs last="SWIFTUI" />
-      <h1 id="swiftui">Padrões e refatoração <span className="eb-accent">SwiftUI</span></h1>
-      <p className="eb-lede">
-        Quatro skills para a fase de implementação. Use durante a escrita inicial, na hora de domar
-        uma view que ficou grande, ou para adotar APIs novas do iOS 26+.
-      </p>
+      <StepHead
+        title={
+          <>
+            Padrões e refatoração <span className="serif">SwiftUI</span>
+          </>
+        }
+      >
+        Quatro skills para a hora de implementar: na primeira versão da tela, quando uma view cresce demais ou quando
+        você quer adotar as APIs novas do iOS 26.
+      </StepHead>
 
-      <h2>evenbetter-design</h2>
+      <h3>
+        <code>evenbetter-design</code>
+      </h3>
       <p>
-        Direciona decisões de design de interface para evitar telas genéricas e elevar acabamento visual.
-        É útil quando você quer transformar wireframes ou requisitos em uma UI SwiftUI com hierarquia,
-        contraste, ritmo e linguagem visual consistentes com um produto pronto para produção.
+        Ajuda a tomar decisões de interface que fogem do genérico. Use para transformar wireframes ou requisitos em uma
+        tela SwiftUI com hierarquia, contraste e ritmo de um produto pronto para lançar.
       </p>
       <Invocation skill="evenbetter-design" args="redesenhar tela de onboarding com foco em clareza" />
 
-      <h2>evenbetter-swiftui-ui-patterns</h2>
+      <h3>
+        <code>evenbetter-swiftui-ui-patterns</code>
+      </h3>
       <p>
-        Catálogo de padrões com mais de 35 referências de componentes. Cobre <code>NavigationStack</code>,
-        sheets enum-driven, async/await com <code>.task</code>, <code>TabView</code>, formulários, deep links,
-        Dynamic Type, theming e o resumo de quando usar cada wrapper de estado
-        (<code>@State</code>, <code>@Binding</code>, <code>@Environment</code>, <code>@Observable</code>).
+        Um catálogo com mais de 35 referências de componentes. Cobre <code>NavigationStack</code>, sheets guiadas por
+        enum, async/await com <code>.task</code>, <code>TabView</code>, formulários, deep links, Dynamic Type, temas e
+        um resumo de quando usar cada wrapper de estado (<code>@State</code>, <code>@Binding</code>,{' '}
+        <code>@Environment</code>, <code>@Observable</code>).
       </p>
       <Invocation skill="evenbetter-swiftui-ui-patterns" />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-swiftui-view-refactor</h2>
+      <h3>
+        <code>evenbetter-swiftui-view-refactor</code>
+      </h3>
       <p>
-        Refatora views grandes para subviews dedicadas (em vez de muitos <code>private var ...: some View</code>),
-        com a árvore estável (sem swap de root via <code>if/else</code>), ações tiradas do <code>body</code>,
-        <strong> MV-first</strong> em vez de MVVM e ordenação consistente do arquivo. Quando uma view passa de
-        ~300 linhas, é o momento de chamar essa skill.
+        Quebra views grandes em subviews dedicadas, em vez de vários <code>private var ...: some View</code>. Mantém a
+        árvore estável (sem trocar a raiz com <code>if/else</code>), tira as ações de dentro do <code>body</code>,
+        prefere MV a MVVM e ordena o arquivo sempre do mesmo jeito. Quando uma view passa de umas 300 linhas, é hora de
+        chamar esta skill.
       </p>
       <Invocation skill="evenbetter-swiftui-view-refactor" />
-
-      <ChatMock
+      <SkillSession
         skill="evenbetter-swiftui-view-refactor"
         args="refatore SettingsView.swift"
-        responseTitle="Plano de refatoração"
-        responseLines={[
-          'Extraídas 4 subviews dedicadas: HeaderSection, FilterSection, ResultsSection, FooterSection',
-          'Movidas 3 ações inline para métodos privados',
-          'Removido swap de root condicional, condição movida para .toolbar',
-          'Body reduzido de 312 para 47 linhas',
+        title="Plano de refatoração"
+        lines={[
+          '4 subviews extraídas: HeaderSection, FilterSection, ResultsSection, FooterSection',
+          '3 ações inline viraram métodos privados',
+          'A troca condicional da raiz saiu, e a condição foi para a .toolbar',
+          'O body caiu de 312 para 47 linhas',
         ]}
       />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-swiftui-liquid-glass</h2>
+      <h3>
+        <code>evenbetter-swiftui-liquid-glass</code>
+      </h3>
       <p>
-        Implementa e revisa o Liquid Glass do iOS 26+ usando as APIs nativas: <code>.glassEffect()</code>,
-        <code> GlassEffectContainer</code>, <code>.buttonStyle(.glass)</code> e <code>.buttonStyle(.glassProminent)</code>.
-        A skill cuida da ordem dos modificadores, agrupa elementos no container, define <code>glassEffectID</code>
-        para morphing e adiciona o <code>#available(iOS 26, *)</code> com fallback para versões anteriores.
+        Implementa e revisa o Liquid Glass do iOS 26 com as APIs nativas: <code>.glassEffect()</code>,{' '}
+        <code>GlassEffectContainer</code>, <code>.buttonStyle(.glass)</code> e <code>.buttonStyle(.glassProminent)</code>.
+        A skill acerta a ordem dos modificadores, agrupa os elementos no container, define o <code>glassEffectID</code>{' '}
+        para o morphing e coloca o <code>#available(iOS 26, *)</code> com um fallback para as versões anteriores.
       </p>
       <Invocation skill="evenbetter-swiftui-liquid-glass" />
 
       <Callout kind="warn" title="Requer iOS 26 ou superior">
-        Liquid Glass é exclusivo do iOS 26+. A skill sempre adiciona o gate{' '}
-        <code>#available(iOS 26, *)</code> com um fallback (geralmente <code>.ultraThinMaterial</code>).
-        Se seu deployment target ainda inclui iOS 16-25, ambos os branches precisam funcionar.
+        O Liquid Glass só existe a partir do iOS 26. A skill sempre adiciona o <code>#available(iOS 26, *)</code> com um
+        fallback, quase sempre <code>.ultraThinMaterial</code>. Se o seu deployment target ainda inclui do iOS 16 ao 25,
+        os dois caminhos precisam funcionar.
       </Callout>
     </>
   )
 }
 
-/* ─── Step 04 — Auditoria HIG/WCAG ─── */
+/* ───── 04 · Auditoria HIG/WCAG ───── */
 
 function StepAuditoria() {
   return (
     <>
-      <Crumbs last="AUDITORIA" />
-      <h1 id="auditoria">Auditoria <span className="eb-accent">HIG e WCAG</span></h1>
-      <p className="eb-lede">
-        Duas skills que rodam em sequência: <strong>analyze</strong> propõe e <strong>validate</strong> filtra.
-        É o padrão <em>orchestrator-workers-with-validators</em> aplicado a guidelines da Apple e WCAG 2.2.
-      </p>
+      <StepHead
+        title={
+          <>
+            Auditoria <span className="serif">HIG e WCAG</span>
+          </>
+        }
+      >
+        Três skills que trabalham sobre o mesmo relatório: o <strong>analyze</strong> encontra os problemas, o{' '}
+        <strong>validate</strong> confere e o <strong>repair</strong> corrige. Cada uma é uma chamada separada, e você
+        decide quando passar para a próxima.
+      </StepHead>
 
-      <div className="eb-steps-frame" style={{ marginTop: '1.5rem' }}>
-        <div className="eb-step">
-          <div className="eb-step-num">01</div>
-          <div className="eb-step-body">
-            <h4>analyze · gera relatório</h4>
-            <p>Lê o projeto sem modificar e grava <code>.evenbetter/analyze-{'{N}'}.json</code>.</p>
-          </div>
-        </div>
-        <div className="eb-step">
-          <div className="eb-step-num">02</div>
-          <div className="eb-step-body">
-            <h4>validate · checa evidências</h4>
-            <p>Re-checa cada violação severa e grava <code>.evenbetter/evenbetter-validate-{'{N}'}.json</code>.</p>
-          </div>
-        </div>
-        <div className="eb-step">
-          <div className="eb-step-num">03</div>
-          <div className="eb-step-body">
-            <h4>remediação guiada</h4>
-            <p>Com as violações validadas, aplique correções usando as skills de SwiftUI, design e sistema.</p>
-          </div>
-        </div>
-      </div>
+      <Steps>
+        <Step title="O analyze gera o relatório">
+          Lê o projeto sem mudar o código e grava{' '}
+          <code>.evenbetter/&lt;projeto&gt;/evenbetter-analyze-report.html</code>.
+        </Step>
+        <Step title="O validate confere o relatório">
+          Relê cada achado contra o código e o corpus, tira os falsos positivos e ajusta as severidades no mesmo arquivo.
+        </Step>
+        <Step title="O repair aplica as correções">
+          Só roda sobre um relatório validado. Corrige o que é técnico e pergunta a você o que depende do produto.
+        </Step>
+      </Steps>
 
-      <h2 style={{ marginTop: '2rem' }}>evenbetter-analyze</h2>
+      <h3>
+        <code>evenbetter-analyze</code>
+      </h3>
       <p>
-        Recebe o caminho absoluto do projeto e roda seis analisadores de domínio em paralelo: tipografia,
-        cor e theming, componentes, layout e interação, navegação, e acessibilidade. Cada domínio só consulta
-        seu próprio corpus markdown. O relatório final tem severidade por violação, escore por arquivo
-        e <code>overall_score</code> agregado.
+        Recebe o caminho do projeto e compara o código SwiftUI com as 49 cláusulas do corpus, em sete domínios. Cada
+        achado traz arquivo e linha, a cláusula de origem, a severidade, uma correção mínima, uma recomendada e um prompt
+        de correção. Uma nova análise substitui o relatório anterior do projeto.
       </p>
       <Invocation skill="evenbetter-analyze" args="projectPath: /caminho/absoluto/do/projeto" />
-
-      <ChatMock
+      <SkillSession
         skill="evenbetter-analyze"
         args="projectPath: /Users/me/MyApp"
-        responseTitle="Análise completa"
-        responseLines={[
-          'Wrote: .evenbetter/analyze-1.json',
-          'Findings: 47 total (12 error, 23 warning, 12 info)',
-          'overall_score: 72/100 · ui_score: 78 · a11y_score: 64',
+        title="Análise completa"
+        lines={[
+          'Wrote: .evenbetter/MyApp/evenbetter-analyze-report.html',
+          'Findings: 47 (12 critical, 23 high, 9 medium, 3 low)',
+          'Next: run evenbetter-validate on this report',
         ]}
       />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-validate</h2>
+      <h3>
+        <code>evenbetter-validate</code>
+      </h3>
       <p>
-        Pega <code>analyze-{'{N}'}.json</code> e re-julga apenas as violações <code>severity: error</code>:
-        re-lê o trecho de código, resolve a cláusula no corpus pelo <code>rule_id</code>, verifica a URL
-        do guideline e atribui um <code>confidence</code>. Tudo abaixo do threshold (default 0.7) cai pra{' '}
-        <code>dropped</code>.
+        Relê cada achado contra o código atual, o corpus e a documentação da Apple. Tira os falsos positivos, corrige
+        severidades e reescreve as correções erradas dentro do próprio relatório. Quando não há nada para mudar, responde
+        só <code>OK</code>.
       </p>
       <Invocation skill="evenbetter-validate" args="projectPath: /caminho/absoluto/do/projeto" />
 
-      <Callout kind="warn" title="O analyzer nunca modifica seu código">
-        As skills de auditoria escrevem seus resultados em <code>.evenbetter/</code>. O{' '}
-        <code>analyze</code> e o <code>validate</code> são read-only no seu source.
+      <h3>
+        <code>evenbetter-repair</code>
+      </h3>
+      <p>
+        Percorre os achados do relatório validado, do mais grave ao mais leve. Quando a mudança é técnica, aplica a
+        correção mínima ou a recomendada nos arquivos Swift e confere o resultado contra a cláusula. Quando a correção
+        mexe em texto, navegação, comportamento ou design visual, pergunta com opções fechadas ou deixa a decisão anotada
+        para você. No fim, cada achado fica marcado como aplicado, adiado, pulado ou com falha.
+      </p>
+      <Invocation skill="evenbetter-repair" args="projectPath: /caminho/absoluto/do/projeto" />
+
+      <Callout kind="warn" title="Só o repair altera o seu código">
+        O <code>analyze</code> e o <code>validate</code> só escrevem em <code>.evenbetter/</code>. O{' '}
+        <code>repair</code> é a única etapa que edita arquivos Swift, e ele se recusa a rodar sobre um relatório que o{' '}
+        <code>validate</code> ainda não conferiu.
       </Callout>
 
-      <Callout kind="note" title="49 cláusulas não significa 49 achados">
-        No estudo com o app Aroma Care, um único relatório trouxe 55 achados (15 críticos e 40 altos)
-        mesmo com 49 cláusulas no corpus. Isso acontece porque uma mesma cláusula pode gerar múltiplas
-        ocorrências em arquivos, telas e estados diferentes.
+      <Callout kind="tip" title="Feche o ciclo com outro validate">
+        Depois do <code>repair</code>, rode o <code>validate</code> de novo. Ele tira do relatório o que foi resolvido e
+        marca como falha o que ainda viola a cláusula, para a próxima rodada.
       </Callout>
 
-      <Callout kind="tip" title="Re-rodar a análise é grátis">
-        Cada execução do <code>analyze</code> gera um número novo (<code>analyze-2.json</code>,{' '}
-        <code>analyze-3.json</code>...). Rode <code>validate</code> sobre a run mais recente para reduzir
-        falsos positivos antes de abrir correções.
+      <Callout kind="note" title="49 cláusulas não quer dizer 49 achados">
+        No estudo com o app Aroma Care, um único relatório trouxe 55 achados (15 críticos e 40 altos), com 49 cláusulas
+        no corpus. A mesma cláusula pode aparecer várias vezes, em arquivos, telas e estados diferentes.
       </Callout>
     </>
   )
 }
 
-/* ─── Step 05 — Performance & A11y ─── */
+/* ───── 05 · Performance e A11y ───── */
 
 const PERF_SYMPTOMS = [
   'Renderização lenta',
-  'Scroll travado',
+  'Rolagem travada',
   'CPU alta ou bateria',
-  'Crescimento de memória',
+  'Memória crescendo',
   'Hangs ou interações travadas',
-  'Atualizações de view excessivas',
+  'Atualizações de view demais',
 ]
 
 function StepPerformance() {
   return (
     <>
-      <Crumbs last="PERFORMANCE" />
-      <h1 id="performance">Performance e <span className="eb-accent">acessibilidade</span></h1>
-      <p className="eb-lede">
-        Três skills focadas em qualidade. Uma é uma sessão guiada de diagnóstico,
-        outra é uma referência de regras canônicas e a terceira cobre feedback tátil acessível.
-      </p>
+      <StepHead
+        title={
+          <>
+            Performance e <span className="serif">acessibilidade</span>
+          </>
+        }
+      >
+        Três skills sobre qualidade. A primeira conduz um diagnóstico, a segunda é uma referência de regras e a terceira
+        cuida do feedback tátil acessível.
+      </StepHead>
 
-      <h2>evenbetter-swiftui-performance-audit</h2>
+      <h3>
+        <code>evenbetter-swiftui-performance-audit</code>
+      </h3>
       <p>
-        Começa pelo sintoma e classifica em uma destas seis categorias antes de pedir código ou trace
-        de Instruments:
+        Começa pelo sintoma e o encaixa em uma destas seis categorias antes de pedir código ou um trace do Instruments:
       </p>
-      <ul>
-        {PERF_SYMPTOMS.map((s) => <li key={s}>{s}</li>)}
-      </ul>
+      <TagList label="Categorias de sintoma" items={PERF_SYMPTOMS} />
       <p>
-        A revisão usa o catálogo <code>code-smells.md</code> para identificar coisas como tempestades
-        de invalidação, identidade instável em <code>ForEach</code>, trabalho pesado dentro do{' '}
-        <code>body</code>, layout thrash com <code>GeometryReader</code> e decode de imagem na main thread.
-        Quando o código sozinho não basta, ela orienta a captura no Instruments.
+        Na revisão, ela usa o catálogo <code>code-smells.md</code> para achar problemas como tempestades de invalidação,
+        identidade instável em <code>ForEach</code>, trabalho pesado dentro do <code>body</code>, layout thrash com{' '}
+        <code>GeometryReader</code> e imagem decodificada na main thread. Quando o código não basta, ela explica como
+        capturar o trace no Instruments.
       </p>
       <Invocation skill="evenbetter-swiftui-performance-audit" />
-
-      <ChatMock
+      <SkillSession
         skill="evenbetter-swiftui-performance-audit"
         args="ProductListView trava ao rolar com 200 itens"
-        responseTitle="Diagnóstico inicial"
-        responseLines={[
-          'Sintoma classificado: Scroll travado',
-          'Suspeitas no código: identidade instável em ForEach (id: \\.self com modelo mutável)',
-          'Suspeitas: imagem decodificada inline com .resizable() sem downsample',
-          'Próximo passo: capturar trace de Time Profiler na rolagem',
+        title="Diagnóstico inicial"
+        lines={[
+          'Sintoma classificado: rolagem travada',
+          'Suspeita no código: identidade instável em ForEach (id: \\.self com modelo mutável)',
+          'Suspeita: imagem decodificada inline com .resizable() sem downsample',
+          'Próximo passo: capturar um trace do Time Profiler durante a rolagem',
         ]}
       />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-swiftui-accessibility</h2>
+      <h3>
+        <code>evenbetter-swiftui-accessibility</code>
+      </h3>
       <p>
-        Skill de <em>referência</em>: não roda análise nem refatora, ela carrega as cláusulas canônicas
-        de acessibilidade do corpus EvenBetter (HIG da Apple + WCAG 2.2). Use quando precisar saber se um
-        comportamento específico é exigido, ou para conferir o conteúdo exato de regras como{' '}
-        <code>A11Y-UI-001</code> ou <code>A11Y-UX-001</code>.
+        É uma skill de <em>referência</em>: não roda análise nem refatora. Ela carrega as cláusulas de acessibilidade do
+        corpus EvenBetter, vindas do HIG da Apple e da WCAG 2.2. Use quando quiser saber se um comportamento é exigido ou
+        para ler o texto exato de regras como <code>A11Y-UI-001</code> e <code>A11Y-UX-001</code>.
       </p>
       <Invocation skill="evenbetter-swiftui-accessibility" args="qual o tamanho mínimo de toque pelo HIG?" />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-ios-haptics</h2>
+      <h3>
+        <code>evenbetter-ios-haptics</code>
+      </h3>
       <p>
-        Foca em feedback tátil com semântica correta para cada evento de UI. A skill orienta quando usar
-        <code> .sensoryFeedback</code>, quando descer para Core Haptics e como sempre manter fallback visual
-        e de áudio para não depender de vibração como único canal de retorno.
+        Cuida do feedback tátil com o significado certo para cada evento da interface. Mostra quando usar{' '}
+        <code>.sensoryFeedback</code>, quando descer para o Core Haptics e como manter um retorno visual e sonoro, para
+        que a vibração nunca seja o único sinal.
       </p>
       <Invocation skill="evenbetter-ios-haptics" args="mapear haptics para fluxo de pagamento" />
 
-      <Callout kind="note" title="A skill empresta regras pro analyzer">
-        O <code>evenbetter-analyze</code> usa o mesmo corpus. Se você quer entender por que uma violação
-        existe, perguntar pra <code>evenbetter-swiftui-accessibility</code> é o caminho mais curto pra cláusula original.
+      <Callout kind="note" title="A skill empresta regras para o analyze">
+        O <code>evenbetter-analyze</code> usa o mesmo corpus. Para entender por que uma violação apareceu, perguntar à{' '}
+        <code>evenbetter-swiftui-accessibility</code> é o caminho mais curto até a cláusula original.
       </Callout>
     </>
   )
 }
 
-/* ─── Step 06 — Xcode MCP ─── */
+/* ───── 06 · Xcode MCP ───── */
 
-const XCODE_MCP_TOOLS: { title: string; tools: string; desc: string }[] = [
+const XCODE_MCP_TOOLS: CardItem[] = [
   {
     title: 'Arquivos no projeto Xcode',
-    tools: 'XcodeRead · XcodeWrite · XcodeUpdate · XcodeGlob · XcodeGrep',
-    desc: 'Lê, escreve e busca dentro do projeto aberto no Xcode, respeitando a estrutura real de targets e grupos, não só o sistema de arquivos.',
+    meta: 'XcodeRead · XcodeWrite · XcodeUpdate · XcodeGlob · XcodeGrep',
+    body: 'Lê, escreve e busca dentro do projeto aberto, seguindo a estrutura real de targets e grupos, e não só as pastas do disco.',
   },
   {
     title: 'Build e testes',
-    tools: 'BuildProject · GetBuildLog · RunAllTests · RunSomeTests',
-    desc: 'Compila no scheme e destination atuais e roda a suíte de testes, devolvendo o log estruturado para o agente debugar erros reais.',
+    meta: 'BuildProject · GetBuildLog · RunAllTests · RunSomeTests',
+    body: 'Compila no scheme e no destination atuais e roda os testes. O log volta estruturado, então o agente depura erros reais.',
   },
   {
     title: 'Diagnóstico ao vivo',
-    tools: 'XcodeListNavigatorIssues · XcodeRefreshCodeIssuesInFile',
-    desc: 'Acessa os erros e warnings do Issue Navigator do Xcode, com informação semântica que o compilador sozinho via terminal não dá.',
+    meta: 'XcodeListNavigatorIssues · XcodeRefreshCodeIssuesInFile',
+    body: 'Lê os erros e avisos do Issue Navigator, com informação semântica que o compilador no terminal não dá.',
   },
   {
     title: 'Código, docs e previews',
-    tools: 'ExecuteSnippet · DocumentationSearch · RenderPreview',
-    desc: 'Roda código Swift no REPL, busca a documentação oficial da Apple (incluindo sessões da WWDC) e renderiza previews SwiftUI sem abrir o canvas.',
+    meta: 'ExecuteSnippet · DocumentationSearch · RenderPreview',
+    body: 'Roda código Swift no REPL, busca na documentação da Apple (inclusive sessões da WWDC) e renderiza previews SwiftUI sem abrir o canvas.',
   },
   {
     title: 'Estrutura do projeto',
-    tools: 'GetProjectStructure · GetSchemes',
-    desc: 'Descreve targets, grupos e schemes disponíveis, para o agente decidir o que tocar antes de começar a editar.',
+    meta: 'GetProjectStructure · GetSchemes',
+    body: 'Descreve targets, grupos e schemes, para o agente decidir o que mexer antes de editar.',
   },
 ]
+
+const XCODE_PROMPTS = [
+  'Use o Xcode MCP para inspecionar o projeto aberto, entender os schemes disponíveis e rodar o build antes de sugerir mudanças.',
+  'Use as ferramentas do Xcode para compilar o app, encontrar os erros de build e corrigir a implementação SwiftUI.',
+  'Antes de editar, veja no Xcode quais targets, schemes e arquivos principais existem neste projeto.',
+  'Depois de implementar, rode o build e os testes pelo Xcode MCP e me diga exatamente o que passou ou falhou.',
+  'Use o DocumentationSearch para consultar a documentação da Apple antes de implementar esta feature em SwiftUI.',
+]
+
+/** The check that the xcode server is registered, typed in the reader's agent. */
+function McpListSession() {
+  const agent = useAgent()
+  return (
+    <Terminal
+      key={agent}
+      label="Terminal"
+      prompt="$"
+      log={[
+        { cmd: `${agent === 'codex' ? 'codex' : 'claude'} mcp list` },
+        {
+          title: 'Servidores MCP conectados',
+          lines: ['xcode · xcrun mcpbridge · Connected', '20 ferramentas disponíveis (BuildProject, RenderPreview, …)'],
+        },
+      ]}
+    />
+  )
+}
 
 function StepXcodeMCP() {
   return (
     <>
-      <Crumbs last="XCODE MCP" />
-      <h1 id="xcode-mcp">Ponte para o <span className="eb-accent">Xcode MCP</span></h1>
-      <p className="eb-lede">
-        O EvenBetter iOS já configura o MCP oficial do Xcode no seu agente. Ao instalar e ativar o plugin,
-        o Claude Code e o Codex passam a ter um servidor MCP chamado <code>xcode</code> rodando{' '}
-        <code>xcrun mcpbridge</code>, a ponte oficial da Apple que permite que agentes externos conversem
-        com o Xcode aberto.
-      </p>
+      <StepHead
+        title={
+          <>
+            Ponte para o <span className="serif">Xcode MCP</span>
+          </>
+        }
+      >
+        O EvenBetter iOS já configura o MCP oficial do Xcode no seu agente. Com o plugin ativo, o Claude Code e o Codex
+        ganham um servidor MCP chamado <code>xcode</code>, que roda o <code>xcrun mcpbridge</code>: a ponte da Apple que
+        deixa agentes externos conversarem com o Xcode aberto.
+      </StepHead>
 
       <Callout kind="note" title="O plugin não instala o Xcode">
-        Ele apenas configura o agente para usar o MCP que já vem com o Xcode 26.3+. Você precisa ter
-        o Xcode instalado, autorizado e com o projeto aberto para o MCP funcionar de verdade.
+        Ele só configura o agente para usar o MCP que vem com o Xcode 26.3 ou mais novo. O Xcode precisa estar
+        instalado, autorizado e com o projeto aberto.
       </Callout>
 
-      <h2>O que o Xcode MCP pode fazer</h2>
+      <h3>O que o Xcode MCP faz</h3>
       <p>
-        O <code>xcrun mcpbridge</code> conecta o agente diretamente ao processo do Xcode aberto via XPC,
-        e expõe cerca de 20 ferramentas nativas. Elas se dividem em cinco grupos:
+        O <code>xcrun mcpbridge</code> liga o agente ao processo do Xcode por XPC e expõe cerca de 20 ferramentas
+        nativas, em cinco grupos:
       </p>
-      <div className="eb-skills-grid" style={{ marginTop: '1rem' }}>
-        {XCODE_MCP_TOOLS.map((g) => (
-          <div key={g.title} className="eb-skill-card">
-            <h4>{g.title}</h4>
-            <p style={{ fontFamily: 'var(--eb-font-mono)', fontSize: 12, color: '#1f4e4a', marginBottom: 8 }}>
-              {g.tools}
-            </p>
-            <p>{g.desc}</p>
-          </div>
-        ))}
-      </div>
+      <CardGrid label="Grupos de ferramentas do Xcode MCP" items={XCODE_MCP_TOOLS} />
 
-      <h2 style={{ marginTop: '2rem' }}>Por que isso é bom</h2>
+      <h3>Por que isso ajuda</h3>
       <ul>
         <li>
-          <strong>Vê o que o Xcode vê.</strong> Como a ponte é XPC, o agente lê o estado real do projeto
-          aberto: scheme selecionado, destination, diagnósticos do Issue Navigator, símbolos resolvidos.
-          Coisa que rodar <code>xcodebuild</code> direto no terminal não consegue.
+          O agente vê o que o Xcode vê. A ponte usa XPC, então ele lê o estado real do projeto aberto: o scheme
+          selecionado, o destination, os diagnósticos do Issue Navigator e os símbolos resolvidos. O{' '}
+          <code>xcodebuild</code> no terminal não chega nisso.
         </li>
         <li>
-          <strong>Build e teste com retorno estruturado.</strong> O agente compila e testa pelo MCP e recebe
-          erros e warnings num formato que ele entende, em vez de raspar logs gigantes.
+          Build e testes voltam com erros e avisos em um formato que o agente entende, em vez de logs enormes para
+          garimpar.
         </li>
         <li>
-          <strong>Documentação Apple sem sair do agente.</strong> <code>DocumentationSearch</code> consulta
-          a doc oficial e até sessões da WWDC, sem precisar abrir o navegador.
+          O <code>DocumentationSearch</code> consulta a documentação da Apple e até sessões da WWDC sem sair do agente.
         </li>
         <li>
-          <strong>Previews SwiftUI sem o canvas.</strong> <code>RenderPreview</code> renderiza headless e
-          devolve a imagem, ótimo para o agente ver o resultado visual da própria mudança.
+          O <code>RenderPreview</code> renderiza previews SwiftUI sem o canvas e devolve a imagem, então o agente vê o
+          resultado da própria mudança.
         </li>
         <li>
-          <strong>Configuração zero.</strong> Como o plugin já registra o servidor, o usuário não precisa
-          rodar comando nenhum. Se o usuário não quisesse o EvenBetter, teria que adicionar manualmente.
+          Você não precisa configurar nada. O plugin já registra o servidor; sem o EvenBetter, seria preciso adicionar o
+          servidor à mão.
         </li>
       </ul>
 
-      <h2>1. Pré-requisitos</h2>
-      <p>Antes de usar o Xcode MCP, confirme que você tem:</p>
+      <h3>Antes de começar</h3>
+      <p>Confira se você tem:</p>
       <ul>
-        <li>macOS com <strong>Xcode 26.3 ou superior</strong> instalado.</li>
+        <li>
+          macOS com o <strong>Xcode 26.3 ou mais novo</strong>.
+        </li>
         <li>Claude Code ou Codex instalado.</li>
-        <li>Plugin EvenBetter iOS instalado e ativado.</li>
-        <li>O projeto iOS aberto no Xcode, com o scheme correto selecionado.</li>
-        <li>A permissão de agentes externos ativada no Xcode.</li>
+        <li>O plugin EvenBetter iOS instalado e ativo.</li>
+        <li>O projeto iOS aberto no Xcode, com o scheme certo selecionado.</li>
+        <li>A permissão para agentes externos ligada no Xcode, como mostra o passo seguinte.</li>
       </ul>
-
-      <Callout kind="warn" title="Bridge não encontrado?">
-        Se <code>xcrun --find mcpbridge</code> retornar erro, o sistema está apontando para os Command Line
-        Tools em vez do Xcode completo. Rode <code>sudo xcode-select -s /Applications/Xcode.app/Contents/Developer</code>
-        {' '}e depois <code>sudo xcodebuild -runFirstLaunch</code>.
+      <Callout kind="warn" title="O bridge não aparece?">
+        Se <code>xcrun --find mcpbridge</code> der erro, o sistema está usando as Command Line Tools em vez do Xcode
+        completo. Rode estes dois comandos e tente de novo:
       </Callout>
+      <CodeBlock code={'sudo xcode-select -s /Applications/Xcode.app/Contents/Developer\nsudo xcodebuild -runFirstLaunch'} />
 
-      <h2>2. Ativar o MCP no Xcode</h2>
-      <p>Sem essa permissão, o agente até tenta iniciar o MCP, mas o Xcode bloqueia o acesso às ferramentas.</p>
-      <ul>
-        <li>Abra o Xcode.</li>
-        <li>Vá em <strong>Xcode &gt; Settings</strong>.</li>
-        <li>Abra a aba <strong>Intelligence</strong>.</li>
-        <li>Procure a seção <strong>Model Context Protocol</strong>.</li>
-        <li>Ative <strong>Allow external agents to use Xcode tools</strong>.</li>
-      </ul>
-
-      <h2>3. Abrir o projeto no Xcode</h2>
-      <p>Antes de pedir para o agente trabalhar:</p>
-      <ul>
-        <li>Abra o arquivo <code>.xcodeproj</code> ou <code>.xcworkspace</code> no Xcode.</li>
-        <li>Selecione o scheme correto.</li>
-        <li>Confirme que o projeto compila normalmente.</li>
-        <li>Deixe o Xcode aberto enquanto o agente estiver rodando.</li>
-      </ul>
+      <h3>Ative o MCP no Xcode</h3>
       <p>
-        O MCP funciona conectado ao Xcode aberto. Se o Xcode estiver fechado, ou se o projeto certo não
-        estiver carregado, o agente pode até listar ferramentas, mas elas não terão contexto.
+        Sem essa permissão, o agente até tenta iniciar o MCP, mas o Xcode bloqueia as ferramentas. No Xcode, siga este
+        caminho e ligue a opção:
       </p>
-
-      <h2>4. Verificar a configuração</h2>
-      <p>
-        Depois que o plugin está ativo, confirme no terminal que o servidor <code>xcode</code> aparece
-        registrado no agente:
-      </p>
-      <CodeBlock
-        lang="bash"
-        code={'# Claude Code\nclaude mcp list\n\n# Codex\ncodex mcp list'}
+      <MenuPath
+        label="Caminho no Xcode"
+        items={['Xcode', 'Settings', 'Intelligence', 'Model Context Protocol', 'Allow external agents to use Xcode tools']}
       />
 
-      <div className="eb-chat-mock">
-        <div className="eb-chat-bar">
-          <span className="eb-chat-tag">TERMINAL</span>
-        </div>
-        <div className="eb-chat-body">
-          <div className="eb-chat-user">
-            <span className="eb-chat-prompt">$</span>
-            <span className="eb-chat-cmd">claude mcp list</span>
-          </div>
-          <div className="eb-chat-response">
-            <div className="eb-chat-hex">⬡</div>
-            <div>
-              <div className="eb-chat-title">Servidores MCP conectados</div>
-              <div className="eb-chat-lines">
-                <div><span className="eb-chat-ok">✓</span> xcode · xcrun mcpbridge · Connected</div>
-                <div><span className="eb-chat-ok">✓</span> 20 ferramentas disponíveis (BuildProject, RenderPreview, …)</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <h3>Abra o projeto no Xcode</h3>
+      <p>Antes de pedir qualquer coisa ao agente:</p>
+      <Steps>
+        <Step
+          title={
+            <>
+              Abra o <code>.xcodeproj</code> ou o <code>.xcworkspace</code>
+            </>
+          }
+        />
+        <Step title="Selecione o scheme certo" />
+        <Step title="Confirme que o projeto compila" />
+        <Step title="Deixe o Xcode aberto enquanto o agente trabalha" />
+      </Steps>
       <p>
-        Se o usuário não estivesse usando o nosso plugin, a configuração equivalente teria que ser feita
-        à mão. Para referência, é só isso:
+        O MCP depende do Xcode aberto. Se ele estiver fechado, ou com outro projeto carregado, o agente até lista as
+        ferramentas, mas elas ficam sem contexto.
       </p>
-      <CodeBlock
-        lang="bash"
-        code={
-          '# Claude Code\nclaude mcp add --transport stdio xcode -- xcrun mcpbridge\n\n' +
-          '# Codex\ncodex mcp add xcode -- xcrun mcpbridge'
-        }
+
+      <h3>Confira a configuração</h3>
+      <p>
+        Com o plugin ativo, veja no terminal se o servidor <code>xcode</code> aparece registrado:
+      </p>
+      <AgentCode code={{ claude: 'claude mcp list', codex: 'codex mcp list' }} />
+      <McpListSession />
+      <p>Sem o plugin, a mesma configuração seria feita à mão. Para referência, é este comando:</p>
+      <AgentCode
+        code={{
+          claude: 'claude mcp add --transport stdio xcode -- xcrun mcpbridge',
+          codex: 'codex mcp add xcode -- xcrun mcpbridge',
+        }}
       />
-      <p>Com o EvenBetter iOS, isso já vem empacotado.</p>
+      <p>Com o EvenBetter iOS, isso já vem pronto.</p>
 
-      <h2>5. Como usar bem o Xcode MCP</h2>
-      <p>
-        Quando estiver usando o EvenBetter iOS, peça explicitamente para o agente usar o contexto do Xcode
-        sempre que fizer sentido. Bons prompts:
-      </p>
+      <h3>Peça do jeito certo</h3>
+      <p>Diga ao agente quando usar o contexto do Xcode. Alguns pedidos que funcionam bem:</p>
+      <PromptList label="Pedidos para o agente" items={XCODE_PROMPTS} />
+
+      <h3>Boas práticas</h3>
       <ul>
+        <li>Deixe o Xcode aberto durante toda a sessão do agente.</li>
+        <li>Abra o projeto certo antes de começar.</li>
         <li>
-          Use o Xcode MCP para inspecionar o projeto aberto, entender os schemes disponíveis e rodar o
-          build antes de sugerir mudanças.
+          Use o <code>.xcworkspace</code> quando o projeto tiver Swift Package Manager, CocoaPods ou vários módulos.
         </li>
+        <li>Confira se o scheme certo está selecionado.</li>
+        <li>Peça para o agente compilar com frequência, e não só no final.</li>
         <li>
-          Use as ferramentas do Xcode para compilar o app, identificar erros de build e corrigir a
-          implementação SwiftUI.
+          Para bugs de interface, peça validação com build, <code>RenderPreview</code>, simulador ou testes.
         </li>
-        <li>
-          Antes de editar, verifique no Xcode quais targets, schemes e arquivos principais existem neste
-          projeto.
-        </li>
-        <li>
-          Depois de implementar, rode build e testes pelo Xcode MCP e me diga exatamente o que passou
-          ou falhou.
-        </li>
-        <li>
-          Use o <code>DocumentationSearch</code> para consultar a doc oficial da Apple antes de implementar
-          essa feature em SwiftUI.
-        </li>
+        <li>Se trocar de projeto no Xcode, reinicie a sessão do agente para não ficar com contexto antigo.</li>
+        <li>Se o MCP parar de responder, confira se o Xcode continua aberto e se a permissão segue ligada.</li>
       </ul>
 
-      <h2>6. Boas práticas</h2>
-      <p>Para extrair o máximo do MCP do Xcode:</p>
+      <h3>Limitações</h3>
+      <p>O Xcode MCP é local e depende do Xcode rodando na sua máquina. Por isso ele:</p>
       <ul>
-        <li>Mantenha o Xcode aberto durante toda a sessão do agente.</li>
-        <li>Abra o projeto correto antes de iniciar o trabalho.</li>
-        <li>Use o <code>.xcworkspace</code> quando o projeto tem Swift Package Manager, CocoaPods ou múltiplos módulos.</li>
-        <li>Confirme que o scheme correto está selecionado.</li>
-        <li>Peça para o agente compilar com frequência, não apenas no final.</li>
-        <li>Para bugs de UI, peça validação com build, <code>RenderPreview</code>, simulator ou testes.</li>
-        <li>Se trocar de projeto no Xcode, recarregue a sessão do agente para evitar contexto antigo.</li>
-        <li>Se o MCP parar de responder, confira se o Xcode ainda está aberto e se a permissão segue ativa.</li>
-      </ul>
-
-      <h2>7. Limitações</h2>
-      <p>
-        O Xcode MCP é local. Ele depende do Xcode rodando na máquina do usuário. Por isso:
-      </p>
-      <ul>
-        <li>Funciona melhor em sessões locais no macOS.</li>
-        <li>Não funciona em ambientes cloud ou Linux sem Xcode.</li>
-        <li>Não substitui a instalação do Xcode.</li>
-        <li>Não dispensa as permissões do Xcode.</li>
-        <li>Não garante que o agente consiga agir se o projeto não estiver aberto.</li>
+        <li>funciona melhor em sessões locais no macOS;</li>
+        <li>não funciona na nuvem nem no Linux, onde não há Xcode;</li>
+        <li>não substitui a instalação do Xcode nem as permissões dele;</li>
+        <li>não consegue agir se o projeto não estiver aberto.</li>
       </ul>
 
       <Callout kind="tip" title="Combine com a skill de debugger">
-        O Xcode MCP cuida do projeto aberto e do Xcode. Para subir o app no simulador, capturar screenshots
-        e simular taps, use também o <code>evenbetter-ios-debugger-agent</code> (próxima etapa), que fala com
-        o <code>XcodeBuildMCP</code>. Os dois MCPs se complementam: um para o IDE, outro para o simulador.
+        O Xcode MCP trabalha dentro do IDE, com o projeto aberto. Para subir o app no simulador, tirar screenshots e
+        simular toques, use também a <code>evenbetter-ios-debugger-agent</code> (
+        <StepLink to="sistema">próxima etapa</StepLink>), que conversa com o <code>XcodeBuildMCP</code>.
       </Callout>
 
       <Callout kind="note" title="Em resumo">
-        Com o EvenBetter iOS instalado, o agente já tem a ponte configurada. O usuário só precisa garantir
-        que o Xcode esteja instalado, autorizado, aberto e com o projeto certo carregado.
+        Com o EvenBetter iOS instalado, o agente já tem a ponte configurada. Falta só o Xcode instalado, autorizado e
+        aberto no projeto certo.
       </Callout>
     </>
   )
 }
 
-/* ─── Step 07 — Integração com sistema ─── */
+/* ───── 07 · Integração com sistema ───── */
 
 function StepSistema() {
   return (
     <>
-      <Crumbs last="SISTEMA" />
-      <h1 id="sistema">Integração com <span className="eb-accent">o sistema</span></h1>
-      <p className="eb-lede">
-        Por último, duas skills que conectam seu app com o resto do iOS: Siri, Spotlight, widgets, controles
-        e o simulador.
-      </p>
+      <StepHead
+        title={
+          <>
+            Integração com <span className="serif">o sistema</span>
+          </>
+        }
+      >
+        Por último, duas skills que ligam o seu app ao resto do iOS: Siri, Spotlight, widgets, controles e o simulador.
+      </StepHead>
 
-      <h2>evenbetter-ios-app-intents</h2>
+      <h3>
+        <code>evenbetter-ios-app-intents</code>
+      </h3>
       <p>
-        Desenha e implementa App Intents, <code>AppEntity</code>, <code>EntityQuery</code> e App Shortcuts.
-        A skill começa pelos verbos de maior valor (compor, abrir, encontrar, filtrar, continuar...) e mantém
-        a superfície enxuta, não espelha a árvore inteira de telas como intents. Decide caso a caso se
-        a ação completa <em>inline</em> ou abre o app via <code>openAppWhenRun</code>, e gera o{' '}
-        <code>AppShortcutsProvider</code> para descoberta no Shortcuts e no Spotlight.
+        Desenha e implementa App Intents, <code>AppEntity</code>, <code>EntityQuery</code> e App Shortcuts. Começa
+        pelos verbos que mais valem (compor, abrir, encontrar, filtrar, continuar) e mantém a lista curta, sem
+        transformar cada tela em uma intent. Decide caso a caso se a ação termina <em>inline</em> ou abre o app com{' '}
+        <code>openAppWhenRun</code>, e gera o <code>AppShortcutsProvider</code> para a ação aparecer nos Atalhos e no
+        Spotlight.
       </p>
       <Invocation skill="evenbetter-ios-app-intents" />
-
-      <ChatMock
+      <SkillSession
         skill="evenbetter-ios-app-intents"
         args="quero expor 'criar tarefa' pra Siri e Shortcuts"
-        responseTitle="Plano de intents"
-        responseLines={[
-          'Intent inline: CreateTaskIntent (parâmetro: title, dueDate?)',
+        title="Plano de intents"
+        lines={[
+          'Intent inline: CreateTaskIntent (parâmetros: title, dueDate?)',
           'Entity: TaskEntity (id, title, dueDate, isCompleted)',
-          'Query: TaskQuery, sugere últimas 10 tarefas',
+          'Query: TaskQuery, sugere as últimas 10 tarefas',
           'AppShortcutsProvider: frase "Criar tarefa <title>"',
         ]}
       />
 
-      <h2 style={{ marginTop: '2.25rem' }}>evenbetter-ios-debugger-agent</h2>
+      <h3>
+        <code>evenbetter-ios-debugger-agent</code>
+      </h3>
       <p>
-        Controla o simulador via <strong>XcodeBuildMCP</strong>: descobre o simulador <em>booted</em>, configura
-        defaults da sessão (projeto, scheme, simulatorId), buildea, lança o app, captura screenshots, descreve
-        a hierarquia de UI, simula taps e gestos e captura logs com <code>start_sim_log_cap</code>. É a skill
-        que fecha o ciclo entre código e comportamento real.
+        Controla o simulador pelo <strong>XcodeBuildMCP</strong>: encontra o simulador ligado, define os padrões da
+        sessão (projeto, scheme, simulatorId), compila, abre o app, tira screenshots, descreve a hierarquia da
+        interface, simula toques e gestos e captura logs com <code>start_sim_log_cap</code>. É a skill que liga o código
+        ao comportamento real do app.
       </p>
-      <Invocation skill="evenbetter-ios-debugger-agent" args="rode o app no simulador booted e tire screenshot" />
+      <Invocation skill="evenbetter-ios-debugger-agent" args="rode o app no simulador ligado e tire uma screenshot" />
 
-      <Callout kind="note" title="Requer XcodeBuildMCP (≠ Xcode MCP)">
-        Esta skill usa o servidor MCP <code>XcodeBuildMCP</code>, que é diferente do{' '}
-        <strong>Xcode MCP</strong> oficial da Apple coberto na{' '}
-        <a href="#xcode-mcp" style={{ color: 'var(--eb-teal)', textDecoration: 'underline', textUnderlineOffset: '3px' }}>etapa anterior</a>.
-        O <code>XcodeBuildMCP</code> controla o simulador via <code>xcodebuild</code> e <code>simctl</code>,
-        enquanto o Xcode MCP fala diretamente com o IDE aberto. Os dois se complementam: o IDE para
-        contexto e diagnósticos, o XcodeBuildMCP para automação do simulador. Sem ele instalado, a
-        skill avisa e para, não tenta usar fallbacks.
+      <Callout kind="note" title="Requer o XcodeBuildMCP, que não é o Xcode MCP">
+        Esta skill usa o servidor <code>XcodeBuildMCP</code>, diferente do <strong>Xcode MCP</strong> da Apple que
+        aparece na <StepLink to="xcode-mcp">etapa anterior</StepLink>. O <code>XcodeBuildMCP</code> controla o
+        simulador com <code>xcodebuild</code> e <code>simctl</code>, enquanto o Xcode MCP fala direto com o IDE aberto.
+        Um traz o contexto e os diagnósticos do IDE, o outro automatiza o simulador. Se o XcodeBuildMCP não estiver
+        instalado, a skill avisa e para, sem tentar outro caminho.
       </Callout>
 
       <Callout kind="tip" title="Combine com outras skills">
-        Depois de uma feature pronta, encadear <code>evenbetter-ios-debugger-agent</code> →{' '}
-        <code>evenbetter-ios-feature</code> no estágio <code>5-ux-implementation-review</code> dá uma revisão
-        com screenshots reais do simulador comparados ao plano original.
+        Com uma feature pronta, rode a <code>evenbetter-ios-debugger-agent</code> e depois a{' '}
+        <code>evenbetter-ios-feature</code> no estágio <code>5-ux-implementation-review</code>. A revisão compara
+        screenshots reais do simulador com o plano original.
       </Callout>
     </>
   )
 }
 
-/* ─── Page ─── */
+/* ───── Page ───── */
+
+const CONTENT: Record<StepId, () => React.JSX.Element> = {
+  'visao-geral': StepVisaoGeral,
+  'planejamento-ux': StepPlanejamentoUX,
+  swiftui: StepSwiftUI,
+  auditoria: StepAuditoria,
+  performance: StepPerformance,
+  'xcode-mcp': StepXcodeMCP,
+  sistema: StepSistema,
+}
 
 export default function TutorialPluginIosPage() {
-  const [step, setStep] = useState<StepId>('visao-geral')
-
-  // Sync the active step with the URL hash so home-page deep links work.
-  useEffect(() => {
-    const hash = (typeof window !== 'undefined' ? window.location.hash.slice(1) : '') as StepId
-    if (hash && STEPS.some(s => s.id === hash)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setStep(hash)
-    }
-  }, [])
-
-  useEffect(() => { window.scrollTo(0, 0) }, [step])
-
-  const stepIdx = STEPS.findIndex(s => s.id === step)
-  const prev = stepIdx > 0 ? STEPS[stepIdx - 1] : null
-  const next = stepIdx < STEPS.length - 1 ? STEPS[stepIdx + 1] : null
-  const isDone = !next
-
-  const renderStep = () => {
-    switch (step) {
-      case 'visao-geral':     return <StepVisaoGeral />
-      case 'planejamento-ux': return <StepPlanejamentoUX />
-      case 'swiftui':         return <StepSwiftUI />
-      case 'auditoria':       return <StepAuditoria />
-      case 'performance':     return <StepPerformance />
-      case 'xcode-mcp':       return <StepXcodeMCP />
-      case 'sistema':         return <StepSistema />
-    }
-  }
-
+  const [step, go] = useGuideStep(IDS, 'visao-geral')
+  const agent = useAgent()
+  const Content = CONTENT[step]
   return (
-    <div className="eb-root">
-      <SiteNav />
-      <div className="eb-tut" id="main">
-        <aside className="eb-sidebar">
-          <Link href="/" className="eb-sidebar-back">
-            <Icon name="chevron" size={12} />
-            Início
-          </Link>
-          <div className="eb-sidebar-agent">
-            <div>
-              <div className="eb-sidebar-agent-name">EvenBetter iOS</div>
-              <div className="eb-sidebar-agent-sub">Plugin · 15 skills</div>
-            </div>
-          </div>
-          <div className="eb-side-title">Etapas</div>
-          {STEPS.map((s, idx) => {
-            const isActive = s.id === step
-            const isSectionDone = idx < stepIdx
-            return (
-              <div
-                key={s.id}
-                className={`eb-side-item${isActive ? ' active' : ''}${isSectionDone ? ' done' : ''}`}
-                onClick={() => setStep(s.id)}
-              >
-                <span className="eb-num">{isSectionDone ? '✓' : `0${idx + 1}`}</span>
-                <span>{s.title}</span>
-              </div>
-            )
-          })}
-        </aside>
-        <main className="eb-content eb-fade-page" key={step}>
-          {renderStep()}
-          {isDone && (
-            <div className="eb-pager-done">
-              <div className="eb-pager-done-icon"><Icon name="check" size={14} /></div>
-              <div>
-                <h4>Você conhece todas as 15 skills</h4>
-                <p>
-                  Use o índice na lateral para revisitar qualquer etapa. Para sugestões e contribuições,
-                  acesse o repositório no GitHub.
-                </p>
-              </div>
-            </div>
-          )}
-          <div className="eb-pager">
-            {prev
-              ? <div className="eb-pager-card" onClick={() => setStep(prev.id)}>
-                  <span className="eb-dir">← Anterior</span>
-                  <span className="eb-ttl">{prev.title}</span>
-                </div>
-              : <div />}
-            {next
-              ? <div className="eb-pager-card next" onClick={() => setStep(next.id)}>
-                  <span className="eb-dir">Próximo →</span>
-                  <span className="eb-ttl">{next.title}</span>
-                </div>
-              : <div />}
-          </div>
-        </main>
-      </div>
-      <SiteFooter />
-    </div>
+    <GuideShell
+      eyebrow="Guia do plugin"
+      title={
+        <>
+          As skills do <span className="serif">EvenBetter iOS</span>
+        </>
+      }
+      lede="São 16 skills para planejar, construir, auditar e integrar apps em SwiftUI, com o HIG da Apple e a WCAG 2.2 como referência. Cada uma cuida de uma fase do trabalho, e você chama uma de cada vez."
+      facts={['16 skills', '7 etapas', 'Claude Code ou Codex']}
+      toolbar={
+        <HeroField label="Exemplos no formato do">
+          <Segmented<Agent>
+            label="Agente dos exemplos"
+            size="lg"
+            options={AGENT_OPTIONS}
+            value={agent}
+            onChange={setAgent}
+          />
+        </HeroField>
+      }
+      steps={STEPS}
+      step={step}
+      onStep={go}
+      done={{
+        title: 'Você conhece as 16 skills',
+        body: (
+          <>
+            Volte a qualquer etapa pela lista. Sugestões e contribuições são bem-vindas no{' '}
+            <a className="link" href="https://github.com/MelloBirkan/EvenBetterFramework">
+              repositório do GitHub
+            </a>
+            .
+          </>
+        ),
+      }}
+    >
+      <Content />
+    </GuideShell>
   )
 }
