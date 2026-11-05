@@ -215,13 +215,17 @@
   text-decoration: none;
   border-radius: 999px;
 }
+/* The EB tile (BrandMark). Its colors live in the SVG; the ring keeps the dark tile
+   visible on dark surfaces such as the nav bar and the footer in dark mode. */
+.brand-mark {
+  display: block;
+  flex: none;
+  border-radius: 22%;
+  box-shadow: 0 0 0 1px var(--s-line-2);
+}
+.brand-mark svg { display: block; }
 .sn-mark {
-  display: grid;
-  place-items: center;
-  border-radius: 9px;
-  background: var(--s-glow);
-  color: #0b1a18;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 1px rgba(182, 239, 217, 0.2);
   transition: transform 400ms cubic-bezier(.22, 1, .36, 1);
 }
 .sn-brand:hover .sn-mark { transform: rotate(-8deg) scale(1.06); }

@@ -1,4 +1,5 @@
 import type { SVGProps } from 'react'
+import { BRAND_COLORS, BRAND_PATHS, BRAND_TILE_RADIUS } from './brand'
 
 /* Server-safe line icons, 24px grid, 1.7 stroke. */
 
@@ -185,16 +186,15 @@ export function Orcid({ size = 16, ...props }: IconProps) {
 }
 
 /** The EvenBetter mark: a line that turns upward. */
+/* The EB monogram on its tile. Below 64px it switches to the heavier cut, which stays legible. */
 export function BrandMark({ size = 28, className }: { size?: number; className?: string }) {
+  const p = size < 64 ? BRAND_PATHS.small : BRAND_PATHS.full
   return (
-    <span
-      className={className}
-      style={{ width: size, height: size }}
-      aria-hidden
-    >
-      <svg width={size * 0.62} height={size * 0.62} viewBox="0 0 24 24" fill="none">
-        <path d="M5 19 L11 13 L13 15 L19 7" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M14 7 L19 7 L19 12" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+    <span className={`brand-mark ${className ?? ''}`} style={{ width: size, height: size }} aria-hidden>
+      <svg width={size} height={size} viewBox="0 0 512 512" focusable="false">
+        <rect width="512" height="512" rx={512 * BRAND_TILE_RADIUS} fill={BRAND_COLORS.tile} />
+        <path d={p.b} fill={BRAND_COLORS.b} fillRule="evenodd" />
+        <path d={p.e} fill={BRAND_COLORS.e} />
       </svg>
     </span>
   )

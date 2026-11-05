@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { BRAND_COLORS, BRAND_PATHS, BRAND_TILE_RADIUS } from "../components/site/brand";
 
 export const alt = "EvenBetter · Skills curadas para acessibilidade em iOS";
 export const size = { width: 1200, height: 630 };
@@ -23,34 +24,11 @@ export default async function OpengraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 12,
-              background: "#1f4e4a",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M5 19 L11 13 L13 15 L19 7"
-                stroke="#b6efd9"
-                strokeWidth="2.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M14 7 L19 7 L19 12"
-                stroke="#b6efd9"
-                strokeWidth="2.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
+          <svg width="48" height="48" viewBox="0 0 512 512">
+            <rect width="512" height="512" rx={512 * BRAND_TILE_RADIUS} fill={BRAND_COLORS.tile} />
+            <path d={BRAND_PATHS.small.b} fill={BRAND_COLORS.b} fillRule="evenodd" />
+            <path d={BRAND_PATHS.small.e} fill={BRAND_COLORS.e} />
+          </svg>
           <div
             style={{
               fontSize: 28,
