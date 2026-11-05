@@ -125,8 +125,11 @@ const SEV_TONE: Record<string, string> = {
   med: 'border-med-n/50 text-med-n',
 }
 
+// One stage per line of CODE, then one more for the scan line to fade out.
+const ANALYZE_DELAYS = [500, 500, 500, 500, 650, 650, 650, 500, 600]
+
 export function AnalyzeVisual({ paused }: { paused: boolean }) {
-  const s = useStages([500, 500, 500, 500, 650, 650, 650, 500], paused)
+  const s = useStages(ANALYZE_DELAYS, paused)
   // The scan line sits on CODE[s - 1] while it moves.
   const scanned = Math.min(s, CODE.length)
   return (
@@ -185,8 +188,10 @@ const ROWS: Row[] = [
   { id: 'CLR-UI-001', text: 'Cor fixa no texto', sev: 'Médio', tone: 'text-med-n border-med-n/50' },
 ]
 
+const VALIDATE_DELAYS = [700, 650, 650, 900, 900, 900]
+
 export function ValidateVisual({ paused }: { paused: boolean }) {
-  const s = useStages([700, 650, 650, 900, 900, 900], paused)
+  const s = useStages(VALIDATE_DELAYS, paused)
   const dropped = s >= 5
   return (
     <div className={`${card} min-h-[420px]`}>
@@ -276,8 +281,10 @@ const DIFF = [
   { t: '+', code: '}' },
 ]
 
+const REPAIR_DELAYS = [400, 260, 260, 260, 260, 260, 260, 700, 600]
+
 export function RepairVisual({ paused }: { paused: boolean }) {
-  const s = useStages([400, 260, 260, 260, 260, 260, 260, 700, 600], paused)
+  const s = useStages(REPAIR_DELAYS, paused)
   return (
     <div className={`${card} min-h-[420px]`}>
       <div className="flex items-center gap-2 text-on-night-3">
@@ -314,8 +321,8 @@ export function RepairVisual({ paused }: { paused: boolean }) {
               <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[11.5px] text-on-night-2">
                 <motion.span
                   className="size-2 rounded-full bg-glow"
-                  animate={paused ? undefined : { opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 1.4, repeat: Infinity }}
+                  animate={paused ? { opacity: 1 } : { opacity: [1, 0.3, 1] }}
+                  transition={paused ? { duration: 0.3 } : { duration: 1.4, repeat: Infinity }}
                 />
                 aguardando você
               </span>

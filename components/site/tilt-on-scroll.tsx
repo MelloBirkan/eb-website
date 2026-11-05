@@ -1,7 +1,8 @@
 'use client'
 
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
+import { motion, useScroll, useSpring, useTransform } from 'motion/react'
 import { useRef, type ReactNode } from 'react'
+import { useReducedMotion } from './use-reduced-motion'
 
 /**
  * Lays its child back in 3D and stands it up as it scrolls toward the

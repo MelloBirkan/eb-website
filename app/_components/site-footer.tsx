@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { BrandMark, GitHub } from '../../components/site/icons'
 import { FooterWordmark } from '../../components/site/footer-wordmark'
+import { PAPER } from '../../components/site/research/paper'
 
-const GITHUB = 'https://github.com/MelloBirkan/EvenBetterFramework'
+const GITHUB = PAPER.code
 
 const COLUMNS: { title: string; links: { label: string; href: string; external?: boolean }[] }[] = [
   {

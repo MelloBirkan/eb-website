@@ -1,8 +1,8 @@
 'use client'
 
 import { Ticker } from 'motion-plus/react'
-import { useReducedMotion } from 'motion/react'
 import { useState } from 'react'
+import { useReducedMotion } from './use-reduced-motion'
 
 const ITEMS = ['Apple HIG', 'WCAG 2.2', 'VoiceOver', 'Dynamic Type', 'SwiftUI', 'SKILL.md', 'Claude Code', 'Codex', 'Liquid Glass']
 

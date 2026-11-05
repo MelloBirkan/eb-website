@@ -66,7 +66,7 @@ function Section({
   children?: ReactNode
 }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-24 border-t border-line py-20 first:border-t-0 md:py-24">
+    <section id={id} aria-labelledby={`${id}-title`} className="border-t border-line py-20 first:border-t-0 md:py-24">
       <SectionHeader id={`${id}-title`} eyebrow={`${sectionNumber(id)} · ${eyebrow}`} title={title} lede={lede} />
       {children}
     </section>
@@ -566,7 +566,7 @@ export default function ResearchPage() {
                   <li
                     key={r.n}
                     id={`ref-${r.n}`}
-                    className="ref-item grid scroll-mt-28 grid-cols-[34px_minmax(0,1fr)] gap-2 rounded-xl px-3 py-2.5 text-[14px] leading-relaxed text-ink-2"
+                    className="ref-item grid grid-cols-[34px_minmax(0,1fr)] gap-2 rounded-xl px-3 py-2.5 text-[14px] leading-relaxed text-ink-2"
                   >
                     <span className="font-mono text-[12.5px] text-ink-3">[{r.n}]</span>
                     <span className="min-w-0 [overflow-wrap:anywhere]">

@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 
 /**
  * Steps through `delays.length` stages, waiting delays[i] ms before stage i+1.
- * Holds while `paused`, and starts over from 0 when `resetKey` changes.
+ * Holds while `paused`. Pass a module-level array: a new array on every render
+ * restarts the current stage's timer. Remount (change the `key`) to start over.
  */
 export function useStages(delays: number[], paused = false) {
   const [stage, setStage] = useState(0)

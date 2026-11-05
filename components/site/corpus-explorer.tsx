@@ -32,7 +32,7 @@ const DIMENSION: Record<Clause['dimension'], string> = { ui: 'UI', ux: 'UX', acc
 
 type Filter = 'all' | Severity
 
-const ROWS = CORPUS.map((d) => ({ ...d, clauses: d.clauses }))
+const ROWS = CORPUS
 const FLAT = ROWS.flatMap((d, row) => d.clauses.map((c, col) => ({ clause: c, domain: d.name, row, col })))
 const COUNTS = FLAT.reduce(
   (acc, { clause }) => ({ ...acc, [clause.severity]: acc[clause.severity] + 1 }),

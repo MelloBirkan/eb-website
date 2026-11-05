@@ -102,8 +102,6 @@ const GROUPS: Group[] = [
   },
 ]
 
-export const IOS_SKILL_COUNT = GROUPS.reduce((n, g) => n + g.skills.length, 0)
-
 export function SkillsExplorer() {
   const [active, setActive] = useState(0)
   const uid = useId()

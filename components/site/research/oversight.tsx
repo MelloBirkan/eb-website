@@ -158,6 +158,8 @@ export function Oversight() {
       </div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-[minmax(0,1fr)_230px] md:items-start md:gap-8">
+        {/* The live region stays mounted; only its text is swapped, so the change is announced. */}
+        <div aria-live="polite">
           <AnimatePresence mode="wait" initial={false}>
             <motion.p
               key={mode}
@@ -165,12 +167,12 @@ export function Oversight() {
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               exit={{ opacity: 0, y: -6, filter: 'blur(4px)', transition: { duration: 0.15 } }}
               transition={{ duration: 0.4, ease: EASE_OUT }}
-              aria-live="polite"
               className="max-w-[60ch] text-[16px] leading-relaxed text-ink-2 md:pt-2"
             >
               {m.text} <Cite n={m.cite} />
             </motion.p>
           </AnimatePresence>
+        </div>
         {/* Shneiderman's two axes: automation and human control are not one slider. */}
         <figure className="w-full max-w-[280px] rounded-[24px] border border-line bg-paper-2/60 p-4 md:max-w-none">
           <div className="relative ml-6 aspect-square">

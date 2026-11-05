@@ -51,7 +51,8 @@ export function SiteNav() {
   function toTop(e: MouseEvent<HTMLAnchorElement>) {
     if (pathname !== '/') return
     e.preventDefault()
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' })
     if (window.location.hash) {
       window.history.replaceState(null, '', window.location.pathname + window.location.search)
     }

@@ -13,7 +13,10 @@ const LAYERS = [
   { name: 'Execução', text: 'Considera o ambiente: terminal, descoberta do plugin e permissões.' },
 ]
 
-/** The five context layers, stacked from the bottom up as they scroll in. */
+/**
+ * The five context layers, stacked from the bottom up as they scroll in. The
+ * hover lift is CSS: a motion `whileHover` would inherit the entrance delay.
+ */
 export function ContextLayers() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, amount: 0.35 })
@@ -26,8 +29,7 @@ export function ContextLayers() {
             initial={{ opacity: 0, y: -40, scale: 0.96 }}
             animate={inView ? { opacity: 1, y: 0, scale: 1 } : undefined}
             transition={{ ...SPRING.lively, delay: (LAYERS.length - 1 - i) * 0.12 }}
-            whileHover={{ y: -3 }}
-            className="grid grid-cols-[32px_minmax(0,1fr)] items-center gap-x-4 gap-y-1 rounded-2xl border border-line bg-card px-4 py-3.5 shadow-[0_10px_24px_-20px_rgba(15,37,35,.5)] sm:grid-cols-[32px_130px_minmax(0,1fr)]"
+            className="grid grid-cols-[32px_minmax(0,1fr)] items-center transition-[translate] duration-200 motion-safe:hover:-translate-y-[3px] gap-x-4 gap-y-1 rounded-2xl border border-line bg-card px-4 py-3.5 shadow-[0_10px_24px_-20px_rgba(15,37,35,.5)] sm:grid-cols-[32px_130px_minmax(0,1fr)]"
             style={{ marginInline: `${i * 1.2}%` }}
           >
             <span className="grid size-8 place-items-center rounded-full bg-mint font-mono text-[12.5px] font-semibold text-brand-ink">

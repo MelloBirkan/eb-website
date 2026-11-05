@@ -1,11 +1,9 @@
 import { ButtonLink } from './button'
+import { PAPER } from './research/paper'
 import { Reveal } from './reveal'
 import { SplitHeading } from './split-heading'
 
-export const SLIDES_URL = 'https://evenbetter-slides.mellofattura.com/jiihc'
-export const GITHUB_URL = 'https://github.com/MelloBirkan/EvenBetterFramework'
-
-/** Closing band: the JIIHC 2026 paper, with links to the research page, slides and code. */
+/** Closing band: the JIIHC 2026 paper, with links to the research page and the slides. */
 export function PaperCta() {
   return (
     <section aria-labelledby="artigo-title" className="wrap pt-24 md:pt-32">
@@ -31,7 +29,7 @@ export function PaperCta() {
             <ButtonLink href="/pesquisa" size="lg">
               Conhecer a pesquisa
             </ButtonLink>
-            <ButtonLink href={SLIDES_URL} external icon="external" variant="secondary" size="lg">
+            <ButtonLink href={PAPER.slides} external icon="external" variant="secondary" size="lg">
               Slides da apresentação
             </ButtonLink>
           </div>

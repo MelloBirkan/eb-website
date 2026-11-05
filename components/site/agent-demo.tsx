@@ -1,10 +1,11 @@
 'use client'
 
-import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion, useInView } from 'motion/react'
 import { AnimateNumber, Typewriter } from 'motion-plus/react'
 import { useEffect, useRef, useState } from 'react'
 import { Check } from './icons'
 import { SPRING } from './motion'
+import { useReducedMotion } from './use-reduced-motion'
 
 type Phase = 'prompt' | 'scan' | 'report' | 'validate' | 'done'
 
@@ -286,8 +287,8 @@ export function AgentDemo() {
                         key={i}
                         className="h-3 rounded-full bg-white/[0.06]"
                         style={{ width: `${w * 100}%` }}
-                        animate={running ? { opacity: [0.4, 0.9, 0.4] } : undefined}
-                        transition={{ duration: 1.6, repeat: Infinity, delay: i * 0.15 }}
+                        animate={running ? { opacity: [0.4, 0.9, 0.4] } : { opacity: 0.4 }}
+                        transition={running ? { duration: 1.6, repeat: Infinity, delay: i * 0.15 } : { duration: 0.3 }}
                       />
                     ))}
                     <p className="mt-2 font-mono text-[12px] text-on-night-3">O relatório aparece aqui.</p>

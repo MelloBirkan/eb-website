@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useRef, useState } from 'react'
+import { AnimatePresence, motion, useInView } from 'motion/react'
 import { ArrowDown } from '../icons'
 import { EASE_OUT, SPRING } from '../motion'
+import { useReducedMotion } from '../use-reduced-motion'
 import { Segmented } from './segmented'
 
 type StateId = 'planejar' | 'analisar' | 'validar' | 'corrigir'
@@ -78,10 +79,21 @@ const MID = H / 2
 const yOf = (i: number) => i * (ROW + GAP) + ROW / 2
 const W = 56
 
-function Connectors({ side, active }: { side: 'in' | 'out'; active: boolean[] }) {
+// SMIL counts `begin="0.3s"` from page load, so a dot mounted later (on
+// scroll or on a state change) would already be over. Each dot starts its own
+// animations when it mounts, and stays hidden until then.
+const startDot = (delay: number) => (el: SVGCircleElement | null) => {
+  el?.querySelectorAll<SVGAnimationElement>('set, animateMotion').forEach((a) => a.beginElementAt(delay))
+}
+const startIn = startDot(0.3)
+const startOut = startDot(0.7)
+
+function Connectors({ side, active, run }: { side: 'in' | 'out'; active: boolean[]; run: string }) {
   const reduce = useReducedMotion()
+  const ref = useRef<SVGSVGElement>(null)
+  const seen = useInView(ref, { once: true, amount: 0.5 })
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} className="overflow-visible" aria-hidden>
+    <svg ref={ref} viewBox={`0 0 ${W} ${H}`} width={W} height={H} className="overflow-visible" aria-hidden>
       {active.map((on, i) => {
         const y = yOf(i)
         const d = side === 'in' ? `M0 ${y} C ${W / 2} ${y}, ${W / 2} ${MID}, ${W} ${MID}` : `M0 ${MID} C ${W / 2} ${MID}, ${W / 2} ${y}, ${W} ${y}`
@@ -98,9 +110,10 @@ function Connectors({ side, active }: { side: 'in' | 'out'; active: boolean[] })
               animate={{ pathLength: on ? 1 : 0, opacity: on ? 1 : 0 }}
               transition={{ duration: 0.55, ease: EASE_OUT, delay: on ? (side === 'in' ? 0.05 : 0.35) + i * 0.05 : 0 }}
             />
-            {on && !reduce && (
-              <circle r="3" fill="var(--s-brand)">
-                <animateMotion dur="1.4s" repeatCount="3" begin={side === 'in' ? '0.3s' : '0.7s'} path={d} fill="freeze" />
+            {on && seen && !reduce && (
+              <circle key={run} ref={side === 'in' ? startIn : startOut} r="3" fill="var(--s-brand)" visibility="hidden">
+                <set attributeName="visibility" to="visible" begin="indefinite" />
+                <animateMotion dur="1.4s" repeatCount="3" begin="indefinite" path={d} fill="freeze" />
               </circle>
             )}
           </g>
@@ -187,13 +200,13 @@ export function Architecture() {
           </div>
         </div>
         <div className="pt-[30px]">
-          <Connectors side="in" active={ins} />
+          <Connectors side="in" active={ins} run={id} />
         </div>
         <div className="pt-[30px]" style={{ height: H + 30 }}>
           {center}
         </div>
         <div className="pt-[30px]">
-          <Connectors side="out" active={outs} />
+          <Connectors side="out" active={outs} run={id} />
         </div>
         <div>
           <p className="mb-3 text-right font-mono text-[11.5px] tracking-[0.14em] text-ink-3 uppercase">Escreve</p>

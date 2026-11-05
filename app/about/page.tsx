@@ -105,7 +105,7 @@ export default function AboutPage() {
           </div>
         </header>
 
-        <section id="historia" aria-labelledby="historia-title" className="wrap scroll-mt-24 border-t border-line py-20 md:py-28">
+        <section id="historia" aria-labelledby="historia-title" className="wrap border-t border-line py-20 md:py-28">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
             <div className="self-start lg:sticky lg:top-28">
               <SectionHeader
@@ -123,7 +123,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section id="equipe" aria-labelledby="equipe-title" className="wrap scroll-mt-24 border-t border-line py-20 md:py-28">
+        <section id="equipe" aria-labelledby="equipe-title" className="wrap border-t border-line py-20 md:py-28">
           <SectionHeader
             id="equipe-title"
             eyebrow="Equipe"
@@ -137,7 +137,7 @@ export default function AboutPage() {
           <TeamCards />
         </section>
 
-        <section id="referencias" aria-labelledby="referencias-title" className="wrap scroll-mt-24 border-t border-line py-20 md:py-28">
+        <section id="referencias" aria-labelledby="referencias-title" className="wrap border-t border-line py-20 md:py-28">
           <SectionHeader
             id="referencias-title"
             eyebrow="Para ler mais"

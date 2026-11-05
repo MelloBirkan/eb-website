@@ -135,6 +135,13 @@ export function SplitHeading({ as = 'h2', id, className, children, delay = 0, im
         },
       },
     )
+    // Once settled, drop the compositing hints so every word stops holding its own layer.
+    controls.then(() => {
+      for (const word of split.words) {
+        word.style.willChange = 'auto'
+        word.style.filter = 'none'
+      }
+    })
     return () => controls.stop()
   }, [split, inView, immediate, delay])
 

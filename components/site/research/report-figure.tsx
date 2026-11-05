@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion, useInView } from 'motion/react'
 import { EASE_OUT, SPRING } from '../motion'
@@ -18,6 +18,22 @@ const SPOTS = [
 export function ReportFigure() {
   const [active, setActive] = useState<number | null>(null)
   const spot = active === null ? null : SPOTS[active]
+  // The hotspots hide while zoomed and the close button unmounts on close, so
+  // focus is handed between them instead of dropping to the page.
+  const spotRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const focusClose = useRef(false)
+
+  useEffect(() => {
+    if (spot && focusClose.current) closeRef.current?.focus({ preventScroll: true })
+    focusClose.current = false
+  }, [spot])
+
+  function close() {
+    const i = active
+    setActive(null)
+    if (i !== null) requestAnimationFrame(() => spotRefs.current[i]?.focus({ preventScroll: true }))
+  }
 
   return (
     <div className="mt-12">
@@ -55,8 +71,14 @@ export function ReportFigure() {
               return (
                 <motion.button
                   key={s.title}
+                  ref={(el) => {
+                    spotRefs.current[i] = el
+                  }}
                   type="button"
-                  onClick={() => setActive(i)}
+                  onClick={() => {
+                    focusClose.current = true
+                    setActive(i)
+                  }}
                   aria-label={`Ampliar: ${s.title}`}
                   tabIndex={hidden ? -1 : 0}
                   className="absolute grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-glow font-mono text-[12.5px] font-semibold text-night shadow-[0_0_0_4px_rgba(182,239,217,.25)]"
@@ -72,8 +94,9 @@ export function ReportFigure() {
             })}
             {spot && (
               <motion.button
+                ref={closeRef}
                 type="button"
-                onClick={() => setActive(null)}
+                onClick={close}
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={SPRING.ui}

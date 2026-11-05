@@ -56,7 +56,7 @@ const ITEMS: Item[] = [
 ]
 
 function normalize(s: string) {
-  return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
 function score(query: string, item: Item): number {
@@ -162,7 +162,12 @@ function Palette({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -8, scale: 0.98 }}
         transition={SPRING.ui}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation()
+          // A click on the dialog's padding or a hint blurs the field, and the
+          // keys below only reach this element while focus is inside it.
+          inputRef.current?.focus()
+        }}
         onKeyDown={onKeyDown}
       >
         <div className="flex items-center gap-3 border-b border-line px-5 py-4">
