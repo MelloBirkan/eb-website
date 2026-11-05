@@ -232,7 +232,9 @@
   font-size: 1.18em;
   letter-spacing: -0.01em;
 }
+.sn-tabs { position: relative; }
 .sn-links {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 2px;
@@ -251,11 +253,20 @@
   transition: color 200ms ease;
 }
 .sn-link:hover { color: var(--s-on-night); }
-.sn-link[data-active="true"] { color: #0b1a18; font-weight: 600; }
-.sn-pill {
+/* The mint copy of the tabs. NavTabs clips it to the current tab and slides the clip. */
+.sn-links-on {
   position: absolute;
   inset: 0;
-  border-radius: 999px;
+  pointer-events: none;
+  visibility: hidden;
+  background: var(--s-glow);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.sn-links-on .sn-link { color: #0b1a18; }
+.sn-tabs[data-ready="true"] .sn-links-on { visibility: visible; }
+/* Before the script runs, the current tab paints its own pill. */
+.sn-tabs:not([data-ready]) .sn-link[data-active="true"] {
+  color: #0b1a18;
   background: var(--s-glow);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
@@ -370,6 +381,13 @@
   .sn-brand { height: 44px; padding-left: 2px; }
   .sn-wrap { transition: transform 420ms cubic-bezier(.22, 1, .36, 1); }
   .sn-wrap[data-hidden="true"] { transform: translateY(calc(-100% - 16px)); }
+}
+/* The smallest phones (320 px) need the spacing back to fit the menu button. */
+@media (max-width: 359px) {
+  .sn-wrap { padding-inline: 10px; }
+  .sn-bar { gap: 2px; padding-left: 10px; }
+  .sn-brand { padding-right: 4px; margin-right: 0; }
+  .sn-actions { gap: 2px; }
 }
 .sn-scrim {
   position: fixed;
@@ -499,3 +517,143 @@
 .on-night :focus-visible {
   outline-color: var(--s-glow);
 }
+
+/* ───── Clip tabs (see useClipTab) ─────
+   A row of options drawn twice. The copy on top carries the chosen colors and
+   is clipped to the chosen option; the script slides the clip. The row sets
+   --clip-bg and --clip-fg. */
+.clip-on {
+  visibility: hidden;
+  background: var(--clip-bg);
+  color: var(--clip-fg);
+}
+.clip-row[data-ready="true"] > .clip-on { visibility: visible; }
+/* Before the script runs, the chosen option paints its own pill. */
+.clip-row:not([data-ready]) [data-active="true"] {
+  background: var(--clip-bg);
+  color: var(--clip-fg);
+}
+.clip-row:not([data-ready]) [data-active="true"] * { color: inherit; }
+
+/* ───── Guides ───── */
+
+.guide-h2 {
+  font-weight: 600;
+  font-size: clamp(2rem, 1.4rem + 2.1vw, 2.9rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  color: var(--s-ink);
+  text-wrap: balance;
+}
+.guide-lede {
+  font-size: clamp(1.08rem, 1rem + 0.3vw, 1.22rem);
+  line-height: 1.6;
+  color: var(--s-ink-2);
+  text-wrap: pretty;
+}
+
+.guide-prose {
+  color: var(--s-ink-2);
+  font-size: 16.5px;
+  line-height: 1.72;
+}
+.guide-prose > * + * { margin-top: 1rem; }
+.guide-prose > header + * { margin-top: 2.5rem; }
+.guide-prose > * + .guide-block,
+.guide-prose > .guide-block + * { margin-top: 1.6rem; }
+.guide-prose > h3 { margin-top: 3.25rem; }
+.guide-prose > header + h3 { margin-top: 2.75rem; }
+.guide-prose > h3 + *,
+.guide-prose > h3 + .guide-block { margin-top: 0.85rem; }
+.guide-prose h3 {
+  font-size: 1.32rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.022em;
+  color: var(--s-ink);
+  text-wrap: balance;
+}
+/* Skill names as headings: mono, and they may break anywhere on a phone. */
+.guide-prose h3 code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+.guide-prose p { text-wrap: pretty; }
+.guide-prose strong { color: var(--s-ink); font-weight: 600; }
+.guide-prose :where(p, li) code,
+.callout-body code {
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  padding: 0.1em 0.4em;
+  border-radius: 6px;
+  background: var(--s-paper-2);
+  border: 1px solid var(--s-line);
+  color: var(--s-ink);
+  overflow-wrap: anywhere;
+}
+.guide-prose kbd,
+.callout-body kbd {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  padding: 0.12em 0.45em;
+  border-radius: 6px;
+  border: 1px solid var(--s-line-2);
+  border-bottom-width: 2px;
+  background: var(--s-card);
+  color: var(--s-ink);
+}
+.guide-prose ul:not([class]) { padding-left: 0; list-style: none; }
+.guide-prose ul:not([class]) > li { position: relative; padding-left: 1.5rem; }
+.guide-prose ul:not([class]) > li + li { margin-top: 0.6rem; }
+.guide-prose ul:not([class]) > li::before {
+  content: "";
+  position: absolute;
+  left: 0.3rem;
+  top: 0.68em;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--s-brand);
+  transform: rotate(45deg);
+}
+
+/* Code on night panels. Long lines scroll sideways; the fade marks the cut edge. */
+.code-pre {
+  margin: 0;
+  padding: 16px 32px 18px 18px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--s-on-night);
+  tab-size: 2;
+  scrollbar-width: none;
+  mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+}
+.code-pre::-webkit-scrollbar { display: none; }
+.code-pre code { white-space: pre; font-family: inherit; }
+.tk-cmt { color: var(--s-on-night-3); font-style: italic; }
+.tk-str { color: #f2d48a; }
+.tk-var { color: #ffb38a; }
+.tk-cmd { color: var(--s-glow); font-weight: 500; }
+.tk-flag { color: #93b9ff; }
+.tk-num { color: #f5b544; }
+.tk-key { color: var(--s-glow); }
+
+/* Inline code inside the night terminal. */
+.term code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  padding: 0.05em 0.35em;
+  border-radius: 5px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--s-glow);
+}
+/* The prose rules paint strong text in ink, which would vanish on the night panels. */
+.term strong { color: var(--s-on-night); font-weight: 600; }

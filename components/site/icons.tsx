@@ -45,6 +45,13 @@ export const ArrowDown = (p: IconProps) => (
   </Svg>
 )
 
+export const ArrowUp = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M12 19V5" />
+    <path d="m6 11 6-6 6 6" />
+  </Svg>
+)
+
 export const Check = (p: IconProps) => (
   <Svg {...p}>
     <path d="M20 6 9 17l-5-5" />
@@ -98,6 +105,35 @@ export const FileCode = (p: IconProps) => (
 export const Sparkle = (p: IconProps) => (
   <Svg {...p}>
     <path d="M12 3.5 13.6 9a2 2 0 0 0 1.4 1.4l5.5 1.6-5.5 1.6a2 2 0 0 0-1.4 1.4L12 20.5 10.4 15A2 2 0 0 0 9 13.6L3.5 12 9 10.4A2 2 0 0 0 10.4 9z" />
+  </Svg>
+)
+
+export const Info = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M12 11v5" />
+    <path d="M12 7.6h.01" />
+  </Svg>
+)
+
+export const Warn = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M10.3 4.6 3.4 16.8A2 2 0 0 0 5.1 19.8h13.8a2 2 0 0 0 1.7-3L13.7 4.6a2 2 0 0 0-3.4 0z" />
+    <path d="M12 9.5v4" />
+    <path d="M12 16.6h.01" />
+  </Svg>
+)
+
+export const ChevronDown = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="m6 9 6 6 6-6" />
+  </Svg>
+)
+
+export const ArrowLeft = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M19 12H5" />
+    <path d="m11 6-6 6 6 6" />
   </Svg>
 )
 

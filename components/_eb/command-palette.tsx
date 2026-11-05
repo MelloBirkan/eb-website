@@ -36,6 +36,7 @@ const ITEMS: Item[] = [
   { id: 'codex', kind: 'guia', title: 'Guia: Codex', section: 'Guias', href: '/tutorial/codex' },
   { id: 'anthropic', kind: 'guia', title: 'Guia: Claude Code', section: 'Guias', href: '/tutorial/anthropic' },
   { id: 'ios', kind: 'guia', title: 'Guia: plugin iOS', section: 'Guias', href: '/tutorial/plugins/ios' },
+  { id: 'xcode-mcp', kind: 'guia', title: 'Xcode MCP: ligar o agente ao Xcode', section: 'Guias', href: '/tutorial/plugins/ios#xcode-mcp' },
 
   { id: 's-feature', kind: 'skill', title: 'evenbetter-ios-feature', section: 'Planejamento', href: '/tutorial/plugins/ios#planejamento-ux' },
   { id: 's-epic', kind: 'skill', title: 'evenbetter-ios-epic', section: 'Planejamento', href: '/tutorial/plugins/ios#planejamento-ux' },
@@ -112,8 +113,16 @@ function Palette({ onClose }: { onClose: () => void }) {
 
   const choose = useCallback(
     (item: Item) => {
-      router.push(item.href)
       onClose()
+      const to = new URL(item.href, window.location.href)
+      // On the same page, a plain hash change fires hashchange, which the guides
+      // listen to for their steps. The router would change the hash silently.
+      if (to.pathname === window.location.pathname && to.hash) {
+        if (to.hash === window.location.hash) document.getElementById(to.hash.slice(1))?.scrollIntoView()
+        else window.location.hash = to.hash
+        return
+      }
+      router.push(item.href)
     },
     [router, onClose],
   )

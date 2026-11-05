@@ -4,6 +4,8 @@ import "./globals.css";
 import "./evenbetter.css";
 import "./site.css";
 import { MotionProvider } from "../components/site/motion-provider";
+import { SiteNav } from "./_components/site-nav";
+import { SiteFooter } from "./_components/site-footer";
 
 const geist = Geist({
   weight: "variable",
@@ -90,7 +92,15 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <a href="#main" className="eb-skip-link">Pular para o conteúdo</a>
-        <MotionProvider>{children}</MotionProvider>
+        <MotionProvider>
+          {/* The header and footer live here, outside the pages, so they stay mounted between pages:
+              the bar does not replay its entrance and the tab pill slides to the new page. */}
+          <div className="site">
+            <SiteNav />
+            {children}
+            <SiteFooter />
+          </div>
+        </MotionProvider>
       </body>
     </html>
   );

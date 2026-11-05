@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
-import { AnimatePresence, LayoutGroup, motion, useMotionValueEvent, useScroll } from 'motion/react'
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { CommandPalette } from '../../components/_eb/command-palette'
 import { BrandMark, Close, GitHub, Menu, Search } from '../../components/site/icons'
 import { SPRING } from '../../components/site/motion'
+import { useClipTab } from '../../components/site/use-clip-tab'
 
 type NavLink = { href: string; label: string; match: (path: string) => boolean }
 
@@ -18,6 +19,45 @@ const LINKS: NavLink[] = [
 ]
 
 const GITHUB = 'https://github.com/MelloBirkan/EvenBetterFramework'
+
+/**
+ * The page tabs. The mint copy on top is clipped to the current tab and slides
+ * with it (see useClipTab).
+ */
+function NavTabs({ pathname, onHome }: { pathname: string; onHome: (e: MouseEvent<HTMLAnchorElement>) => void }) {
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
+  const onRef = useRef<HTMLUListElement>(null)
+  const active = LINKS.findIndex((l) => l.match(pathname))
+  useClipTab(wrapRef, listRef, onRef, active, '.sn-link')
+
+  return (
+    <div ref={wrapRef} className="sn-tabs">
+      <ul ref={listRef} className="sn-links" role="list">
+        {LINKS.map((l, i) => (
+          <li key={l.href}>
+            <Link
+              href={l.href}
+              onClick={l.href === '/' ? onHome : undefined}
+              className="sn-link"
+              data-active={i === active ? 'true' : 'false'}
+              aria-current={i === active ? 'page' : undefined}
+            >
+              {l.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <ul ref={onRef} aria-hidden className="sn-links sn-links-on" role="list">
+        {LINKS.map((l) => (
+          <li key={l.href}>
+            <span className="sn-link">{l.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
 
 export function SiteNav() {
   const pathname = usePathname() ?? '/'
@@ -113,29 +153,7 @@ export function SiteNav() {
             </span>
           </Link>
 
-          <LayoutGroup id="site-nav">
-            <ul className="sn-links" role="list">
-              {LINKS.map((l) => {
-                const active = l.match(pathname)
-                return (
-                  <li key={l.href}>
-                    <Link
-                      href={l.href}
-                      onClick={l.href === '/' ? toTop : undefined}
-                      className="sn-link"
-                      data-active={active ? 'true' : 'false'}
-                      aria-current={active ? 'page' : undefined}
-                    >
-                      {active && (
-                        <motion.span layoutId="sn-pill" className="sn-pill" transition={SPRING.ui} aria-hidden />
-                      )}
-                      <span className="relative">{l.label}</span>
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-          </LayoutGroup>
+          <NavTabs pathname={pathname} onHome={toTop} />
 
           <div className="sn-actions">
             <button type="button" className="sn-search" onClick={() => setPaletteOpen(true)} aria-label="Buscar no site (⌘K)">

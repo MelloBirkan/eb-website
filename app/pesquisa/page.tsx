@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
-import { SiteNav } from '../_components/site-nav'
-import { SiteFooter } from '../_components/site-footer'
 import { ButtonLink } from '../../components/site/button'
 import Link from 'next/link'
 import { ArrowRight, ArrowUpRight } from '../../components/site/icons'
@@ -143,9 +141,8 @@ const NEXT: { text: string; cite?: number }[] = [
 
 export default function ResearchPage() {
   return (
-    <div className="site">
+    <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
-      <SiteNav />
       <main id="main">
         <ResearchHero />
 
@@ -589,7 +586,6 @@ export default function ResearchPage() {
           </div>
         </section>
       </main>
-      <SiteFooter />
-    </div>
+    </>
   )
 }
