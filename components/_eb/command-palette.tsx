@@ -18,6 +18,8 @@ const ITEMS: Item[] = [
   { id: 'home', kind: 'página', title: 'Início', section: 'Páginas', href: '/' },
   { id: 'pesquisa', kind: 'página', title: 'Pesquisa: o artigo da JIIHC 2026', section: 'Páginas', href: '/pesquisa' },
   { id: 'about', kind: 'página', title: 'Sobre o projeto e a equipe', section: 'Páginas', href: '/about' },
+  { id: 'about-historia', kind: 'página', title: 'História: da linha de comando ao plugin', section: 'Sobre', href: '/about#historia' },
+  { id: 'about-equipe', kind: 'página', title: 'Equipe', section: 'Sobre', href: '/about#equipe' },
   { id: 'install', kind: 'página', title: 'Instalar o plugin', section: 'Início', href: '/#comecar' },
   { id: 'corpus', kind: 'página', title: 'Corpus: 49 cláusulas', section: 'Início', href: '/#corpus' },
 
@@ -29,6 +31,7 @@ const ITEMS: Item[] = [
   { id: 'p-resultados', kind: 'pesquisa', title: 'Resultados: SUS 79,5', section: 'Pesquisa', href: '/pesquisa#resultados' },
   { id: 'p-limites', kind: 'pesquisa', title: 'Limites e próximos passos', section: 'Pesquisa', href: '/pesquisa#limites' },
   { id: 'p-citar', kind: 'pesquisa', title: 'Como citar', section: 'Pesquisa', href: '/pesquisa#citar' },
+  { id: 'p-referencias', kind: 'pesquisa', title: 'As 25 referências do artigo', section: 'Pesquisa', href: '/pesquisa#referencias' },
 
   { id: 'codex', kind: 'guia', title: 'Guia: Codex', section: 'Guias', href: '/tutorial/codex' },
   { id: 'anthropic', kind: 'guia', title: 'Guia: Claude Code', section: 'Guias', href: '/tutorial/anthropic' },

@@ -27,7 +27,8 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
     title: 'Projeto',
     links: [
       { label: 'Sobre e equipe', href: '/about' },
-      { label: 'Referências', href: '/about#referencias' },
+      { label: 'História do projeto', href: '/about#historia' },
+      { label: 'Referências', href: '/pesquisa#referencias' },
       { label: 'Código no GitHub', href: GITHUB, external: true },
     ],
   },
