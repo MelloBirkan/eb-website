@@ -38,13 +38,13 @@ const STEPS: Step[] = [
   {
     tag: 'Setembro de 2026',
     title: 'A correção vira etapa',
-    text: 'A skill evenbetter-repair entrou como quarta etapa do fluxo. Hoje são 16 skills para iOS e 2 gerais.',
-    now: true,
+    text: 'A skill evenbetter-repair entrou como quarta etapa do fluxo. Com ela, eram 16 skills para iOS e 2 gerais.',
   },
   {
     tag: '10 de novembro de 2026',
     title: 'Apresentação em Talca, no Chile',
-    text: 'Marcello e Daniela apresentam o artigo na Universidad de Talca. Os slides ficam abertos para quem quiser rever.',
+    text: 'Marcello e Daniela apresentaram o artigo na Universidad de Talca. Os slides ficam abertos para quem quiser rever.',
+    now: true,
   },
 ]
 

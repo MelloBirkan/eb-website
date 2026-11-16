@@ -31,11 +31,11 @@ export const BIBTEX = `@inproceedings{birkan2026evenbetter,
   booktitle = {8{\\textdegree} Workshop en Sistemas Interactivos Inteligentes (8WoSI{\\textsuperscript{2}}), 12{\\textdegree} Jornadas Iberoamericanas de Interacci{\\'o}n Humano-Computadora (12JIHC'26)},
   address   = {Talca, Chile},
   year      = {2026},
-  note      = {Accepted paper}
+  note      = {Presented on 10 November 2026}
 }`
 
 export const CITATION_TEXT =
-  "Gonzatto Birkan, M., Brazolin Flauto, D., Farinazzo Martins, V.: Curated Agent Skills for Context-Aware Intelligent Support in iOS UX and Accessibility. In: 8° Workshop en Sistemas Interactivos Inteligentes (8WoSI²), 12° Jornadas Iberoamericanas de Interacción Humano-Computadora (12JIHC'26). Talca, Chile (2026). Artigo aceito."
+  "Gonzatto Birkan, M., Brazolin Flauto, D., Farinazzo Martins, V.: Curated Agent Skills for Context-Aware Intelligent Support in iOS UX and Accessibility. In: 8° Workshop en Sistemas Interactivos Inteligentes (8WoSI²), 12° Jornadas Iberoamericanas de Interacción Humano-Computadora (12JIHC'26). Talca, Chile (2026). Apresentado em 10 nov. 2026."
 
 export type Reference = { n: number; text: string; url?: string }
 

@@ -26,7 +26,7 @@ export function ResearchHero() {
       <div className="wrap">
         <HeroRise y={10}>
           <p className="flex flex-wrap items-center gap-2 font-mono text-[12px] font-semibold">
-            <span className="rounded-full bg-brand px-3 py-1 text-on-brand">Artigo aceito</span>
+            <span className="rounded-full bg-brand px-3 py-1 text-on-brand">Artigo apresentado</span>
             <span className="rounded-full border border-line-2 bg-card px-3 py-1 text-ink-2">{PAPER.venue}</span>
             <span className="rounded-full border border-line-2 bg-card px-3 py-1 text-ink-2">
               {PAPER.place} · 10 nov. 2026

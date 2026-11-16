@@ -49,7 +49,7 @@ export default async function OpengraphImage() {
               color: "#3a5552",
             }}
           >
-            Artigo aceito na JIIHC 2026
+            Artigo apresentado na JIIHC 2026
           </div>
         </div>
 
