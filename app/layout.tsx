@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     template: "%s · EvenBetter",
   },
   description:
-    "Skills curadas que ensinam o seu agente de IA a planejar, auditar e corrigir apps SwiftUI com o HIG da Apple e a WCAG 2.2. Funciona no Claude Code e no Codex. Artigo aceito na JIIHC 2026.",
+    "Skills curadas que ensinam o seu agente de IA a planejar, auditar e corrigir apps SwiftUI com o HIG da Apple e a WCAG 2.2. Funciona no Claude Code e no Codex. Artigo apresentado na JIIHC 2026.",
   keywords: [
     "EvenBetter",
     "iOS",

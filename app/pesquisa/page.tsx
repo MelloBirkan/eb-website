@@ -23,7 +23,7 @@ import { ResearchToc } from '../../components/site/research/research-toc'
 import { Journey, Qualitative, SusResults } from '../../components/site/research/results'
 
 const DESCRIPTION =
-  'O artigo do EvenBetter aceito na JIIHC 2026: skills curadas que levam o HIG, a acessibilidade da Apple e a WCAG 2.2 para agentes de IA, com um estudo com dez devs iOS e SUS médio de 79,5.'
+  'O artigo do EvenBetter apresentado na JIIHC 2026: skills curadas que levam o HIG, a acessibilidade da Apple e a WCAG 2.2 para agentes de IA, com um estudo com dez devs iOS e SUS médio de 79,5.'
 
 export const metadata: Metadata = {
   title: 'Pesquisa',
@@ -533,8 +533,9 @@ export default function ResearchPage() {
               }
               lede={
                 <>
-                  O artigo foi aceito no 8° Workshop en Sistemas Interactivos Inteligentes, parte das 12° Jornadas
-                  Iberoamericanas de Interacción Humano-Computadora, em Talca, no Chile.
+                  O artigo foi apresentado em 10 de novembro de 2026 no 8° Workshop en Sistemas Interactivos
+                  Inteligentes, parte das 12° Jornadas Iberoamericanas de Interacción Humano-Computadora, em Talca, no
+                  Chile.
                 </>
               }
             >

@@ -40,7 +40,7 @@ const READ_MORE: { title: string; text: string; href: string; external?: boolean
   },
   {
     title: 'Slides da apresentação',
-    text: 'O deck que vai para a JIIHC 2026, em inglês.',
+    text: 'O deck apresentado na JIIHC 2026.',
     href: PAPER.slides,
     external: true,
     icon: Slides,
@@ -79,7 +79,7 @@ export default function AboutPage() {
               <p className="lede mt-7 max-w-[38rem] text-ink">
                 O EvenBetter é o trabalho de conclusão de curso de Marcello Birkan e Daniela Flauto na Faculdade de
                 Computação e Informática do Mackenzie, com orientação da Prof.ª Dr.ª Valéria Farinazzo Martins. O código
-                é aberto, e o artigo foi aceito na JIIHC 2026.
+                é aberto, e o artigo foi apresentado na JIIHC 2026.
               </p>
             </HeroRise>
             <HeroRise delay={500} y={12}>

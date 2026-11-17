@@ -28,7 +28,7 @@ export function Hero() {
               Novo
             </span>
             <span>
-              Artigo aceito na JIIHC 2026<span className="hidden sm:inline">, em Talca, Chile</span>
+              Artigo apresentado na JIIHC 2026<span className="hidden sm:inline">, em Talca, Chile</span>
             </span>
             <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
           </Link>
